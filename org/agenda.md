@@ -1,4 +1,4 @@
-##sprint planning 1 - 18.09.25
+## sprint planning 1 - 18.09.25
 
 - brief Tomas, add into jira and github
 - make plan for niall meeting
