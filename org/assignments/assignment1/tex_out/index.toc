@@ -1,0 +1,4 @@
+\contentsline {section}{\numberline {1}Project Description}{1}{}%
+\contentsline {section}{\numberline {2}Provisional User Stories}{1}{}%
+\contentsline {section}{\numberline {3}Roles and Responsibilities}{1}{}%
+\contentsline {section}{\numberline {4}GitHub Repository and Jira Project Board}{1}{}%
