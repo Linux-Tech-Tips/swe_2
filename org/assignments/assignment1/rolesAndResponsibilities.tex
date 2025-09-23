@@ -1,22 +1,24 @@
 \section{Roles and Responsibilities}
-
-
-\vspace{0.2cm}
-
-\begin{center}
-\begin{tabular}{|l|l|l|l|}
+\begin{table}[h!]
+\centering
+\caption{Team Roles \& Responsibilities}
+\begin{tabular}{|l|p{6cm}|p{7cm}|}
 \hline
-\textbf{Member} & \textbf{User Story} & \textbf{Frontend responsibilities} & \textbf{Backend responsibilities} \\
+\textbf{Team Member} & \textbf{Primary User Story (Roles)} & \textbf{Acceptance Criteria (Responsibilities)} \\
 \hline
-Tomás & 1 & Screen reader support & Accessible HTML/API \\
+Martin & As a lecturer, I want to be able to limit the number of students in a tutorial slot so that certain venues are accessible. & When a student limit is submitted to the web app, the generated timetable will contain more tutorials to accommodate the number of students. \\
 \hline
-Ethan & 2 & Student time input & Process availability \\
+Lillian & As a lecturer, I want to be able to limit the number of tutorials a week so that TAs don't get overworked. & When the tutorial limit is submitted, the timetable ideally has no more than the specified limit of tutorials. \\
 \hline
-Martin & 3 & Student limit input & Adjust algorithm \\
+Ethan & As a student, I want to be able to enter the time I'm busy so that the lecturer is aware of my unavailability. & When the time slots are submitted, they appear on the student's timetable and are excluded from the times provided to the lecturers. \\
 \hline
-Lilian & 4 & Tutorial limit input & Check constraints \\
+Cedar & As a lecturer, I want to be able to block out a time slot so that it isn't considered for the scheduling algorithm. \newline
+As a lecturer, I want to be able to enter a list of student IDs so that I receive a list of times in which the students are available. & When the timeslot is blocked out, it is visually noted on the timetable and cannot be used as a tutorial slot. \newline
+When a list of enrolled student IDs is submitted, a timetable is generated to display the available times. \\
 \hline
-Cedar & 6 & Time blocking UI & Slot exclusion logic \\
+Tomás & As a user, I want the web app to be user-friendly so that the information can be readable from a screen reader. & When a screen reader plugin is enabled, it accurately works with the web app. \\
 \hline
 \end{tabular}
-\end{center}
+\end{table}
+
+this will include roles and responsibilities
