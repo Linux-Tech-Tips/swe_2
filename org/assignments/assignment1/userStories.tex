@@ -1,2 +1,43 @@
 \section{Provisional User Stories}
-this will include 5-8 user stories
+These are the provisional user stories for the project which may be subject to slight change as the project progresses
+but as of now, they encompass the functionality desired from both the student and the lecturer.
+
+
+\begin{enumerate}
+\item As a user, I want the web app to be user friendly so that the information could be readable from a screen reader.
+	\begin{itemize}
+	\item Acceptance Criteria: When a screen reader plugin is enabled, it accurately works with the web-app.
+	\item Priority: Low
+	\end{itemize}
+
+\item As a student, I want to be able to enter the time I'm busy so that the lecturer is aware of my unavailability.
+	\begin{itemize}
+		\item Acceptance Criteria: When the time slots are submitted, they appear on the student's timetable and are excluded from the times provided to the lecturers.
+		\item Priority: High
+	\end{itemize}
+
+\item As a lecturer, I want to be able to limit the number of students in a tutorial slot so that certain venues are accessible.
+	\begin{itemize}
+		\item Acceptance Criteria: When a student limit is submitted to the web app, the generated timetable will contain more tutorials to accommodate the number of students.
+		\item Priority: Low
+	\end{itemize}
+
+\item As a lecturer, I want to be able to limit the number of tutorials a week so that TA don't get over worked.
+	\begin{itemize}
+		\item Acceptance Criteria: When the tutorial limit is submitted, the timetable ideally has no more than the specified limit of tutorials.
+		\item Priority: Medium
+	\end{itemize}
+
+\item As a lecturer, I want to be able to enter a list of student IDs so that I receive a list of times in which the students are available.
+	\begin{itemize}
+		\item Acceptance Criteria: When a list of enrolled student ids are submitted, a timetable is generated to display the available times.
+		\item Priority: High
+	\end{itemize}
+
+\item As a lecturer, I want to be able to block out a time slot so that it isn't considered for the scheduling algorithm.
+	\begin{itemize}
+		\item Acceptance Criteria: When the timeslot is blocked out, it is visually noted on the timetable and can't be a tutorial slot.
+		\item Priority: Medium
+	\end{itemize}
+\end{enumerate}
+
