@@ -1,17 +1,5 @@
 ## meeting with stakeholder Pfeiffer 25.09.2025
 
-**TA'ing**
-- paid :D
-- drop cv off in the office downstairs in adb (send cv to mary kelly, cs2101 labs, no. of hours)
-- tuesdays 12-2 --> everyone's busy 12-13
-- thursdays 9-11 --> martin & I busy 9-10
-- ideally 2 in room per session from next week onwards until the end of teaching (9 weeks --> total of 54 hours)
-- if we can sort it out today --> contracts can be sent tomorrow
-
-- ask lilian and tomas abt thurs 9am
-- martin and cedar defo happy abt tue 13-14 or thur 10-11
-
-**actual project schemes**
 - project is part of 1 semester module 
 - java backend, javascript frontend
 - ruby on rails (???) goetz used it to make the schoolmaster timetabling service
