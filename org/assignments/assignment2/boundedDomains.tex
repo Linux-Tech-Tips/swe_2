@@ -1,4 +1,16 @@
 \section{Bounded Contexts and Domains}
-Identification of bounded contexts or domains relevant to your project. If your project only
-includes a single bounded context, you should give an example of how it could be extended
-to include another one.
+
+The overarching domain is tutorial scheduling. This domain can be split into the following subdomains: 
+\begin{itemize}
+\item Lecturers (core domain) - they have their indivdual schedules, as well as access to information about the overall schedules of modules, the students taking them, and the ability to access room information.
+\item Students (supporting subdomain) - they have their individual schedules, as well as access to their module's schedules.
+\item optionally buildings (generic subdomain) - have information about the capacity, availability, and equipment.
+\end{itemize}
+
+From this domain division flows a division into bounded contexts. 
+\begin{itemize}
+\item Modules care about their own schedules, and that all students are able to access the classes.
+\item Lecturers care about their own schedules, and communicate with Modules to access information about the schedules of the modules and the students therein (also editing module schedules). They also communicate with Buildings to book suitable rooms.
+\item Students have their indivdual schedules, and communicate with Modules to access module schedule information.
+\item Buildings has information on the schedules/equipment/capacity of rooms, and communicates withLecturers to use rooms efficiently.
+\end{itemize}
