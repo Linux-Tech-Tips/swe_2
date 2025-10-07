@@ -5,3 +5,4 @@
 mkdir -p tex_out
 pdflatex -output-directory=tex_out index.tex
 pdflatex -output-directory=tex_out index.tex
+cp tex_out/index.pdf ./$(basename $(pwd)).pdf
