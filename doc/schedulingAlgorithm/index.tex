@@ -48,8 +48,6 @@ $\begin{bmatrix}
 All timetables are then summed together into one matrix in which each entry represents how many students are available at that time. This matrix will be referred to as "the complete matrix" or M in the rest of this document. \\
 This matrix is turned into an undirected graph where each node represents a timeslot with a weight of the number of students available at that time. The edges connecting two nodes represent all students which are busy at both times, and that number is the weight assigned to that node. This graph will be called "the graph" or G for the rest of this document.\\
 
-INSERT A GRAPH HERE EITHER WITH AN IMAGE OR EVIL GRAPH PLOTTING \\
-
 Individual timeslots are also represented as sets of all people who are available at that time, e.g. \[t_1 = (s_1, s_2, s_3)\]
 The size of these sets (i.e. the number of students available at a time $t_i$) will be noted as the size of $t_i$, or $|t_i|$\\
 
