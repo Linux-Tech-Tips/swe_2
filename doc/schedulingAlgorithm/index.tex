@@ -60,7 +60,7 @@ Then there are two base cases, after which the algorithm iterates over a set of 
 
 Base case 1: There are one or more times when everyone is available. This can be noticed by any entry in the complete matrix being equal to the total number of participants or $|t_i|=N$. If this is true, than those times are trivally the best times and can be immediately returned.\\
 
-Base case 2: There are $n \geq 2$ times for which all students are available at n-1 times. This will most frequently occur for n=2.
+Base case 2: There are $n \geq 2$ times for which no student is busy for more than one of (e.g. there are 3 times --> all students are available for 2 or 3 of those times). This will most frequently occur for n=2.
  In the graph, these are 2 or more nodes which have no edges between them. If represented as a colouring problem, they would be the same colour. If this is true, then those times are the optimal times and will be returned. \\  
 
 When neither of these cases occur, the following steps are repeated until all times have been considered: \\
@@ -74,7 +74,7 @@ This is because if a time t is a subset of all other times, all the students fre
 \section{Consideration of Constraints}
 Oftentimes, external constraints interfere with this algorithm. The constraints considered here are: certain times must be blocked off (e.g. due to TA availability), there is a hard limit on tutorial number (e.g. due to funding), and there is a size limit on tutorials (e.g. due to room size).\\
 
-Times can be blocked off by simply deleting the respective nodes or sets. Limits on tutorial number should hopefully be followed by finding the minimal number of tutorial times, but if that is still too large, the x largest tutorial times can be returned (or all times canreturned and the lecturer is warned that they must choose x times to fit into their limit).\\
+Times can be blocked off by simply deleting the respective nodes or sets. Limits on tutorial number should hopefully be followed by finding the minimal number of tutorial times, but if that is still too large, the x largest tutorial times can be returned (or all times are returned and the lecturer is warned that they must choose x times to fit into their limit).\\
 The size limit is more interesting. The solution proposed here features extra data pre-processing. Before the algorithm is run, all times whose size exceeds the tutorial size limit x are pulled aside. \\
 For each of these times, the following steps are executed: \\
 \begin{enumerate} 
