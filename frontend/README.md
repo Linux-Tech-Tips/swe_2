@@ -1,6 +1,6 @@
 # Frontend Setup
 
-This document contains the instructions to get the frontend webserver up and runnig on your local machine.
+This document contains the instructions to get the frontend webserver up and running on your local machine.
 
 The frontend is built with React. Node.js is needed because it includes `npm`, which is used to install the dependencies and run the development server.
 
