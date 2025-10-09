@@ -68,7 +68,7 @@ lily@fedora:~$ npm -v
 
 ## How to Install React
 
-React relied on various libraries listed in `package.json`. These need to be downloaded and installed. The commands are universal accorss all UNIX based systems.
+React relies on various libraries listed in `package.json`. These need to be downloaded and installed. The commands are universal across all UNIX based systems.
 
 **1. Navigate to the directory**
 
