@@ -74,7 +74,13 @@ This is because if a time t is a subset of all other times, all the students fre
 \section{Consideration of Constraints}
 Oftentimes, external constraints interfere with this algorithm. The constraints considered here are: certain times must be blocked off (e.g. due to TA availability), there is a hard limit on tutorial number (e.g. due to funding), and there is a size limit on tutorials (e.g. due to room size).\\
 
-Times can be blocked off by simply deleting the respective nodes or sets. Limits on tutorial number should hopefully be followed by finding the minimal number of tutorial times, but if that is still too large, the x largest tutorial times can be returned (or all times are returned and the lecturer is warned that they must choose x times to fit into their limit).\\
+Limits on tutorial number should hopefully be followed by finding the minimal number of tutorial times, but if that is still too large, the x largest tutorial times can be returned (or all times are returned and the lecturer is warned that they must choose x times to fit into their limit).\\
+
+Times can be blocked off by deleting those sets and entries in schedules before the algorithm executes.\\
+
+Often there is also a minimum number m of TAs that must be present at each tutorial. If there are fixed TAs, their schedules can be considered first and then bad times can be blocked off. More precisely, all TA schedules are added together and then all times where less than than m TAs are available are blocked off as described above. \\
+
+
 The size limit is more interesting. The solution proposed here features extra data pre-processing. Before the algorithm is run, all times whose size exceeds the tutorial size limit x are pulled aside. \\
 For each of these times, the following steps are executed: \\
 \begin{enumerate} 
