@@ -1,16 +1,13 @@
 \section{Bounded Contexts and Domains}
 
-The overarching domain is tutorial scheduling. This domain can be split into the following subdomains: 
-\begin{itemize}
-\item Lecturers (core domain) - they have their indivdual schedules, as well as access to information about the overall schedules of modules, the students taking them, and the ability to access room information.
-\item Students (supporting subdomain) - they have their individual schedules, as well as access to their module's schedules.
-\item optionally buildings (generic subdomain) - have information about the capacity, availability, and equipment.
-\end{itemize}
+The overarching domain is scheduling. For this application, the domain can be split into the following subdomains: \\
+\textbf{Tutorial scheduling  (core domain)}: concerns itself with indivdual schedules, schedules of modules, the students taking modules, and the ability to access room information.\\
+\textbf{Buildings (supporting subdomain)}: concerns itself with the capacity, availability, and equipment. \\
 
-From this domain division flows a division into bounded contexts. 
-\begin{itemize}
-\item Modules care about their own schedules, and that all students are able to access the classes.
-\item Lecturers care about their own schedules, and communicate with Modules to access information about the schedules of the modules and the students therein (also editing module schedules). They also communicate with Buildings to book suitable rooms.
-\item Students have their indivdual schedules, and communicate with Modules to access module schedule information.
-\item Buildings has information on the schedules/equipment/capacity of rooms, and communicates withLecturers to use rooms efficiently.
-\end{itemize}
+From this domain division flows a division into bounded contexts:\\
+
+\textbf{Modules}: care about which students and lecturers particpate in them. \\
+\textbf{Lecturers}: care about their own schedules, communicate with Modules to access information about the students taking those modules. They also communicate with Buildings to book suitable rooms. \\
+\textbf{Students}: have their indivdual schedules, and communicate with Lecturers to access module schedule information. \\
+\textbf{Buildings}: has information on the schedules/equipment/capacity of rooms, and communicates with Lecturers to use rooms efficiently.
+~               
