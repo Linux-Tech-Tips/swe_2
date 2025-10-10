@@ -1,3 +1,57 @@
+# Frontend Overview
+
+This section of the document details the frontend overview. After reading this section you should have a basic understanding of the frontend components of the project.
+
+## Frontend Plan Summary
+
+- **React Set-Up**
+    - **Framework:** Vite
+    - **Language:** JavaScript
+- **Styling:** CSS Modules (if issues arise Tailwind)
+- **Component Structure:** Seperate Looks from Function (more details below)
+- **Routing:** React Router DOM
+- **API:** Native fetch API
+
+### React SetUp
+The frontend is build using **React** and is running on the **Vite** framework.
+
+- **React:** React is a JavaScript library that is used to build single-page applications (SPA's).
+
+    - **Component-Based Architecture:** React builds pages out of small, self-contained parts called **Components**. Instead of building one giant HTML page, React lets you build a page from small, reusable parts.
+
+    - **Declaritive UI:** React is characterised by **States**, which is what informs React what the UI should look like at a given point in time.
+
+    - **Virtual DOM:** React maintaines a virtual DOM to optimise efficiency. When data changes, React only applies the minimum updates to the actual browser DOM rather than updating the entire DOM.
+
+
+- **Vite Framework:** Speeds up development with quick server start-up and hot module replacement (HMR). When a frontend file changes, the browser updates without a full page reload.
+
+- **JavaScript Language:** JavaScript has been chosen over TypeScript for this project due to the project size. The time taken to learn TypeScript will cancel out the time saved when using it considering we only have a semester to develop this web-app.
+
+### Styling
+Will use basic CSS, along with CSS modules to automatically scope class names locally which elimates style conflicts.
+
+### Component Structure MOST IMPORTANT PLS READ
+Structures to seperate responsibilities. 
+
+| Directory | Content Type | Role in the Application | Component Type |
+| :--- | :--- | :--- | :--- |
+| **`src/App.jsx`** | hihjk | ghjghj. | hjkhjk |
+| **`src/pages`** | hjkhjk | hjkhjk. | hjkhjk |
+| **`src/components`** | hjkhjk | jjkljkl. | hjjkl |
+| **`src/context`** | ghjghj | hjkhjk. | hjkhjk |
+| **`src/services`** | hjkhjk | hjkhjk. | ghjghj |
+| **`src/hooks`** | Chjkhjk | ghjghj. | ghjghj |
+
+### State Management
+React Context, maybe Zustland if needed
+
+### Routing
+Exlain mechanism here
+
+### API Communication (Native Fetch API)
+Makes http requests, focus here cause info is needed for backend interactivitys
+
 # Frontend Setup
 
 This document contains the instructions to get the frontend webserver up and running on your local machine.
