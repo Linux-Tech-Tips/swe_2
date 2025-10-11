@@ -48,7 +48,8 @@ The domain will contain the following entities:
 \item \textbf{TA}: specific case of student, also identified by a university email/ID and containing a timetable/schedule;
 \item \textbf{Lecturer}: identified by a university email and a staff ID, containing a timetable/schedule;
 \item \textbf{Module}: identified by a module code, grouping students, lecturers and TAs together;
-\item \textbf{Room}: identified by a room number, describing certain properties of rooms on campus (capacity, equipment etc.).
+\item \textbf{Room}: identified by a room number, describing certain properties of rooms on campus (capacity, equipment etc.);
+\item \textbf{Scheduler}: entity with a short life cycle associated with scheduling tutorial times, grouping together a module and a scheduler constraints data value object.
 \end{itemize}
 
 Along with this, the following data value objects will be present:
@@ -59,7 +60,16 @@ Along with this, the following data value objects will be present:
 \item \textbf{Scheduler Constraints}: a set of constraints for a specific scheduler query.
 \end{itemize}
 
-The domain model is further described in section 4.
+This leaves us with the following aggregates:
+
+\begin{itemize}
+\item \textbf{Scheduler}: the aggregate root being a scheduler entity, this groups together a module and scheduler constraints;
+\item \textbf{Student}: the aggregate root being the student ID, this groups together the student identity with a personal timetable;
+\item \textbf{TA}: same as student, but with the inclusion of a specific identity as a TA;
+\item \textbf{Lecturer}: the aggregate root being the staff ID, this groups together a lecturer identity with their personal timetable;
+\item \textbf{Module}: the aggregate root is a module code, this groups a module identity to a list of students, TAs and lecturer;
+\item \textbf{Room}: the aggregate root is the room number, associating a room identity with mutable properties, such as available equipment.
+\end{itemize}
 
 \subsection{Use Cases}
 
@@ -73,7 +83,7 @@ The following are currently known/defined use cases:
 \item \textbf{Schedule Creation}: an authenticated user should be able to fill in a timetable, which will then be associated with said user;
 \item \textbf{Schedule Update}: an authenticated user should be able to fill in an updated timetable, which will replace an existing one;
 \item \textbf{Module Creation}: a Lecturer can create a module given a module code and a list of student IDs;
-\item \textbf{Room Registration}: a Lecturer can fill out or update details of a room on campus, including any changes to available equipment.
+\item \textbf{Room Registration}: in theory Buildings, in practice a Lecturer can fill out or update details of a room on campus, including any changes to available equipment.
 \end{itemize}
 
 \subsection{Adapters/Interfaces}
@@ -89,6 +99,8 @@ The data storage system interfaces are as follows:
 \item \textbf{Room Repository}: saving and loading information about rooms.
 \end{itemize}
 
+Scheduler instances don't need a repository, as the scheduler lifecycle is short enough to not need persistent storage.
+
 The backend API will be based around the following functions:
 
 \begin{itemize}
@@ -98,7 +110,7 @@ The backend API will be based around the following functions:
 \item \textbf{Module Creation}: associating a list of student IDs with a module code;
 \item \textbf{Room Read}: getting information about a room;
 \item \textbf{Room Write}: setting room details/information;
-\item \textbf{Tutorial Scheduling}: getting tutorial slots given a module;
+\item \textbf{Tutorial Scheduling}: getting tutorial slots given a module and constraints.
 \end{itemize}
 
 This API is subject to change based on further planning and development.
