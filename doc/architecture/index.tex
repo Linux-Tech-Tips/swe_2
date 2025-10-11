@@ -15,6 +15,9 @@
 \fancyhf{}
 \renewcommand{\headrulewidth}{0px}
 
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, fit, positioning, backgrounds}
+
 \fancyhead[L]{\projectname}
 \fancyfoot[R]{\thepage}
 
@@ -38,6 +41,12 @@ As per the Clean architecture, the following layers are present:
 \item \textbf{Adapters/Interfaces}: the interfaces used to decouple and connect the domain to the infrastructure;
 \item \textbf{UI + Infrastructure}: a double-ended external layer, consisting of the user-facing web UI on one end, and the actual server infrastructure on the other.
 \end{itemize}
+
+\subsection{Diagram}
+
+For the assignment, the following diagram was created:
+
+\input{diagram.tex}
 
 \subsection{Domain}
 

@@ -3,50 +3,7 @@
 The project is designed with the Clean architecture in mind.
 The following is a diagram with a brief description of each layer:
 
-\begin{center}
-
-\begin{tikzpicture}[
-            TextContainer/.style = {rectangle, inner sep = 0pt},
-            FitContainer/.style args = {#1}{rectangle, rounded corners, inner sep = 2pt, draw, fit = #1}
-        ]
-
-    \node(Domain) [TextContainer]
-    {\begin{tabular}{c}
-        \footnotesize \textbf{Domain} \\
-        \scriptsize \emph{Entities}, \emph{Data Value Objects} and \emph{Aggregates} \\
-        \scriptsize the project consists of, details in Section 4.
-    \end{tabular}};
-
-    \node(UseCasesTitle) [TextContainer, above = 2.5mm of Domain] {\footnotesize \textbf{Use Cases}};
-    \node(AdaptersTitle) [TextContainer, above = 2.5mm of UseCasesTitle] {\footnotesize \textbf{Adapters/Interfaces}};
-    \node(UITitle) [TextContainer, above = 2.5mm of AdaptersTitle] {\footnotesize \textbf{UI + Infrastructure}};
-
-    \node(UseCases) [TextContainer, below = 2.5mm of Domain]
-    {\begin{tabular}{c}
-        \scriptsize The behaviors of the objects in the domain layer. \\
-        \scriptsize Mainly including: \emph{Tutorial Scheduling}, \emph{User Registration}, \\ 
-        \scriptsize \emph{Schedule Creation/Update}, \emph{Module + Room Creation/Update}.
-    \end{tabular}};
-    \node(Adapters) [TextContainer, below = 2.5mm of UseCases]
-    {\begin{tabular}{c}
-        \scriptsize \emph{Adapters} and \emph{interfaces} used to connect the domain to the infrastructure, \\
-        \scriptsize as well as an \emph{API} to connect the web UI to the backend.
-    \end{tabular}};
-    \node(UI) [TextContainer, below = 2.5mm of Adapters]
-    {\begin{tabular}{c}
-        \scriptsize User-facing \emph{Web UI} interacting with the backend functionality. \\
-        \scriptsize Server infrastructure, mainly containing an \emph{SQL database} for persistent storage.
-    \end{tabular}};
-
-    \begin{scope}[on background layer]
-        \node [FitContainer=(Adapters) (UITitle) (UI), fill = cyan!10] {};
-        \node [FitContainer=(UseCases) (AdaptersTitle) (Adapters), fill = cyan!15] {};
-        \node [FitContainer=(Domain) (UseCasesTitle) (UseCases), fill = cyan!20] {};
-        \node [FitContainer=(Domain), fill = cyan!25] {};
-    \end{scope}
-
-\end{tikzpicture}
-\end{center}
+\input{../../../doc/architecture/diagram.tex}
 
 More details about the architecture design of this project can be found in the repository, in \verb|doc/architecture|.
 
