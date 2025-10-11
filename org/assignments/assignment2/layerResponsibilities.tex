@@ -4,9 +4,8 @@ Each layer of the aforementioned Clean architecture covers a separate part of th
 The layers and their respective responsibilities are as follows:
 
 \begin{itemize}
-\item \textbf{Domain}: The innermost layer is responsible for defining how data is organised within the project (entities, data value objects and aggregates);
-\item \textbf{Use Cases}: The next layer is responsible for the behavior associated with the domain objects;
-\item \textbf{Adapters/Interfaces}: The next layer is responsible for communication and interfacing happening between the inner layers and any external functionality.
-        The responsibility goes both ways, including domain to infrastructure, and web/UI to domain.
-\item \textbf{UI + Infrastructure}: The outermost layer has two sides, being responsible for both the Web UI and any user interaction and the infrastructure.
+\item \textbf{Domain}: The domain of the project is tutorial scheduling, and the domain layer is responsible for defining the entities, data value objects and aggregates that the scheduler consists of. Mainly this includes Students, TAs, Lecturers, Modules, Rooms and the Scheduler;
+\item \textbf{Use Cases}: The use cases layer is responsible for behaviors of objects in the domain layer. This includes the actual tutorial scheduling itself, user registration, users filling in or updating schedules, as well as creating and updating module and room details;
+\item \textbf{Adapters/Interfaces}: The interfaces layer is responsible for the communication between the domain and the infrastructure, which is done through a repository system. This layer also includes APIs that the Web UI uses to communicate with the backend.
+\item \textbf{UI + Infrastructure}: This layer contains the infrastructure used, mainly an SQL database for persistent data storage, as well as the user-facing Web UI consisting of a React.js-based frontend.
 \end{itemize}
