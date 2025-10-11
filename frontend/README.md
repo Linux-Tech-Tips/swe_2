@@ -1,56 +1,60 @@
 # Frontend Overview
 
-This section of the document details the frontend overview. After reading this section you should have a basic understanding of the frontend components of the project.
+This section of the document details the frontend overview, detailing the basic information needed to contribute to the frontend implementation. This document assumes you have little to no understanding of **React**. This document does assume the reader has basic frontend development knowledge.
 
-## Frontend Plan Summary
+This document is split into two sections:
+- Frontend Plan
+- Frontend Setup
+
+## Frontend Plan
 
 - **React Set-Up**
     - **Framework:** Vite
     - **Language:** JavaScript
 - **Styling:** CSS Modules (if issues arise Tailwind)
-- **Component Structure:** Seperate Looks from Function (more details below)
+- **Component Structure:** Separate Looks from Function
 - **Routing:** React Router DOM
 - **API:** Native fetch API
 
 ### React SetUp
-The frontend is build using **React** and is running on the **Vite** framework.
+The frontend is built using **React** and is running on the **Vite** framework.
 
-- **React:** React is a JavaScript library that is used to build single-page applications (SPA's).
+- **React:** React is a JavaScript library that is used to build single-page applications (SPAs).
 
     - **Component-Based Architecture:** React builds pages out of small, self-contained parts called **Components**. Instead of building one giant HTML page, React lets you build a page from small, reusable parts.
 
-    - **Declaritive UI:** React is characterised by **States**, which is what informs React what the UI should look like at a given point in time.
+    - **Declarative UI:** React is characterised by **States**, which is what informs React what the UI should look like at a given point in time.
 
-    - **Virtual DOM:** React maintaines a virtual DOM to optimise efficiency. When data changes, React only applies the minimum updates to the actual browser DOM rather than updating the entire DOM.
+    - **Virtual DOM:** React maintains a virtual DOM to optimise efficiency. When data changes, React only applies the minimum updates to the actual browser DOM rather than updating the entire DOM.
 
 
 - **Vite Framework:** Speeds up development with quick server start-up and hot module replacement (HMR). When a frontend file changes, the browser updates without a full page reload.
 
 - **JavaScript Language:** JavaScript has been chosen over TypeScript for this project due to the project size. The time taken to learn TypeScript will cancel out the time saved when using it considering we only have a semester to develop this web-app.
 
-### Styling
-Will use basic CSS, along with CSS modules to automatically scope class names locally which elimates style conflicts.
-
-### Component Structure MOST IMPORTANT PLS READ
-Structures to seperate responsibilities. 
+### Component Structure
+Structured to separate responsibilities. 
 
 | Directory | Content Type | Role in the Application | Component Type |
 | :--- | :--- | :--- | :--- |
-| **`src/App.jsx`** | hihjk | ghjghj. | hjkhjk |
-| **`src/pages`** | hjkhjk | hjkhjk. | hjkhjk |
-| **`src/components`** | hjkhjk | jjkljkl. | hjjkl |
-| **`src/context`** | ghjghj | hjkhjk. | hjkhjk |
-| **`src/services`** | hjkhjk | hjkhjk. | ghjghj |
-| **`src/hooks`** | Chjkhjk | ghjghj. | ghjghj |
+| **`src/App.jsx`** | Main Application | Entry point; configures router and global wrappers | N/A |
+| **`src/pages`** | High Level View | Handles routing, data fetching, state access, and overall view. | Smart/ Container |
+| **`src/components`** | Reusable UI Components | Presentation components for UI | Dumb/ Presentational |
+| **`src/context`** | Global State Logic | React Context API stores for global data | State Management |
+| **`src/services`** | Network Interface | Communication with backend API using Native Fetch API | Data Layer |
+| **`src/hooks`** | Custom Logic (if needed) | Reusable custom hooks to abstract complex logic | Logic Abstraction |
+
+### Styling
+Will use basic CSS, along with CSS modules to automatically scope class names locally which eliminates style conflicts.
 
 ### State Management
-React Context, maybe Zustland if needed
+Data needs to be stored globally since it is accessed by multiple components. The React Context API will be used to create channels for sharing this global data. If performance suffers, migration to Zustland is possible. Unlikely to be necessary given project scope.
 
 ### Routing
-Exlain mechanism here
+React Router DOM allows the application to behave like a multi-page web-app by managing browser's URL history without page reloading. React Router DOM will swap out a component in the main application area for another when a request is sent. Instead of fetching a new HTML file from the server, the DOM will just load the requested component.
 
 ### API Communication (Native Fetch API)
-Makes http requests, focus here cause info is needed for backend interactivitys
+Project will the use native JavaScript function `fetch()` to make requests to the backend. When frontend needs data or needs to send data to a REST endpoint, the function in `src/services` will handle the interaction.
 
 # Frontend Setup
 
