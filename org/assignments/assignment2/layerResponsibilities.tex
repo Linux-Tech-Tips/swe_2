@@ -1,2 +1,12 @@
 \section{Responsibility Division across Layers}
-Explanation of how responsibilities are divided across layers
+
+Each layer of the aforementioned Clean architecture covers a separate part of the project, with its own responsibilities.
+The layers and their respective responsibilities are as follows:
+
+\begin{itemize}
+\item \textbf{Domain}: The innermost layer is responsible for defining how data is organised within the project (entities, data value objects and aggregates);
+\item \textbf{Use Cases}: The next layer is responsible for the behavior associated with the domain objects;
+\item \textbf{Adapters/Interfaces}: The next layer is responsible for communication and interfacing happening between the inner layers and any external functionality.
+        The responsibility goes both ways, including domain to infrastructure, and web/UI to domain.
+\item \textbf{UI + Infrastructure}: The outermost layer has two sides, being responsible for both the Web UI and any user interaction and the infrastructure.
+\end{itemize}
