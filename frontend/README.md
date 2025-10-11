@@ -56,6 +56,9 @@ React Router DOM allows the application to behave like a multi-page web-app by m
 ### API Communication (Native Fetch API)
 Project will the use native JavaScript function `fetch()` to make requests to the backend. When frontend needs data or needs to send data to a REST endpoint, the function in `src/services` will handle the interaction.
 
+### Accessibility Plan
+This project has been planned to coincide with Web Content Accessibility Guidelines 2.0 as per the university guidelines. For more information, see https://accessible.org/web-content-accessibility-guidelines/. In order to ensure screen-reader compatibility, semantic HTML needs to be prioritised. Screen readers rely on these elements to understand the structure and function of the content. ARIA should only be used when a native HTML element doesn't exist or can't be styled appropriately for a particular purpose. A focus should also be maintained on keyboard interaction for accessibility.
+
 # Frontend Setup
 
 This document contains the instructions to get the frontend webserver up and running on your local machine.
