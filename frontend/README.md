@@ -16,7 +16,7 @@ This document is split into two sections:
 - **Routing:** React Router DOM
 - **API:** Native fetch API
 
-### React SetUp
+### React Setup
 The frontend is built using **React** and is running on the **Vite** framework.
 
 - **React:** React is a JavaScript library that is used to build single-page applications (SPAs).
@@ -61,7 +61,7 @@ University of Galway Accessibility Guidelines: https://www.universityofgalway.ie
 
 This project has been planned to coincide with Web Content Accessibility Guidelines 2.0 as per the university guidelines. For more information, see https://accessible.org/web-content-accessibility-guidelines/. In order to ensure screen-reader compatibility, semantic HTML needs to be prioritised. Screen readers rely on these elements to understand the structure and function of the content. ARIA should only be used when a native HTML element doesn't exist or can't be styled appropriately for a particular purpose. A focus should also be maintained on keyboard interaction for accessibility.
 
-# Frontend Setup
+## Frontend Setup
 
 This document contains the instructions to get the frontend webserver up and running on your local machine.
 
