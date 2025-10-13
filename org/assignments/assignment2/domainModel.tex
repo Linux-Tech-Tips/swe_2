@@ -1,3 +1,58 @@
 \section{Domain Model}
-Initial domain model represented as a UML class diagram with key entities, value objects,
-and aggregates
+
+\begin{center}
+
+\begin{tikzpicture}[
+    Box/.style = {rectangle, draw}
+]
+
+    \node (Module) [Box]
+    {\begin{tabular}{l}
+        \textbf{Module} \\
+        \footnotesize $\bullet$ Module Code \\
+        \footnotesize $\bullet$ List of Students \\
+        \footnotesize $\bullet$ List of TA Students \\
+        \footnotesize $\bullet$ List of Lecturers
+    \end{tabular}};
+
+    \node (Student) [Box, left = 1.5cm of Module] 
+    {\begin{tabular}{l}
+        \textbf{Student} \\
+        \footnotesize $\bullet$ Student ID \\
+        \footnotesize $\bullet$ University Email \\
+        \footnotesize $\bullet$ Personal Timetable
+    \end{tabular}};
+
+    \node (Lecturer) [Box, right = 1.5cm of Module]
+    {\begin{tabular}{l}
+        \textbf{Lecturer} \\
+        \footnotesize $\bullet$ Staff ID \\
+        \footnotesize $\bullet$ University Email \\
+        \footnotesize $\bullet$ Personal Timetable
+    \end{tabular}};
+
+    \node (Scheduler) [Box, below = 1cm of Module]
+    {\begin{tabular}{l}
+        \textbf{Scheduler} \\
+        \footnotesize $\bullet$ Module \\
+        \footnotesize $\bullet$ Scheduler Constraints
+    \end{tabular}};
+
+    \node (Room) [Box, right = 1.5cm of Scheduler]
+    {\begin{tabular}{l}
+        \textbf{Room} \\
+        \footnotesize $\bullet$ Room Number \\
+        \footnotesize $\bullet$ Room Timetable \\
+        \footnotesize $\bullet$ Room Schedule
+    \end{tabular}};
+
+    % Node Connections
+    \draw[->] (Module) -- (Student) node[midway, above] {\scriptsize Contains};
+    \draw[->] (Module) -- (Lecturer) node[midway, above] {\scriptsize Contains};
+    \draw[->] (Scheduler) -- (Module) node[midway, right] {\scriptsize Uses};
+    \draw[->] (Lecturer) -- (Room) node[midway, right] {\scriptsize Modifies};
+    \draw[->] (Scheduler) -- (Room) node[midway, above] {\scriptsize Uses};
+
+\end{tikzpicture}
+
+\end{center}
