@@ -1,2 +1,5 @@
 # Environment file with the cloudflare token should not be committed
 .env
+
+# Folder with private github key for docker setup
+private

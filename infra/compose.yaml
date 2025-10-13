@@ -11,12 +11,15 @@ services:
       - "80:80"
     depends_on:
 #      - backend
-#      - frontend
+      - frontend
       - jenkins
 
-#  frontend:
-#    image: 
-#    container_name: frontend
+  frontend:
+    image: martin/frontend
+    container_name: frontend
+    restart: unless-stopped
+    expose:
+      - "5173"
 
   jenkins:
     image: jenkins/jenkins:lts
@@ -31,8 +34,9 @@ services:
     image: cloudflare/cloudflared:latest
     container_name: cloudflared
     restart: unless-stopped
-    network_mode: "host"
     command: tunnel run
+    env_file:
+      - ".env"
     environment:
       - "TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}"
     volumes:
