@@ -1,4 +1,0 @@
-package com.example.FACTS.application.useCases;
-
-public class CreateModuleUseCase {
-}
