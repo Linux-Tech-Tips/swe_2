@@ -1,0 +1,24 @@
+package org.unixusergroup.tutorial_time.domain.student;
+
+import org.unixusergroup.tutorial_time.domain.Courses.Course;
+import org.unixusergroup.tutorial_time.domain.Tutorial.TimeTable;
+import org.unixusergroup.tutorial_time.domain.User;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Entity
+public class Student extends User {
+
+    @Id
+    private final int studentID;
+
+    public Student (String name, int studentID) {
+        this.name = name;
+        this.studentID = studentID;
+        this.courses = new ArrayList<String>();
+        this.timeTable = (TimeTable) TimeTable.generateTimeTable();
+    }
+}
