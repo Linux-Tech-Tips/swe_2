@@ -65,4 +65,11 @@ public class TimeTable {
             return t.getAvailability() == Availability.UNAVAILABLE;
         }).toList();
     }
+
+    public String toString() {
+        StringBuilder result = new StringBuilder();
+        result.append("STUB");
+        // TODO STUB - WIP IMPLEMENT LATER
+        return result.toString();
+    }
 }

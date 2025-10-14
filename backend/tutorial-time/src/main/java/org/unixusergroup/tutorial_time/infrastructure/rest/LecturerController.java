@@ -1,6 +1,7 @@
 package org.unixusergroup.tutorial_time.infrastructure.rest;
 
 import org.unixusergroup.tutorial_time.domain.Tutorial.Timeslot;
+import org.unixusergroup.tutorial_time.domain.Tutorial.TimeTable;
 import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
 import org.springframework.web.bind.annotation.*;
@@ -30,5 +31,12 @@ public class LecturerController {
         l.addFreeTime(time);
         lecturerRepository.save(l);
         return "Time removed";
+    }
+
+    @GetMapping(path="/timetable")
+    public @ResponseBody String getTimeTable(@RequestParam int staffId) {
+        Lecturer l = lecturerRepository.findByStaffID(staffId);
+        TimeTable timeTable = l.getTimeTable();
+        return timeTable.toString();
     }
 }

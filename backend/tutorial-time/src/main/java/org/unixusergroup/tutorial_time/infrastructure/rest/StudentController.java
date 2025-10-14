@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.unixusergroup.tutorial_time.domain.Tutorial.Timeslot;
+import org.unixusergroup.tutorial_time.domain.Tutorial.TimeTable;
 import org.unixusergroup.tutorial_time.domain.student.Student;
 import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
 import org.springframework.web.bind.annotation.*;
@@ -66,6 +67,17 @@ public class StudentController {
             s.addFreeTime(time);
             studentRepository.save(s);
             return ResponseEntity.status(HttpStatus.ACCEPTED).body(time);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(e.getMessage());
+        }
+    }
+
+    @GetMapping(path="/timetable")
+    public ResponseEntity<?> getTimeTable(@RequestParam int studentId) {
+        try {
+            Student s = studentRepository.findByStudentID(studentId);
+            TimeTable timeTable = s.getTimeTable();
+            return ResponseEntity.status(HttpStatus.OK).body(timeTable.toString());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(e.getMessage());
         }
