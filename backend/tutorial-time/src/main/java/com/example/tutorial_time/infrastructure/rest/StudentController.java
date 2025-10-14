@@ -19,8 +19,8 @@ public class StudentController {
     }
     @PostMapping(path="/add")
     public @ResponseBody String addBusyTimeToStudent(@RequestParam int studentId, @RequestParam String day, @RequestParam int hour) {
-        Timeslot time = new Timeslot(day, hour);
-        Student s = studentRepository.findByStudentId(studentId);
+        Timeslot time = new Timeslot(day, hour)
+        Student s = studentRepository.findByStudentID(studentId);
         s.addBusyTime(time);
         studentRepository.save(s);
 
@@ -30,7 +30,7 @@ public class StudentController {
     @PostMapping(path="/remove")
     public @ResponseBody String removeBusyTimeFromStudent(@RequestParam int studentId, @RequestParam String day, @RequestParam int hour) {
         Timeslot time = new Timeslot(day, hour);
-        Student s = studentRepository.findByStudentId(studentId);
+        Student s = studentRepository.findByStudentID(studentId);
         s.addFreeTime(time);
         studentRepository.save(s);
         return "Time removed";
