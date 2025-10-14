@@ -57,10 +57,6 @@ public class User {
         return timeTable;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public void addBusyTime(Timeslot time) {
         this.timeTable.setUnavailableTimeSlot(time);
     }
@@ -68,11 +64,4 @@ public class User {
         this.timeTable.setAvailableTimeSlot(time);
     }
 
-    public void setCourses(List<String> courses) {
-        this.courses = courses;
-    }
-
-    public void setTimeTable(TimeTable timeTable) {
-        this.timeTable = timeTable;
-    }
 }

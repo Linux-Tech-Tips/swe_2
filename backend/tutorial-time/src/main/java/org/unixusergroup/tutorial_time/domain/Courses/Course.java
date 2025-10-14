@@ -1,12 +1,12 @@
 package org.unixusergroup.tutorial_time.domain.Courses;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.student.Student;
 
 import java.util.List;
 
 public class Course {
-    private long id;
-
     private String courseCode;
     private List<Student> enlistedStudents;
     private Lecturer lecturer;

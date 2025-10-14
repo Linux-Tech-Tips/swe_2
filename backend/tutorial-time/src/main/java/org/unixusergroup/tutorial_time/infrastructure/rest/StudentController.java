@@ -1,5 +1,9 @@
 package org.unixusergroup.tutorial_time.infrastructure.rest;
 
+import jakarta.transaction.Transactional;
+import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.unixusergroup.tutorial_time.domain.Tutorial.Timeslot;
 import org.unixusergroup.tutorial_time.domain.student.Student;
 import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
@@ -20,32 +24,50 @@ public class StudentController {
     }
 
     @PostMapping(path="/addstudent")
-    public @ResponseBody String addStudent(@RequestParam int studentId, @RequestParam String name) {
-        Student s = new Student(name, studentId);
-        studentRepository.save(s);
-        return "Student made";
+    public ResponseEntity<?> addStudent(@RequestParam int studentId, @RequestParam String name) {
+        try {
+            Student s = new Student();
+            s.setStudentID(studentId);
+            s.setName(name);
+            Student saved = studentRepository.save(s);
+            return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(e.getMessage());
+        }
     }
 
     @GetMapping(path="/list")
-    public @ResponseBody Iterable<Student> listStudents() {
-        return studentRepository.findAll();
+    public ResponseEntity<?> listStudents() {
+        try {
+            return ResponseEntity.status(HttpStatus.FOUND).body(studentRepository.findAll());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(e.getMessage());
+        }
     }
     @PostMapping(path="/addtime")
-    public @ResponseBody String addBusyTimeToStudent(@RequestParam int studentId, @RequestParam String day, @RequestParam int hour) {
-        Timeslot time = new Timeslot(day, hour);
-        Student s = studentRepository.findByStudentID(studentId);
-        s.addBusyTime(time);
-        studentRepository.save(s);
+    public ResponseEntity<?> addBusyTimeToStudent(@RequestParam int studentId, @RequestParam String day, @RequestParam int hour) {
+        try {
+            Timeslot time = new Timeslot(day, hour);
+            Student s = studentRepository.findByStudentID(studentId);
+            s.addBusyTime(time);
+            studentRepository.save(s);
 
-        return "Time entered";
+            return ResponseEntity.status(HttpStatus.CREATED).body(time);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body(e.getMessage());
+        }
     }
 
     @PostMapping(path="/removetime")
-    public @ResponseBody String removeBusyTimeFromStudent(@RequestParam int studentId, @RequestParam String day, @RequestParam int hour) {
-        Timeslot time = new Timeslot(day, hour);
-        Student s = studentRepository.findByStudentID(studentId);
-        s.addFreeTime(time);
-        studentRepository.save(s);
-        return "Time removed";
+    public ResponseEntity<?> removeBusyTimeFromStudent(@RequestParam int studentId, @RequestParam String day, @RequestParam int hour) {
+        try {
+            Timeslot time = new Timeslot(day, hour);
+            Student s = studentRepository.findByStudentID(studentId);
+            s.addFreeTime(time);
+            studentRepository.save(s);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(time);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(e.getMessage());
+        }
     }
 }
