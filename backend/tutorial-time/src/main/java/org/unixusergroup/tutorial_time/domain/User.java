@@ -4,6 +4,7 @@
 package org.unixusergroup.tutorial_time.domain;
 
 
+import org.unixusergroup.tutorial_time.domain.Courses.Course;
 import org.unixusergroup.tutorial_time.domain.Tutorial.TimeTable;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class User {
 
     protected String name;
     protected long universityId;
-    protected List<String> courses;
+    protected List<Course> courses;
     protected TimeTable timeTable;
 
 
@@ -28,13 +29,13 @@ public class User {
         this.name = name;
         this.universityId = universityId;
     }
-    public User(String name, List<String> courses) {
+    public User(String name, List<Course> courses) {
         this.name = name;
         this.courses = courses;
         this.timeTable = new TimeTable();
     }
 
-    public User(String name, List<String> courses, TimeTable timetable) {
+    public User(String name, List<Course> courses, TimeTable timetable) {
         this.name = name;
         this.courses = courses;
         this.timeTable = timetable;
@@ -49,7 +50,7 @@ public class User {
         return this.name;
     }
 
-    public List<String> getCourses() {
+    public List<Course> getCourses() {
         return courses;
     }
 
@@ -62,6 +63,9 @@ public class User {
     }
     public void addFreeTime(Timeslot time) {
         this.timeTable.setAvailableTimeSlot(time);
+    }
+    public void addCourse(Course course) {
+        this.courses.add(course);
     }
 
 }

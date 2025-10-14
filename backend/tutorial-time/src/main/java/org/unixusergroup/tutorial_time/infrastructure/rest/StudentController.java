@@ -44,6 +44,7 @@ public class StudentController {
             return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(e.getMessage());
         }
     }
+
     @PostMapping(path="/addtime")
     public ResponseEntity<?> addBusyTimeToStudent(@RequestParam int studentId, @RequestParam String day, @RequestParam int hour) {
         try {

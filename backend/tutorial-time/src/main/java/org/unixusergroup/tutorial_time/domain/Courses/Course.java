@@ -11,6 +11,8 @@ public class Course {
     private List<Student> enlistedStudents;
     private Lecturer lecturer;
 
+    public Course() {}
+
     public Course(String courseCode, List<Student> enlistedStudents, Lecturer lecturer) {
         this.courseCode = courseCode;
         this.enlistedStudents = enlistedStudents;

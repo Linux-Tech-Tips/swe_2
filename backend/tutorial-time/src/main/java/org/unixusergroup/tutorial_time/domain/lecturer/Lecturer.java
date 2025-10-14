@@ -1,5 +1,6 @@
 package org.unixusergroup.tutorial_time.domain.lecturer;
 
+import org.unixusergroup.tutorial_time.domain.Courses.Course;
 import org.unixusergroup.tutorial_time.domain.Tutorial.TimeTable;
 import org.unixusergroup.tutorial_time.domain.User;
 import jakarta.persistence.Entity;
@@ -17,7 +18,7 @@ public class Lecturer extends User {
     public Lecturer (String name, int staffID) {
         this.name = name;
         this.staffID = staffID;
-        this.courses = new ArrayList<String>();
+        this.courses = new ArrayList<Course>();
         this.timeTable = (TimeTable) TimeTable.generateTimeTable();
     }
 
@@ -41,7 +42,7 @@ public class Lecturer extends User {
     }
 
     @Override
-    public List<String> getCourses() {
+    public List<Course> getCourses() {
         return super.getCourses();
     }
 
