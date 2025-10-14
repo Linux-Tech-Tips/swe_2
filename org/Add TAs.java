@@ -1,7 +1,7 @@
 package org.unixusergroup.tutorial_time.domain.Courses;
 import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.student.Student;
-
+ 
 import java.util.List;
 
 public class Course {
