@@ -1,4 +1,4 @@
-package com.example.tutorial_time;
+package org.unixusergroup.tutorial_time;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
