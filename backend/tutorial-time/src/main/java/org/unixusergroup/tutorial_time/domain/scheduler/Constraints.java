@@ -1,5 +1,6 @@
 //class to contain constraints
 //VERY ROUGH IMPLEMENTATION WILL BE CHANGED
+package org.unixusergroup.tutorial_time;
 
 public class Constraints {
     private int studentLimit;

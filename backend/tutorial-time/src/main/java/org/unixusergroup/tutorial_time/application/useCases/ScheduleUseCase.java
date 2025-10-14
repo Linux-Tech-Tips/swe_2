@@ -1,4 +1,5 @@
-//highest level of the scheduler organisiation, this is what the api will actually call 
+//highest level of the scheduler organisiation, this is what the api will actually call
+package org.unixusergroup.tutorial_time.application.useCases;
 
 import java.util.HashSet;
 

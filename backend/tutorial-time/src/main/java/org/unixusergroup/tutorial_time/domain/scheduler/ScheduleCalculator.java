@@ -1,9 +1,10 @@
 //this will contain a description of the implementation of the algorithm via comments and stubs
-
+package org.unixusergroup.tutorial_time;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 
+@Entity
 public class ScheduleCalculator {
     HashSet<Integer> U; //universal set U which contains the numbers of all students
     TimeSet[] timeSlots; //array of 40 timeslots
