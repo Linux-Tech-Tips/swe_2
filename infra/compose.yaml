@@ -10,7 +10,7 @@ services:
     ports:
       - "80:80"
     depends_on:
-#      - backend
+      - backend
       - frontend
       - jenkins
 
@@ -20,6 +20,13 @@ services:
     restart: unless-stopped
     expose:
       - "5173"
+
+  backend:
+    image: martin/backend
+    container_name: backend
+    restart: unless-stopped
+    expose:
+      - "8080"
 
   jenkins:
     image: jenkins/jenkins:lts
