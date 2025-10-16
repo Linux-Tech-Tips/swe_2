@@ -1,0 +1,50 @@
+services:
+  reverse-proxy:
+    image: nginx:latest
+    container_name: reverse-proxy
+    restart: unless-stopped
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+    expose:
+      - "80"
+    ports:
+      - "80:80"
+    depends_on:
+#      - backend
+      - frontend
+      - jenkins
+
+  frontend:
+    image: martin/frontend
+    container_name: frontend
+    restart: unless-stopped
+    expose:
+      - "5173"
+
+  jenkins:
+    image: jenkins/jenkins:lts
+    container_name: jenkins
+    restart: unless-stopped
+    expose:
+      - "8080"
+    volumes:
+      - ./jenkins_data:/var/jenkins_home
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared
+    restart: unless-stopped
+    command: tunnel run
+    env_file:
+      - ".env"
+    environment:
+      - "TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "10"
+    depends_on:
+      - reverse-proxy
