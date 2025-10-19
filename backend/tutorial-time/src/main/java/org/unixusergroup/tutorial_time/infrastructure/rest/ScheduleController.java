@@ -1,7 +1,7 @@
 package org.unixusergroup.tutorial_time.infrastructure.rest;
 
 import org.unixusergroup.tutorial_time.domain.scheduler.*;
-import org.unixusergroup.tutorial_time.useCases.ScheduleUseCase.java;
+import org.unixusergroup.tutorial_time.application.useCases.ScheduleUseCase;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -11,4 +11,3 @@ public class ScheduleController {
 
     //call SchedulerUseCase for the schedule API, parameter constraints + module reference/timetables
     }
-}

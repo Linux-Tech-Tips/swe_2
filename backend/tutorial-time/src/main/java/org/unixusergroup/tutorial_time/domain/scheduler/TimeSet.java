@@ -1,11 +1,5 @@
-package org.unixusergroup.tutorial_time;
+package org.unixusergroup.tutorial_time.domain.scheduler;
 import java.util.HashSet;
-
-/*
- * represent each time slot as an object?? attributes being the hashset of all students available then, the number of students available then, its index number, and its degree
- *       make the timeslot class extend comparable such that it would be ascending for no. students available at each, when equal by descending by degree
- *       methods for adding/removing items (remember to edit the size and degree accordingly), getters for all fields
- */
 
 public class TimeSet implements Comparable<TimeSet> {
     HashSet<Integer> students; //hashset of all students available at that time
@@ -14,17 +8,35 @@ public class TimeSet implements Comparable<TimeSet> {
     int size; //number of students available (i.e. students.size())
     int degree;
 
-    public TimeSet(int id) {
-        //initialise all values to be empty
-        //set id to id
+    public TimeSet(int id, int moduleSize) {
+        this.id = id;
+        size = 0;
+        degree = 0;
+        students = new HashSet<>(moduleSize);
+    }
+
+    /**
+     * methhod for getting the complement of a timeset
+     * @param universe the universal set (all possible elements)
+     * @return
+     */
+    public TimeSet complement(HashSet<Integer> universe) {
+        universe.removeAll(students);
+        TimeSet complement = new TimeSet(id, universe.size());
+        complement.addStudentGroup(universe);
+        return complement;
     }
 
     public void addStudent(int student){
-        //add student to the hashset, increment the size
+        students.add(student);
+        size++;
+        //DEGREE???
     }
 
     public void removeStudent(int student) {
-        //remove student from the hashset, decrement the size, if relevant decrement the degree
+        students.remove(student);
+        size--;
+        //DEGREE????
     }
 
     public void deleteTime() {
@@ -45,6 +57,11 @@ public class TimeSet implements Comparable<TimeSet> {
         return students;
     }
 
+    public void addStudentGroup(HashSet<Integer> students) {
+        this.students.addAll(students);
+        size+=students.size();
+    }
+
     public void decreaseDegree(int d) {
         degree-=d;
     }
@@ -61,10 +78,30 @@ public class TimeSet implements Comparable<TimeSet> {
         size--;
     }
 
+    public int getDegree() {
+        return degree;
+    }
+
     @Override
     public int compareTo(TimeSet o) {
+        //TODO: CHECK THIS GUY
+        if(size!=o.getSize()) {
+            return o.getSize()-size;
+        }
+        return degree-o.getDegree();
         //compare such that it would be sorted ascending for no. students available at each
         // when equal size sorted descending by degree
-        return 0;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TimeSet otherTimeset = (TimeSet) o;
+        return this.id == otherTimeset.getId();
     }
 }

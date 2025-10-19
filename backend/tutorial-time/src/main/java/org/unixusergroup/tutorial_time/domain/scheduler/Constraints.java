@@ -1,17 +1,19 @@
 //class to contain constraints
 //VERY ROUGH IMPLEMENTATION WILL BE CHANGED
-package org.unixusergroup.tutorial_time;
+package org.unixusergroup.tutorial_time.domain.scheduler;
 
 public class Constraints {
-    private int studentLimit;
-    private int minTAs;
-    private int[] blockedTimes;
+    private final int studentLimit;
+    private final int minTAs;
+    private final int[] blockedTimes;
 
     /**
      * constructor, for stubbing reasons it's empty for now
      */
-    public Constraints() {
-
+    public Constraints(int studentLimit, int minTAs, int[] blockedTimes) {
+        this.studentLimit = studentLimit;
+        this.minTAs = minTAs;
+        this.blockedTimes = blockedTimes;
     }
 
     public int getStudentLimit() {
@@ -23,13 +25,10 @@ public class Constraints {
      * @return true if yes, false if no
      */
     public boolean studentLimit() {
-        if(studentLimit==null) {
-            return false;
-        }
-        return true;
+        return studentLimit != 0;
     }
 
-    public int getBlockedTimes() {
+    public int[] getBlockedTimes() {
         return blockedTimes;
     }
 
@@ -38,10 +37,7 @@ public class Constraints {
      * @return true if yes, false if no
      */
     public boolean blockedTimes() {
-        if(blockedTimes==null) {
-            return false;
-        }
-        return true;
+        return blockedTimes != null;
     }
 
     //TODO: make methods for TAs
