@@ -1,3 +1,6 @@
+/** 
+ * @author Ethan
+ */
 package org.unixusergroup.tutorial_time;
 
 import org.springframework.boot.SpringApplication;
@@ -20,6 +23,6 @@ public class TutorialTimeApplication {
 
     @GetMapping(path="/hello")
     public @ResponseBody String hello(@RequestParam(value = "name", defaultValue = "World") String name) {
-        return String.format("Welcome to facts. New %s\n", name);
+        return String.format("Welcome to Tutorial Time. New %s\n", name);
     }
 }

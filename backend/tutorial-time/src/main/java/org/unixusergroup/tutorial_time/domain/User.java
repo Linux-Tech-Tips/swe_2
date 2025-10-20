@@ -1,67 +1,61 @@
 /**
- * A class representing the basis for a student and a lecturer.
+ * @author Ethan, Martin
  */
 package org.unixusergroup.tutorial_time.domain;
 
+import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
+import org.unixusergroup.tutorial_time.domain.timetable.Availability;
 
-import org.unixusergroup.tutorial_time.domain.Tutorial.TimeTable;
-import java.util.List;
+/** A class representing the basis for a student and lecturer */
+public abstract class User {
 
-import org.unixusergroup.tutorial_time.domain.Tutorial.Timeslot;
-
-
-public class User {
-
-//    @Id
-  //  @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
+    /** The name of the user */
     protected String name;
+    /** The university email of the user */
+    protected String universityEmail;
+    /** The university (student or staff) ID of the user */
     protected long universityId;
-    protected List<String> courses;
-    protected TimeTable timeTable;
+    /** The user's personal timetable */
+    protected Timetable timetable;
 
-
-    protected User() {}
-
-    public User(String name, long universityId) {
+    /** Creates a user with the given identity and an empty timetable */
+    public User(String name, String universityEmail, long universityId) {
+        this(name, universityEmail, universityId, new Timetable());
+    }
+    /** Creates a user with the given identity and the given timetable */
+    public User(String name, String universityEmail, long universityId, Timetable timetable) {
         this.name = name;
+        this.universityEmail = universityEmail;
         this.universityId = universityId;
-    }
-    public User(String name, List<String> courses) {
-        this.name = name;
-        this.courses = courses;
-        this.timeTable = new TimeTable();
-    }
-
-    public User(String name, List<String> courses, TimeTable timetable) {
-        this.name = name;
-        this.courses = courses;
-        this.timeTable = timetable;
+        this.timetable = timetable;
     }
 
     @Override
     public String toString() {
-        return String.format("%s[name='%s', courseCode='%s']", this.getClass(), this.name, this.courses);
+        return String.format("%s[name='%s', email='%s', id='%d']", this.getClass(), this.name, this.universityEmail, this.universityId);
     }
 
     public String getName() {
-        return this.name;
+        return name;
     }
 
-    public List<String> getCourses() {
-        return courses;
+    public String getUniversityEmail() {
+        return universityEmail;
     }
 
-    public TimeTable getTimeTable() {
-        return timeTable;
+    public long getUniversityId() {
+        return universityId;
     }
 
-    public void addBusyTime(Timeslot time) {
-        this.timeTable.setUnavailableTimeSlot(time);
-    }
-    public void addFreeTime(Timeslot time) {
-        this.timeTable.setAvailableTimeSlot(time);
+    public Timetable getTimetable() {
+        return timetable;
     }
 
+    public void setAvailable(int day, int time) {
+        timetable.setAvailability(day, time, Availability.AVAILABLE);
+    }
+
+    public void setUnavailable(int day, int time) {
+        timetable.setAvailability(day, time, Availability.UNAVAILABLE);
+    }
 }
