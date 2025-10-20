@@ -2,7 +2,7 @@ FROM node:current-alpine
 
 RUN apk --no-cache add git openssh
 
-RUN mkdir /root/.ssh
+RUN mkdir -p /root/.ssh
 ADD github_key /root/.ssh/id_rsa
 RUN chmod 400 /root/.ssh/id_rsa
 
