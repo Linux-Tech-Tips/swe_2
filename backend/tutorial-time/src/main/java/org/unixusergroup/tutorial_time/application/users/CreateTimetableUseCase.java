@@ -3,5 +3,5 @@
  */
 package org.unixusergroup.tutorial_time.application.users;
 
-public class ScheduleCreationUseCase {
+public class CreateTimetableUseCase {
 }
