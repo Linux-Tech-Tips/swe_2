@@ -1,7 +1,12 @@
+/** 
+ * @author Ethan, Martin
+ */
 package org.unixusergroup.tutorial_time.domain.lecturer;
 
-import org.springframework.data.repository.CrudRepository;
-
-public interface LecturerRepository extends CrudRepository<Lecturer, Integer> {
-    Lecturer findByStaffID(int staffId);
+/** Interface allowing Lecturer instances to be saved and loaded to and from a database */
+public interface LecturerRepository {
+    /** Saves a Lecturer instance to the database */
+    public void saveLecturer(Lecturer lecturer);
+    /** Loads a Lecturer instance from the database */
+    public Lecturer getLecturerById(long staffId);
 }
