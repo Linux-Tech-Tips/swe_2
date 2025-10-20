@@ -1,3 +1,9 @@
+## sprint planning 6 - 25-10-23
+
+- discuss project refactor, next steps
+- discuss OAuth2 progress
+- assignment 2 retro
+
 ## spring planning 4 - 25-10-09
 
 - discuss existing DDD stuff, finalize ideas so that work can be done
