@@ -1,0 +1,63 @@
+\documentclass[12pt, a4paper]{article}
+\usepackage[a4paper,
+            bindingoffset=0.2in,
+            left=0.5in,
+            right=0.7in,
+            top=1in,
+            bottom=1in,
+            footskip=.25in]{geometry}
+\setlength\parindent{0pt} 
+
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, fit, positioning, backgrounds}
+
+\usepackage{graphicx}
+\graphicspath{ {./img/} }
+
+
+\setlength{\headheight}{15.2pt}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0px}
+
+\fancyhead[L]{Tutorial Time (TT)}
+\fancyfoot[R]{\thepage}
+
+\pagenumbering{arabic}
+
+\begin{document}
+
+\begin{titlepage}
+    \centering
+    \vspace*{4cm}
+    {\Large Tutorial Time (TT)  \par}
+    \vspace{2cm}
+    {\Large Project Progress Report \par}
+    \vspace{0.5cm}
+    {\Large Version 1.0 \par}
+    \vspace{0.5cm}
+    {\Large \today \par}
+    \vspace{2cm}
+    {\Large Martin Klacer (23707591), Lilian Kennedy (23392966), Elisabeth Pfeiffer (23701881), Ethan Aguocha-Njoroge (23480984), Tomas O'Neill (23451564)\par}
+    \vfill
+
+    Prepared for\\
+    CT5106--Software Engineering II\par
+
+\end{titlepage}
+
+\newpage
+
+\input{featureStatus.tex}
+
+\input{challenges.tex}
+
+\input{rolesAndResponsibilities.tex}
+
+\input{cleanArchitecture.tex}
+
+
+\end{document}
