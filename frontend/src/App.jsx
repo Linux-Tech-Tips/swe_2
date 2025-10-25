@@ -4,8 +4,9 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 // Import the page components
 import Auth from './pages/Auth.jsx';
 import StudentTimetable from './pages/StudentTimetable.jsx';
+import LecturerTimetable from './pages/LecturerTimetable.jsx';
 
-// placeholder
+// Simple placeholder for an authentication state
 const App = () => {
     // State to simulate authentication status
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -24,12 +25,12 @@ const App = () => {
         <BrowserRouter>
             <Routes>
                 {/* Route for the Authentication Page.
-                  If logged in, redirects to the timetable. Otherwise, shows the Auth component.
+                  If logged in, redirects to the lecturer timetable. Otherwise, shows the Auth component.
                 */}
                 <Route
                     path="/"
                     element={isLoggedIn
-                        ? <Navigate to="/timetable" replace />
+                        ? <Navigate to="/lecturer-timetable" replace /> // Changed redirection here
                         : <Auth onLoginSuccess={handleLogin} />
                     }
                 />
@@ -41,6 +42,15 @@ const App = () => {
                     path="/timetable"
                     element={isLoggedIn
                         ? <StudentTimetable onLogout={handleLogout} />
+                        : <Navigate to="/" replace />
+                    }
+                />
+
+                {/* Route for the Lecturer Timetable Page */}
+                <Route
+                    path="/lecturer-timetable"
+                    element={isLoggedIn
+                        ? <LecturerTimetable />
                         : <Navigate to="/" replace />
                     }
                 />

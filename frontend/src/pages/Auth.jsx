@@ -12,7 +12,7 @@ export default function Login({ onLoginSuccess }) {
     <div className={styles.loginContainer}> 
       <div className={styles.loginCard}>   
         
-        <h1 className={styles.heading}>FACTS</h1>
+        <h1 className={styles.heading}>Tutorial Time</h1>
         <p className={styles.description}>
           Sign in with your university Microsoft account
         </p>

@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from './GridCell.module.css';
 
 const GridCell = ({ day, time, isUnavailable, toggleAvailability }) => {

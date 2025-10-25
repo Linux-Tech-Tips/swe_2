@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import { Cog } from 'lucide-react';
 import GridCell from "../components/GridCell.jsx";
-import SettingsIcon from "../components/SettingsIcon.jsx";
 import styles from './StudentTimetable.module.css';
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -63,8 +63,8 @@ const StudentTimetable = ({ onLogout }) => {
                     title="Settings/Logout"
                 >
 
-                    <SettingsIcon className={styles.settingsIcon} />
-                    //<span className={styles.settingsText}>Settings</span>
+                    <Cog className={styles.actionIcon} />
+                    <span className={styles.settingsText}>Settings</span>
                 </button>
             </header>
 
@@ -81,7 +81,7 @@ const StudentTimetable = ({ onLogout }) => {
                         onClick={handleSave}
                         className={styles.saveButton}
                     >
-                        Save Availability
+                        Save
                     </button>
                 </div>
 
