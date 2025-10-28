@@ -3,7 +3,7 @@ ARG BUILD_HOME=/tutorial-time
 #
 # Gradle image for the build stage.
 #
-FROM gradle:jdk21 as build-image
+FROM gradle:jdk21 AS build-image
 
 #
 # Set the working directory.
@@ -21,4 +21,4 @@ COPY --chown=gradle:gradle /tutorial-time/build.gradle.kts /tutorial-time/settin
 COPY --chown=gradle:gradle /tutorial-time/src $APP_HOME/src
 
 EXPOSE 8080
-CMD ["gradle", "bootRun"]
+CMD ["gradle", "--no-daemon", "bootRun"]
