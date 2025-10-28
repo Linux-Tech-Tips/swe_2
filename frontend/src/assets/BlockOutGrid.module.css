@@ -1,0 +1,69 @@
+.blockOutGridContainer {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e5e7eb; /* border-t border-gray-200 */
+}
+
+.gridWrapper {
+  overflow-x: auto;
+}
+
+.availabilityGrid {
+  display: grid;
+  grid-template-columns: 5rem repeat(5, 1fr); /* Time column + 5 day columns */
+  min-width: 100%;
+  /* Removed gap here, individual cells will handle margin */
+}
+
+.gridHeaderCell {
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700; /* font-bold */
+  color: #4b5563; /* text-gray-700 */
+  background-color: #f3f4f6; /* bg-gray-100 */
+  border: 1px solid #e5e7eb; /* Light border, matching TA timetable */
+  border-radius: 0.25rem; /* rounded-md */
+  text-align: center;
+  margin: 0.125rem; /* Small margin to create visual separation, matching TA timetable */
+}
+
+.timeColumnCell {
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 600; /* font-semibold */
+  color: #4b5563; /* text-gray-600 */
+  background-color: #f3f4f6; /* bg-gray-100 */
+  border: 1px solid #e5e7eb; /* Light border, matching TA timetable */
+  border-radius: 0.25rem; /* rounded-md */
+  margin: 0.125rem; /* Small margin to create visual separation, matching TA timetable */
+}
+
+/* Override GridCell default styling for BlockOutGrid to match TA timetable */
+.blockOutGridContainer :global(.gridCell) {
+  border: 1px solid #e5e7eb; /* Light border, matching TA timetable */
+  background-color: #ffffff; /* White background, matching TA timetable */
+  border-radius: 0.25rem;
+  margin: 0.125rem; /* Small margin to create visual separation, matching TA timetable */
+}
+
+.blockOutGridContainer :global(.gridCell.unavailable) {
+  background-color: #fde8e8; /* bg-red-100 */
+  border-color: #ef4444; /* border-red-500 */
+}
+
+.blockOutGridContainer :global(.gridCell.available) {
+  background-color: #ffffff; /* Ensure available cells are white, matching TA timetable */
+}
+
+.description {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 1.5rem;
+  text-align: center;
+  line-height: 1.5;
+}
