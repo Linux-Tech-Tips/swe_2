@@ -25,28 +25,8 @@ services:
     image: martin/backend
     container_name: backend
     restart: unless-stopped
-    depends_on:
-      db:
-        condition: service_healthy
-
     expose:
       - "8080"
-
-  db:
-    image: mariadb:latest
-    container_name: db
-    restart: unless-stopped
-    expose:
-      - "3306"
-    env_file:
-      - ./database/.env
-    volumes:
-      - ./database/init.sql/:/docker-entrypoint-initdb.d/1.sql/
-    healthcheck:
-      test: [ "CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized" ]
-      interval: 10s
-      timeout: 5s
-      retries: 3
 
   jenkins:
     image: jenkins/jenkins:lts
