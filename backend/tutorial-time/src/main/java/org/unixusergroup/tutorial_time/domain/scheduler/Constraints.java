@@ -8,27 +8,30 @@ package org.unixusergroup.tutorial_time.domain.scheduler;
 
 import java.util.ArrayList;
 
-//TODO: is he a data transfer object??
 public class Constraints {
-    private int studentLimit;
-    private int minTAs;
-    private ArrayList<Integer> blockedTimes;
+    private final int studentLimit;
+    private final int minTAs;
+    private final ArrayList<Integer> blockedTimes;
 
     /**
      * constructor
+     * gets the data from the frontend, which ensures that there are default values for each attribute and that all data is passed in together
+     * @param studentLimit the maximum number of students that can be in one tutorial
+     * @param minTAs the minimum number of TAs that must be in each tutorial
+     * @param blockedTimes time that should not be considered
      */
-    public Constraints() {
-        this.studentLimit = 0;
-        this.minTAs = 0;
-        this.blockedTimes = null;
-    }
-
-    public void setStudentLimit(int studentLimit) {
-        if(studentLimit<1) {
-            throw new IllegalArgumentException("The tutorial size limit cannot be zero or negative");
+    public Constraints(int studentLimit, int minTAs, ArrayList<Integer> blockedTimes) throws IllegalArgumentException{
+        if(studentLimit<0) {
+            throw new IllegalArgumentException("The student limit must be positive");
+        }
+        if(minTAs<0) {
+            throw new IllegalArgumentException("The TA minimum must be 0 or more");
         }
         this.studentLimit = studentLimit;
+        this.minTAs = minTAs;
+        this.blockedTimes = blockedTimes;
     }
+
     public int getStudentLimit() {
         return studentLimit;
     }
@@ -41,10 +44,6 @@ public class Constraints {
         return studentLimit != 0;
     }
 
-    public void setBlockedTimes(ArrayList<Integer> blockedTimes) {
-        this.blockedTimes = blockedTimes;
-    }
-
     public ArrayList<Integer> getBlockedTimes() {
         return blockedTimes;
     }
@@ -54,8 +53,18 @@ public class Constraints {
      * @return true if yes, false if no
      */
     public boolean blockedTimes() {
-        return blockedTimes != null;
+        return !(blockedTimes.isEmpty());
     }
 
-    //TODO: make methods for TAs
+    public int getMinTAs() {
+        return minTAs;
+    }
+
+    /**
+     * checks if a minimum number of TAs has been provided
+     * @return true if yes, false if no
+     */
+    public boolean minTAs() {
+        return minTAs!=0;
+    }
 }

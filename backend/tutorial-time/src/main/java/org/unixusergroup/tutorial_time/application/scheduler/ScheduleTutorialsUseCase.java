@@ -7,8 +7,8 @@ package org.unixusergroup.tutorial_time.application.scheduler;
 import java.util.ArrayList;
 
 import org.unixusergroup.tutorial_time.application.common.UseCase;
-import org.unixusergroup.tutorial_time.application.dto.ScheduleRequest;
-import org.unixusergroup.tutorial_time.application.dto.ScheduleResponse;
+import org.unixusergroup.tutorial_time.application.scheduler.dto.ScheduleRequest;
+import org.unixusergroup.tutorial_time.application.scheduler.dto.ScheduleResponse;
 import org.unixusergroup.tutorial_time.domain.scheduler.*;
 
 public class ScheduleTutorialsUseCase implements UseCase <ScheduleResponse, ScheduleRequest> {
@@ -20,11 +20,22 @@ public class ScheduleTutorialsUseCase implements UseCase <ScheduleResponse, Sche
 
     /**
      * method that schedules tutorials
+     * first it calls the constraints (if necessary)
+     * then all scheduling methods
      * @return ScheduleResponse object
      */
-    public ScheduleResponse execute(ScheduleRequest request) {
+    public ScheduleResponse execute(ScheduleRequest request) throws RuntimeException{
         Constraints constraints = request.constraints();
         Scheduler scheduler = request.scheduler();
+
+        //if there is a minimum number of TAs to be at each tutorial --> remove times as needed
+        if(constraints.minTAs()) {
+            try{
+                scheduler.minimumNumberOfTAs(request.minTAs());
+            } catch (RuntimeException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         //if there are times to be blocked out --> remove those
         if(constraints.blockedTimes()) {
@@ -34,8 +45,6 @@ public class ScheduleTutorialsUseCase implements UseCase <ScheduleResponse, Sche
                 throw new RuntimeException(e);
             }
         }
-
-        //TODO: call TA constraints here!!
 
         //if there is a limited number of students per tutorial --> edit the data as needed
         if(constraints.studentLimit()) {

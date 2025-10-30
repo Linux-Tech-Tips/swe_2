@@ -6,46 +6,41 @@
 package org.unixusergroup.tutorial_time.domain.scheduler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
-import jakarta.persistence.Entity;
 import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Id;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-//TODO: does he NEED to be an entity?? isn't going to be stored in database or accessed, will just be recreated for new requests
-@Entity
 public class Scheduler {
     private final HashSet<Integer> U; //universal set U which contains the numbers of all students
     @ElementCollection
     @JdbcTypeCode(SqlTypes.JSON)
     private ArrayList<TimeSlot> timeSlots; //array of 40 timeslots
-    private final ArrayList<int[]> timetables; //collection of all students' timetables (each is an array of length 40)
+    private final ArrayList<int[]> studentTimetables; //collection of all students' timetables (each is an array of length 40)
+    private ArrayList<int[]> taTimetables = new ArrayList<>(); //collection of TA timetables
     private final int moduleSize; //total number of students in the module
     private ArrayList<int[]> adjacencyMatrix;
     private boolean adjacencyMatrixSet;
     private int numberOfTimeSlots;
 
-    @Id
-    private int id;
-
     /**
      * Constructor
-     * @param timetables the timetables of each student
+     * @param studentTimetables the timetables of each student
      */
-    public Scheduler(ArrayList<int[]> timetables) {
-        if(timetables.isEmpty()) {
+    public Scheduler(ArrayList<int[]> studentTimetables) {
+        if(studentTimetables.isEmpty()) {
             throw new IllegalArgumentException("At least one timetable must be entered");
         }
-        this.moduleSize = timetables.size();
-        this.timetables = timetables;
+        this.moduleSize = studentTimetables.size();
+        this.studentTimetables = studentTimetables;
         U = new HashSet<>(moduleSize);
         for(int i=0; i<moduleSize; i++) {
             U.add(i);
         }
         adjacencyMatrixSet = false;
-        this.numberOfTimeSlots = timetables.getFirst().length;
+        this.numberOfTimeSlots = studentTimetables.getFirst().length;
         try {
             createTimeSlots();
         } catch (IllegalArgumentException e) {
@@ -53,7 +48,17 @@ public class Scheduler {
         }
     }
 
-    //TODO check if there's students who are never available
+    /**
+     * alternate constructor specifically for the case of minTA constraint --> provide the TA timetables
+     * @param studentTimetables student timetables
+     * @param taTimetables TA timetables
+     */
+    public Scheduler(ArrayList<int[]> studentTimetables, ArrayList<int[]> taTimetables) {
+        this(studentTimetables);
+        this.taTimetables = taTimetables;
+    }
+
+    //TODO check if there's students who are never available??
 
     public int getModuleSize() {
         return moduleSize;
@@ -64,7 +69,7 @@ public class Scheduler {
     }
 
     public ArrayList<int[]> getTimetables() {
-        return timetables;
+        return studentTimetables;
     }
 
     public boolean getAdjacencyMatrixSet() {
@@ -91,7 +96,7 @@ public class Scheduler {
         // loops through each student timetable --> for each time they're available, add that student to that time set
         for(int j=0; j<moduleSize; j++) {
             for(int i = 0; i< numberOfTimeSlots; i++) {
-                if(timetables.get(j)[i]==1) {
+                if(studentTimetables.get(j)[i]==1) {
                     timeSlots.get(i).addStudent(j);
                 }
             }
@@ -206,7 +211,31 @@ public class Scheduler {
          */
     }
 
-    //TODO: ADD TA CONSTRAINTS
+    /**
+     * constraint for minimum number of TAs at each timeslot
+     * it collates all TA timetables together and then deletes each time at which not enough TAs are available
+     * @param minTAs the minimum number of TAs
+     */
+    public void minimumNumberOfTAs(int minTAs) throws RuntimeException{
+        int[] compiledTATimetables = new int[numberOfTimeSlots];
+
+        //loop over all TA timetables, collect the number of TAs available at each time
+        for(int i=0; i<taTimetables.size(); i++) {
+            for(int j=0; j<numberOfTimeSlots; j++) {
+                compiledTATimetables[j]+=taTimetables.get(i)[j];
+            }
+        }
+
+        for(int i=0; i<numberOfTimeSlots; i++) {
+            if(compiledTATimetables[i]<minTAs) {
+                try {
+                    deleteTime(i);
+                } catch (IllegalArgumentException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+    }
 
     /**
      * check base case 1: there is one or more times when everyone is available
