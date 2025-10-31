@@ -24,9 +24,10 @@ public class ConstraintsTest {
         Constraints constraints = new Constraints(1,1,blockedTimes);
         assertEquals(1,constraints.getStudentLimit());
         Assertions.assertEquals(blockedTimes, constraints.getBlockedTimes());
+        assertEquals(1, constraints.getMinTAs());
         assertTrue(constraints.studentLimit());
         assertFalse(constraints.blockedTimes());
-        //TODO: test for TAs
+        assertTrue(constraints.minTAs());
     }
 
     /**

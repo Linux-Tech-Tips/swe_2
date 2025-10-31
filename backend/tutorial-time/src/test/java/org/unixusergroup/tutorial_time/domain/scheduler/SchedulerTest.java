@@ -20,6 +20,8 @@ public class SchedulerTest {
     static int[] testTimeTable2 = {1,0,0,0};
     static int[] testTimeTable3 = {0,0,0,1};
     static int[] testTimeTable4 = {0,0,1,0};
+    static int[] taTimeTable1 = {1,0,1,1};
+    static int[] taTimeTable2 = {0,1,1,1};
     static ArrayList<int[]> timetables;
     static Scheduler testScheduler;
     static ArrayList<TimeSlot> testTimes;
@@ -58,19 +60,41 @@ public class SchedulerTest {
         }
 
         assertEquals(4, testScheduler.getModuleSize());
-        assertEquals(timetables, testScheduler.getTimetables());
+        assertEquals(timetables, testScheduler.getStudentTimetables());
         assertEquals(universe, testScheduler.getUniverse());
         assertFalse(testScheduler.getAdjacencyMatrixSet());
         assertEquals(4, testScheduler.getNumberOfTimeSlots());
     }
 
     /**
-     * test that the constructor throws an exception when given an empty list of timetables
+     * test that the constructor throws an exception when given an empty list of student timetables
      */
     @Test
     public void testConstructorEmptyTimetables() {
         ArrayList<int[]> emptyTimetables = new ArrayList<>();
         assertThrows(IllegalArgumentException.class, () -> new Scheduler(emptyTimetables));
+    }
+
+    /**
+     * test the constructor with the additional TA timetables parameter
+     */
+    @Test
+    public void testTAConstructor() {
+        ArrayList<int[]> taTimetables = new ArrayList<>();
+        taTimetables.add(taTimeTable1);
+        taTimetables.add(taTimeTable2);
+
+        testScheduler = new Scheduler(timetables, taTimetables);
+        assertEquals(taTimetables, testScheduler.getTATimetables());
+    }
+
+    /**
+     * test that the constructor throws an exception when given an empty list of TA timetables
+     */
+    @Test
+    public void testConstructorEmptyTATimetables() {
+        ArrayList<int[]> emptyTimetables = new ArrayList<>();
+        assertThrows(IllegalArgumentException.class, () -> new Scheduler(timetables, emptyTimetables));
     }
 
     /**
@@ -176,6 +200,46 @@ public class SchedulerTest {
         assertEquals(testTimes, testScheduler.getTimeSlots());
     }
 
+    /**
+     * test that giving a TA limit removes all times at which not enough TAs are available
+     */
+    @Test
+    public void testTaLimit() {
+        ArrayList<int[]> taTimeTables = new ArrayList<>();
+        taTimeTables.add(taTimeTable1);
+
+        Scheduler testScheduler = new Scheduler(timetables, taTimeTables);
+        testScheduler.minimumNumberOfTAs(1);
+        testTimes.remove(1);
+
+        assertEquals(testTimes, testScheduler.getTimeSlots());
+    }
+
+    /**
+     * test that the TA method properly catches and handles the possible exception thrown by deleteTime()
+     */
+    @Test
+    public void testImpossibleTaLimit() {
+        ArrayList<int[]> taTimeTables = new ArrayList<>();
+        taTimeTables.add(taTimeTable2);
+
+        Scheduler testScheduler = new Scheduler(timetables, taTimeTables);
+
+        assertThrows(RuntimeException.class, () -> testScheduler.minimumNumberOfTAs(1));
+    }
+
+    /**
+     * test that the TA method catches and handles there being less TAs than the limit given
+     */
+    @Test
+    public void testNotEnoughTAs() {
+        ArrayList<int[]> taTimeTables = new ArrayList<>();
+        taTimeTables.add(taTimeTable2);
+
+        Scheduler testScheduler = new Scheduler(timetables, taTimeTables);
+
+        assertThrows(IllegalArgumentException.class, () -> testScheduler.minimumNumberOfTAs(2));
+    }
     /**
      * test base case one when unsuccessful
      */

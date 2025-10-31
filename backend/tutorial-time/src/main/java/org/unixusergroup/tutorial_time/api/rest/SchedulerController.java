@@ -10,9 +10,7 @@ import org.unixusergroup.tutorial_time.application.scheduler.ScheduleTutorialsUs
 import org.springframework.web.bind.annotation.*;
 import org.unixusergroup.tutorial_time.application.scheduler.dto.ScheduleRequest;
 import org.unixusergroup.tutorial_time.application.scheduler.dto.ScheduleResponse;
-import org.unixusergroup.tutorial_time.domain.module.Module;
 import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
-import org.unixusergroup.tutorial_time.infrastructure.InMemoryModuleRepository;
 
 import java.util.ArrayList;
 
@@ -22,11 +20,14 @@ import java.util.ArrayList;
 public class SchedulerController {
 
     private final ScheduleTutorialsUseCase scheduleTutorialsUseCase;
-    //TODO: THE REPOSITORY NEEDS TO BE FIXED
-    private final ModuleRepository moduleRepository = new InMemoryModuleRepository();
+    private final ModuleRepository moduleRepository;
 
-    public SchedulerController(ScheduleTutorialsUseCase scheduleTutorialsUseCase) {
-        this.scheduleTutorialsUseCase = scheduleTutorialsUseCase;
+    /**
+     * constructor, create a new scheduleTutorialsUseCase instance
+     */
+    public SchedulerController(ModuleRepository moduleRepository) {
+        this.moduleRepository = moduleRepository;
+        this.scheduleTutorialsUseCase = new ScheduleTutorialsUseCase();
     }
 
     /**
@@ -47,7 +48,5 @@ public class SchedulerController {
         catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
-
     }
-
 }

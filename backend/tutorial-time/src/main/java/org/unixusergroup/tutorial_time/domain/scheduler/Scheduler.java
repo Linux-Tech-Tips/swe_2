@@ -6,7 +6,6 @@
 package org.unixusergroup.tutorial_time.domain.scheduler;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import jakarta.persistence.ElementCollection;
@@ -14,7 +13,8 @@ import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 public class Scheduler {
-    private final HashSet<Integer> U; //universal set U which contains the numbers of all students
+    /**universal set U which contains the numbers of all students*/
+    private final HashSet<Integer> U;
     @ElementCollection
     @JdbcTypeCode(SqlTypes.JSON)
     private ArrayList<TimeSlot> timeSlots; //array of 40 timeslots
@@ -31,7 +31,7 @@ public class Scheduler {
      */
     public Scheduler(ArrayList<int[]> studentTimetables) {
         if(studentTimetables.isEmpty()) {
-            throw new IllegalArgumentException("At least one timetable must be entered");
+            throw new IllegalArgumentException("At least one student timetable must be entered");
         }
         this.moduleSize = studentTimetables.size();
         this.studentTimetables = studentTimetables;
@@ -53,8 +53,11 @@ public class Scheduler {
      * @param studentTimetables student timetables
      * @param taTimetables TA timetables
      */
-    public Scheduler(ArrayList<int[]> studentTimetables, ArrayList<int[]> taTimetables) {
+    public Scheduler(ArrayList<int[]> studentTimetables, ArrayList<int[]> taTimetables) throws IllegalArgumentException{
         this(studentTimetables);
+        if(taTimetables.isEmpty()) {
+            throw new IllegalArgumentException("At least one TA timetable must be entered");
+        }
         this.taTimetables = taTimetables;
     }
 
@@ -68,8 +71,12 @@ public class Scheduler {
         return U;
     }
 
-    public ArrayList<int[]> getTimetables() {
+    public ArrayList<int[]> getStudentTimetables() {
         return studentTimetables;
+    }
+
+    public ArrayList<int[]> getTATimetables() {
+        return taTimetables;
     }
 
     public boolean getAdjacencyMatrixSet() {
@@ -217,6 +224,9 @@ public class Scheduler {
      * @param minTAs the minimum number of TAs
      */
     public void minimumNumberOfTAs(int minTAs) throws RuntimeException{
+        if(taTimetables.size()<minTAs) {
+            throw new IllegalArgumentException("The minimum number of TAs is above the number of TAs registered for this module");
+        }
         int[] compiledTATimetables = new int[numberOfTimeSlots];
 
         //loop over all TA timetables, collect the number of TAs available at each time
@@ -231,7 +241,7 @@ public class Scheduler {
                 try {
                     deleteTime(i);
                 } catch (IllegalArgumentException e) {
-                    throw new RuntimeException(e);
+                    throw new RuntimeException("The TA availability does not line up with student availability for this constraint to be possible");
                 }
             }
         }

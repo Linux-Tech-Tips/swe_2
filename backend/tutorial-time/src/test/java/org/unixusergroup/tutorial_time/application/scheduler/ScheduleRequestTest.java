@@ -33,6 +33,7 @@ public class ScheduleRequestTest {
 
         assertEquals(testConstraints.getStudentLimit(), requestConstraints.getStudentLimit());
         assertEquals(testConstraints.getBlockedTimes(), requestConstraints.getBlockedTimes());
+        assertEquals(testConstraints.getMinTAs(), requestConstraints.getMinTAs());
     }
 
     @Test
@@ -42,6 +43,60 @@ public class ScheduleRequestTest {
 
     @Test
     public void testScheduler() {
+        Module testModule = getModule();
+        moduleRepository.saveModule(testModule);
+        ScheduleRequest request = new ScheduleRequest("testModule", 0, 0, new ArrayList<>(), moduleRepository);
+
+        int[] testTimeTable1 = {1,0,0,0};
+        int[] testTimeTable2 = {1,0,0,0};
+        int[] testTimeTable3 = {0,0,0,1};
+        int[] testTimeTable4 = {0,0,1,0};
+
+        Scheduler requestScheduler = request.scheduler();
+        assertEquals(4, requestScheduler.getModuleSize());
+        assertArrayEquals(testTimeTable1, requestScheduler.getStudentTimetables().get(0));
+        assertArrayEquals(testTimeTable2, requestScheduler.getStudentTimetables().get(1));
+        assertArrayEquals(testTimeTable3, requestScheduler.getStudentTimetables().get(2));
+        assertArrayEquals(testTimeTable4, requestScheduler.getStudentTimetables().get(3));
+        assertEquals(4, requestScheduler.getNumberOfTimeSlots());
+    }
+
+    /**
+     * test that it fetches TA timetables and loads them into the correct place
+     */
+    @Test
+    public void testFetchingTATimetables() {
+        Module testModule = getModule();
+        Student ta1 = new Student("TA1", "ta1@university.ie", 1111, new Timetable(2, 2, Availability.AVAILABLE));
+        ta1.setUnavailable(1,0);
+        testModule.addTAStudent(ta1);
+        Student ta2 = new Student("TA2", "ta2@university.ie", 2222, new Timetable(2, 2, Availability.AVAILABLE));
+        ta2.setUnavailable(1,0);
+        testModule.addTAStudent(ta2);
+        moduleRepository.saveModule(testModule);
+        ScheduleRequest request = new ScheduleRequest("testModule", 0, 1, new ArrayList<>(), moduleRepository);
+        Scheduler requestScheduler = request.scheduler();
+
+        int[] taTimeTable1 = {1,0,1,1};
+        int[] taTimeTable2 = {1,0,1,1};
+
+        assertArrayEquals(taTimeTable1, requestScheduler.getTATimetables().get(0));
+        assertArrayEquals(taTimeTable2, requestScheduler.getTATimetables().get(1));
+    }
+
+    /**
+     * test that the request throws an exception when module code that doesn't link to any module is given
+     */
+    @Test
+    public void testSchedulerIllegalModuleCode() {
+        assertThrows(RuntimeException.class, () -> new ScheduleRequest("fakeModule", 0, 0, new ArrayList<>(), moduleRepository).scheduler());
+    }
+
+    /**
+     * method for setting up a test module
+     * @return the test module
+     */
+    private static Module getModule() {
         Lecturer testLecturer = new Lecturer("Professor Test", "test@universityofgalway.ie", 00000);
         Module testModule = new Module("testModule", testLecturer);
         Student student1 = new Student("Student1", "s1@university.ie", 1111, new Timetable(2, 2, Availability.UNAVAILABLE));
@@ -56,25 +111,6 @@ public class ScheduleRequestTest {
         Student student4 = new Student("Student4", "s4@university.ie", 4444, new Timetable(2, 2, Availability.UNAVAILABLE));
         student4.setAvailable(0,1);
         testModule.addStudent(student4);
-        moduleRepository.saveModule(testModule);
-        ScheduleRequest request = new ScheduleRequest("testModule", 0, 0, new ArrayList<>(), moduleRepository);
-
-        int[] testTimeTable1 = {1,0,0,0};
-        int[] testTimeTable2 = {1,0,0,0};
-        int[] testTimeTable3 = {0,0,0,1};
-        int[] testTimeTable4 = {0,0,1,0};
-
-        Scheduler requestScheduler = request.scheduler();
-        assertEquals(4, requestScheduler.getModuleSize());
-        assertArrayEquals(testTimeTable1, requestScheduler.getTimetables().get(0));
-        assertArrayEquals(testTimeTable2, requestScheduler.getTimetables().get(1));
-        assertArrayEquals(testTimeTable3, requestScheduler.getTimetables().get(2));
-        assertArrayEquals(testTimeTable4, requestScheduler.getTimetables().get(3));
-        assertEquals(4, requestScheduler.getNumberOfTimeSlots());
-    }
-
-    @Test
-    public void testSchedulerIllegalModuleCode() {
-        assertThrows(RuntimeException.class, () -> new ScheduleRequest("fakeModule", 0, 0, new ArrayList<>(), moduleRepository).scheduler());
+        return testModule;
     }
 }
