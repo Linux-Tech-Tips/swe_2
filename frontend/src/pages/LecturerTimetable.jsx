@@ -148,7 +148,7 @@ const LecturerTimetable = () => {
     const scheduleRequest =  {
       method: "POST";
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({selectedModuleId, studentLimit, minTAs, blockedTimes}),
+      body: JSON.stringify({selectedModuleId, currentStudentLimit, currentMinTAs, blockedTimes}),
     };
     const response = await fetch("http:/unixusergroup.org/api/scheduler", scheduleRequest);
     alert(response.json);
