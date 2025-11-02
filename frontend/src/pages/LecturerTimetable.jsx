@@ -6,9 +6,7 @@ import PlusIcon from '../components/PlusIcon.jsx';
 import UserIcon from '../components/UserIcon.jsx';
 import UsersIcon from '../components/UsersIcon.jsx';
 import UserCogIcon from '../components/UserCogIcon.jsx';
-import PercentageGridCell from '../components/PercentageGridCell.jsx';
 import GridCell from "../components/GridCell.jsx";
-import saveStyles from './StudentTimetable.module.css';
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 const times = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
@@ -43,20 +41,38 @@ const LecturerTimetable = () => {
     return (
       <div className={styles.algorithmSettings}>
         {"Maximum number of students per session:"}
-        <input defaultValue={currentStudentLimit} onChange={(e) => setCurrentStudentLimit(e.target.value)} />
+        <input defaultValue={currentStudentLimit} onKeyDown={(e) => {if (e.key === "Enter") {ValidateConstraintsInput(e.target.value, "students")}}} />
         <br />
         {"Minimum number of TAs per session: "}
-        <input defaultValue={currentMinTAs} onChange={(e) => setCurrentMinTAs(e.target.value)} />
+        <input defaultValue={currentMinTAs} onKeyDown={(e) => {if (e.key === "Enter") {ValidateConstraintsInput(e.target.value, "tas")}}} />
       </div>
     );
   }
 
+  //function to check that the inputted constraints are natural numbers (including 0)
+  function ValidateConstraintsInput(e, type) {
+    if(Number(e)>=0 && Number.isInteger(Number(e))) {
+      if(type === "students") {
+        setCurrentStudentLimit(e);
+      }
+      if(type == "tas") {
+        setCurrentMinTAs(e);
+      }
+    }
+    else {
+      alert("Please enter a natural number, where 0 indicates no limit");
+      if(type === "students") {
+        setCurrentStudentLimit(0);
+      }
+     if(type === "tas") {
+       setCurrentMinTAs(0);
+     }
+    }
+  }
+
   const [scheduled, setScheduled] = useState(false);
   function Schedule() {
-    if (!scheduled) {
-      return null;
-    }
-    return <div>{"hello"}</div>;
+    //CONVERT WHATEVER FORM AVAILABILITY DATA CURRENTLY IS IN INTO an array of integers (probably need to convert to arraylist in backend? that or just take an array in the backend idk) 
     //CALL THE SCHEDULER API WITH ALL GIVEN DATA (selectedModuleId, studentLimit, minTAs, blockedTimes)
   }
 
@@ -73,10 +89,9 @@ const LecturerTimetable = () => {
     );
   }
 
-  //stuff for displaying/saving the blocking, is called availability due to GridCell
+  //stuff for displaying the blocking, is called availability due to GridCell
   const [blockingTimes, setBlockingTimes] = useState(false);
   const [currentAvailability, setCurrentAvailability] = useState(dummyModules[0].blockedTimes);
-  const [saveMessage, setSaveMessage] = useState(null);
 
   const toggleAvailability = (day, time) => {
     setCurrentAvailability(prev => ({
