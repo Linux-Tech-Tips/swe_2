@@ -51,7 +51,7 @@ const LecturerTimetable = () => {
 
   //function to check that the inputted constraints are natural numbers (including 0)
   function ValidateConstraintsInput(e, type) {
-    if(Number(e)>=0 && Number.isInteger(Number(e))) {
+    if(e!='' && Number(e)>=0 && Number.isInteger(Number(e))) {
       if(type === "students") {
         setCurrentStudentLimit(e);
       }
@@ -70,28 +70,9 @@ const LecturerTimetable = () => {
     }
   }
 
-  const [scheduled, setScheduled] = useState(false);
-  function Schedule() {
-    //CONVERT WHATEVER FORM AVAILABILITY DATA CURRENTLY IS IN INTO an array of integers (probably need to convert to arraylist in backend? that or just take an array in the backend idk) 
-    //CALL THE SCHEDULER API WITH ALL GIVEN DATA (selectedModuleId, studentLimit, minTAs, blockedTimes)
-  }
-
-  function DisplayTimes() {
-    if(!scheduled) {
-      return(
-      <div>{"Please run the scheduling algorithm to see suggested tutorial times"}</div>
-      );
-    }
-    return (
-      <div>
-        {"The optimal times are 3 and 4"}
-      </div>
-    );
-  }
-
-  //stuff for displaying the blocking, is called availability due to GridCell
+ //stuff for displaying the blocking, is called availability due to GridCell
   const [blockingTimes, setBlockingTimes] = useState(false);
-  const [currentAvailability, setCurrentAvailability] = useState(dummyModules[0].blockedTimes);
+  const [currentAvailability, setCurrentAvailability] = useState(getInitialAvailability);
 
   const toggleAvailability = (day, time) => {
     setCurrentAvailability(prev => ({
@@ -150,6 +131,47 @@ const LecturerTimetable = () => {
     );
   }
 
+  const [scheduled, setScheduled] = useState(false);
+  const [scheduledTimes, setScheduledTimes] = useState('');
+  //function to assemble constraints and call scheduler API
+  async function Schedule() {
+    let blockedTimes = [];
+    for(let i=0; i<5; i++) {
+      for(let j=0; j<8; j++) {
+        if(currentAvailability[days[i]][times[j]]) {
+          blockedTimes.push(j*5+i);
+        }
+      }
+    }
+
+    //I really don't know if I'm doing this right :(
+    const scheduleRequest =  {
+      method: "POST";
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({selectedModuleId, studentLimit, minTAs, blockedTimes}),
+    };
+    const response = await fetch("http:/unixusergroup.org/api/scheduler", scheduleRequest);
+    alert(response.json);
+    //get the right data from the response for this
+    setScheduledTimes(response.json);
+    //(probably need to convert to arraylist in backend? that or just take an array in the backend idk) 
+    //exception handling???  
+  }
+
+  function DisplayTimes() {
+    if(!scheduled) {
+      return(
+      <div>{"Please run the scheduling algorithm to see suggested tutorial times"}</div>
+      );
+    }
+    return (
+      <div>
+        //enter the scheduledTimes here
+        {"The optimal times are 3 and 4"}
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       {/* Top Header */}
@@ -205,9 +227,8 @@ const LecturerTimetable = () => {
             Algorithm Settings {"\n"}
             {openAlgorithmSettings && OpenAlgorithmSettings()}
           </button>
-          <button onClick={() => {setScheduled(true); setBlockingTimes(false); setOpenAlgorithmSettings(false)}}className={`${styles.actionButton} ${styles.primaryButton}`}>
+          <button onClick={() => {Schedule(); setScheduled(true); setBlockingTimes(false); setOpenAlgorithmSettings(false)}}className={`${styles.actionButton} ${styles.primaryButton}`}>
             SCHEDULE
-            <Schedule/>
           </button>
         </div>
       </div>
