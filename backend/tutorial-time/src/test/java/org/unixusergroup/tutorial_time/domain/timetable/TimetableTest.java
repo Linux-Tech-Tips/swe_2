@@ -14,7 +14,7 @@ class TimetableTest {
 
     /** Test case for the constructors */
     @Test
-    void constructorTest() {
+    public void constructorTest() {
         /* Default constructor case */
         Timetable t1 = new Timetable();
         List<Availability> a1 = t1.getMatrix();
@@ -40,7 +40,7 @@ class TimetableTest {
 
     /** Test case for getArray and getMatrix */
     @Test
-    void getArrayMatrixTest() {
+    public void getArrayMatrixTest() {
         /* Creating and populating an array */
         Timetable t = new Timetable(5, 8, Availability.AVAILABLE);
         t.setAvailability(0, 0, Availability.UNAVAILABLE);
@@ -65,9 +65,30 @@ class TimetableTest {
         }
     }
 
+    /** Test case for the overloaded equals method */
+    @Test
+    public void timetableEqualsTest() {
+        Timetable t1 = new Timetable(5, 8, Availability.AVAILABLE);
+        t1.setAvailability(0, 0, Availability.UNAVAILABLE);
+        t1.setAvailability(1, 0, Availability.UNAVAILABLE);
+        t1.setAvailability(0, 2, Availability.UNAVAILABLE);
+        t1.setAvailability(0, 3, Availability.UNAVAILABLE);
+
+        Timetable t2 = new Timetable(5, 8, Availability.AVAILABLE);
+        t2.setAvailability(0, 0, Availability.UNAVAILABLE);
+        t2.setAvailability(1, 0, Availability.UNAVAILABLE);
+        t2.setAvailability(0, 2, Availability.UNAVAILABLE);
+        t2.setAvailability(0, 3, Availability.UNAVAILABLE);
+
+        assertEquals(t1, t2);
+
+        t2.setAvailability(1, 3, Availability.UNAVAILABLE);
+        assertNotEquals(t1, t2);
+    }
+
     /** Test case for getFlatIndex */
     @Test 
-    void getFlatIndexTest() {
+    public void getFlatIndexTest() {
         Timetable t = new Timetable(5, 8, Timetable.DEFAULT_AVAILABILITY);
 
         assertEquals(t.getFlatIndex(0, 0), 0);

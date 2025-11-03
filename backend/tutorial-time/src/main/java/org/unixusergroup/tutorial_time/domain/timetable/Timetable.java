@@ -11,9 +11,9 @@ public class Timetable {
 
     /** The availability matrix signifying which timeslots are available and which are busy */
     private List<List<Availability>> availability;
-    /** The number of rows in the timetable */
-    private int columns;
     /** The number of columns in the timetable */
+    private int columns;
+    /** The number of rows in the timetable */
     private int rows;
 
     /** The default number of columns is 5, representing 5 workdays in a week */
@@ -45,6 +45,15 @@ public class Timetable {
             }
             this.availability.add(row);
         }
+    }
+
+    /** Getter for the number of columns in the timetable instance */
+    public int getColumns() {
+        return columns;
+    }
+    /** Getter for the number of rows in the timetable instance */
+    public int getRows() {
+        return rows;
     }
 
     /** Sets the availability of a given time slot */
@@ -82,5 +91,14 @@ public class Timetable {
             throw new IllegalArgumentException("Error: Column and Row out of bounds for flat index");
 
         return (row * columns) + column;
+    }
+
+    /** Checks whether two timetable instances are equal */
+    public boolean equals(Object other) {
+        if(!(other instanceof Timetable))
+            return false;
+        return this.getColumns() == ((Timetable)other).getColumns() &&
+               this.getRows() == ((Timetable)other).getRows() &&
+               this.getMatrix().equals(((Timetable)other).getMatrix());
     }
 }
