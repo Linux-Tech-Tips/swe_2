@@ -33,7 +33,15 @@ public class Module {
         this.taStudents = taStudents;
         this.lecturer = lecturer;
     }
-
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Module) {
+            return ((Module)(obj)).getModuleCode().equals(this.getModuleCode());
+        }
+        else {
+            return false;
+        }
+    }
     public String getModuleCode() {
         return moduleCode;
     }
