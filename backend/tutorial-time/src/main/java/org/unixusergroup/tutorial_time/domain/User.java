@@ -38,6 +38,15 @@ public abstract class User {
         return String.format("%s[name='%s', email='%s', id='%d']", this.getClass(), this.name, this.universityEmail, this.universityId);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof User) {
+            return ((User) obj).getUniversityId() == this.getUniversityId();
+        } else {
+            return false;
+        }
+    }
+
     public String getName() {
         return name;
     }
