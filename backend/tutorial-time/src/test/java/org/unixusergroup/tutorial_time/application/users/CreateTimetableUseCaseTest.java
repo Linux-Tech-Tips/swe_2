@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import org.unixusergroup.tutorial_time.domain.User;
 import org.unixusergroup.tutorial_time.domain.student.Student;
 import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
 import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
@@ -40,16 +41,17 @@ class CreateTimetableUseCaseTest {
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
 
         UseCase<CreateTimetableResponse, CreateTimetableRequest> useCase = new CreateTimetableUseCase(studentRepository, lecturerRepository);
-        CreateTimetableRequest request = new CreateTimetableRequest(availability, student.getUniversityId(), CreateTimetableRequest.UserType.STUDENT);
+        CreateTimetableRequest request = new CreateTimetableRequest(availability, student.getUniversityId(), User.UserType.STUDENT);
         return useCase.execute(request);
     }
 
+    /** Utility function to run the CreateTimetableUseCase with a given lecturer instance and availability array */
     private CreateTimetableResponse lecturerTestFixture(Lecturer lecturer, int[] availability, LecturerRepository lecturerRepository) {
         lecturerRepository.saveLecturer(lecturer);
         StudentRepository studentRepository = new InMemoryStudentRepository();
 
         UseCase<CreateTimetableResponse, CreateTimetableRequest> useCase = new CreateTimetableUseCase(studentRepository, lecturerRepository);
-        CreateTimetableRequest request = new CreateTimetableRequest(availability, lecturer.getUniversityId(), CreateTimetableRequest.UserType.LECTURER);
+        CreateTimetableRequest request = new CreateTimetableRequest(availability, lecturer.getUniversityId(), User.UserType.LECTURER);
         return useCase.execute(request);
     }
  

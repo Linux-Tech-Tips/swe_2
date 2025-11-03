@@ -31,17 +31,22 @@ public class CreateTimetableUseCase implements UseCase<CreateTimetableResponse, 
     public CreateTimetableResponse execute(CreateTimetableRequest request) {
         /* Check that the availability field exists and is appropriate */
         if(request.availability().length != 40) {
-            return new CreateTimetableResponse(false, "Error: Incorrect number of timeslots in CreateTimetableUseCase");
+            return new CreateTimetableResponse("Error: Incorrect number of timeslots in CreateTimetableUseCase");
         }
 
         /* Obtain appropriate user instance based on request type */
         User user = null;
-        if(request.userType() == CreateTimetableRequest.UserType.STUDENT) {
+        if(request.userType() == User.UserType.STUDENT) {
             user = (User)(studentRepository.getStudentById(request.userId()));
-        } else if(request.userType() == CreateTimetableRequest.UserType.LECTURER) {
+        } else if(request.userType() == User.UserType.LECTURER) {
             user = (User)(lecturerRepository.getLecturerById(request.userId()));
         } else {
-            return new CreateTimetableResponse(false, "Error: Incorrect user type in CreateTimetableUseCase");
+            return new CreateTimetableResponse("Error: Incorrect user type in CreateTimetableUseCase");
+        }
+
+        /* Check that obtained user is valid */
+        if(user == null) {
+            return new CreateTimetableResponse("Error: User not found in CreateTimetableUseCase");
         }
 
         /* Populate the timetable instance with the given availability data */
@@ -56,21 +61,21 @@ public class CreateTimetableUseCase implements UseCase<CreateTimetableResponse, 
                     else if(value == 1)
                         user.setAvailable(col, row);
                     else
-                        return new CreateTimetableResponse(false, "Error: Incorrect value " + value + " for user availability in CreateTimetableUseCase");
+                        return new CreateTimetableResponse("Error: Incorrect value " + value + " for user availability in CreateTimetableUseCase");
                 }
             }
         } catch(Exception e) {
-            return new CreateTimetableResponse(false, e.getMessage());
+            return new CreateTimetableResponse(e.getMessage());
         }
 
         /* Save the modified user instance in the appropriate repository */
-        if(request.userType() == CreateTimetableRequest.UserType.STUDENT) {
+        if(request.userType() == User.UserType.STUDENT) {
             studentRepository.saveStudent((Student)(user));
-        } else if(request.userType() == CreateTimetableRequest.UserType.LECTURER) {
+        } else if(request.userType() == User.UserType.LECTURER) {
             lecturerRepository.saveLecturer((Lecturer)(user));
         } else {
-            return new CreateTimetableResponse(false, "Error: Incorrect user type in CreateTimetableUseCase");
+            return new CreateTimetableResponse("Error: Incorrect user type in CreateTimetableUseCase");
         }
-        return new CreateTimetableResponse(true, "");
+        return new CreateTimetableResponse();
     }
 }

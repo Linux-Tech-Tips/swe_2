@@ -8,6 +8,9 @@ import org.unixusergroup.tutorial_time.domain.timetable.Availability;
 
 /** A class representing the basis for a student and lecturer */
 public abstract class User {
+    
+    /** Enumeration defining which type a concrete user is */
+    public enum UserType {STUDENT, LECTURER}
 
     /** The name of the user */
     protected String name;
