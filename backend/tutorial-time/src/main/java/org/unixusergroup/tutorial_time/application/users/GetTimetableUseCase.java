@@ -22,18 +22,23 @@ public class GetTimetableUseCase implements UseCase<GetTimetableResponse, GetTim
     /** Lecturer repository instance associated with the use case, for obtaining lecturer timetables */
     private LecturerRepository lecturerRepository;
 
-    public GetTimetableUseCase(StudentRepository studentRepository, LecturerRepository lecturerRepository) {
+    public GetTimetableUseCase(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
+        this.lecturerRepository = null;
+    }
+
+    public GetTimetableUseCase(LecturerRepository lecturerRepository) {
         this.lecturerRepository = lecturerRepository;
+        this.studentRepository = null;
     }
 
     /** Gets a Timetable based on the request params, returns status and an availability array if successful */
     public GetTimetableResponse execute(GetTimetableRequest request) {
         /* Get appropriate user based on request type */
         User user = null;
-        if(request.userType() == User.UserType.STUDENT) {
+        if(request.userType() == User.UserType.STUDENT && studentRepository != null) {
             user = (User)(studentRepository.getStudentById(request.userId()));
-        } else if(request.userType() == User.UserType.LECTURER) {
+        } else if(request.userType() == User.UserType.LECTURER && lecturerRepository != null) {
             user = (User)(lecturerRepository.getLecturerById(request.userId()));
         } else {
             return new GetTimetableResponse("Error: Incorrect user type in GetTimetableUseCase");

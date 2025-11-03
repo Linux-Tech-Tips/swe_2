@@ -53,12 +53,11 @@ class GetTimetableUseCaseTest {
 
         /* Create demo repositories */
         StudentRepository studentRepository = new InMemoryStudentRepository();
-        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
         studentRepository.saveStudent(student);
 
         /* Create and execute the use case */
         GetTimetableRequest request = new GetTimetableRequest(123456, User.UserType.STUDENT);
-        UseCase<GetTimetableResponse, GetTimetableRequest> useCase = new GetTimetableUseCase(studentRepository, lecturerRepository);
+        UseCase<GetTimetableResponse, GetTimetableRequest> useCase = new GetTimetableUseCase(studentRepository);
         GetTimetableResponse response = useCase.execute(request);
 
         /* Check that use case executed correctly */
@@ -82,13 +81,12 @@ class GetTimetableUseCaseTest {
         Lecturer lecturer = new Lecturer("John Doe", "john.doe@universityofgalway.ie", 654321, getTimetableFromArray(availability, 5, 8, Availability.UNAVAILABLE));
 
         /* Create demo repositories */
-        StudentRepository studentRepository = new InMemoryStudentRepository();
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
         lecturerRepository.saveLecturer(lecturer);
 
         /* Create and execute the use case */
         GetTimetableRequest request = new GetTimetableRequest(654321, User.UserType.LECTURER);
-        UseCase<GetTimetableResponse, GetTimetableRequest> useCase = new GetTimetableUseCase(studentRepository, lecturerRepository);
+        UseCase<GetTimetableResponse, GetTimetableRequest> useCase = new GetTimetableUseCase(lecturerRepository);
         GetTimetableResponse response = useCase.execute(request);
 
         /* Check that use case executed correctly */

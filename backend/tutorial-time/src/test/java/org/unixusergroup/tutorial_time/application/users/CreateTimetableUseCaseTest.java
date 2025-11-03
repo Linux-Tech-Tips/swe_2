@@ -38,9 +38,8 @@ class CreateTimetableUseCaseTest {
     /** Utility function to run the CreateTimetableUseCase with a given student instance and availability array */
     private CreateTimetableResponse studentTestFixture(Student student, int[] availability, StudentRepository studentRepository) {
         studentRepository.saveStudent(student);
-        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
 
-        UseCase<CreateTimetableResponse, CreateTimetableRequest> useCase = new CreateTimetableUseCase(studentRepository, lecturerRepository);
+        UseCase<CreateTimetableResponse, CreateTimetableRequest> useCase = new CreateTimetableUseCase(studentRepository);
         CreateTimetableRequest request = new CreateTimetableRequest(availability, student.getUniversityId(), User.UserType.STUDENT);
         return useCase.execute(request);
     }
@@ -48,9 +47,8 @@ class CreateTimetableUseCaseTest {
     /** Utility function to run the CreateTimetableUseCase with a given lecturer instance and availability array */
     private CreateTimetableResponse lecturerTestFixture(Lecturer lecturer, int[] availability, LecturerRepository lecturerRepository) {
         lecturerRepository.saveLecturer(lecturer);
-        StudentRepository studentRepository = new InMemoryStudentRepository();
 
-        UseCase<CreateTimetableResponse, CreateTimetableRequest> useCase = new CreateTimetableUseCase(studentRepository, lecturerRepository);
+        UseCase<CreateTimetableResponse, CreateTimetableRequest> useCase = new CreateTimetableUseCase(lecturerRepository);
         CreateTimetableRequest request = new CreateTimetableRequest(availability, lecturer.getUniversityId(), User.UserType.LECTURER);
         return useCase.execute(request);
     }

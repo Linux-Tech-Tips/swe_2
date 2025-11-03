@@ -22,9 +22,14 @@ public class CreateTimetableUseCase implements UseCase<CreateTimetableResponse, 
     /** Lecturer repository instance associated with the use case, for creating lecturer timetables */
     private LecturerRepository lecturerRepository;
 
-    public CreateTimetableUseCase(StudentRepository studentRepository, LecturerRepository lecturerRepository) {
+    public CreateTimetableUseCase(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
+        this.lecturerRepository = null;
+    }
+
+    public CreateTimetableUseCase(LecturerRepository lecturerRepository) {
         this.lecturerRepository = lecturerRepository;
+        this.studentRepository = null;
     }
 
     /** Creates a timetable from the request params, saves it into the appropriate repository and returns status */
@@ -36,9 +41,9 @@ public class CreateTimetableUseCase implements UseCase<CreateTimetableResponse, 
 
         /* Obtain appropriate user instance based on request type */
         User user = null;
-        if(request.userType() == User.UserType.STUDENT) {
+        if(request.userType() == User.UserType.STUDENT && studentRepository != null) {
             user = (User)(studentRepository.getStudentById(request.userId()));
-        } else if(request.userType() == User.UserType.LECTURER) {
+        } else if(request.userType() == User.UserType.LECTURER && lecturerRepository != null) {
             user = (User)(lecturerRepository.getLecturerById(request.userId()));
         } else {
             return new CreateTimetableResponse("Error: Incorrect user type in CreateTimetableUseCase");
