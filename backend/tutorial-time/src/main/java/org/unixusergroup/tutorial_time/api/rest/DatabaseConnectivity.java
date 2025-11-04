@@ -16,7 +16,7 @@ import java.sql.Connection;
 import org.unixusergroup.tutorial_time.infrastructure.ProjectConfiguration;
 
 @RestController
-@CrossOrigin(origins=ProjectConfiguration.BACKEND_DOMAIN_NAME)
+@CrossOrigin(origins=ProjectConfiguration.FRONTEND_DOMAIN_NAME)
 @RequestMapping("/api/db")
 public class DatabaseConnectivity {
 
