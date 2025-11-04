@@ -22,10 +22,10 @@ public class GetModuleUseCase implements UseCase<GetModuleResponse, GetModuleReq
             if (getModuleRequest.moduleCode().isEmpty()) {
                 throw new IllegalArgumentException("No module code provided.");
             }
-            if (this.moduleRepository==null) {
+            Module module = this.moduleRepository.getModuleByCode(getModuleRequest.moduleCode());
+            if (module==null) {
                 return new GetModuleResponse("Error: Module not found in GetModuleUseCase.");
             }
-            Module module = this.moduleRepository.getModuleByCode(getModuleRequest.moduleCode());
             return new GetModuleResponse(module);
 
         } catch (Exception e) {
