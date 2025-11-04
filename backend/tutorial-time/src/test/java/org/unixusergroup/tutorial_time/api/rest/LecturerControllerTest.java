@@ -1,7 +1,7 @@
 /** 
  * @author Martin
  */
-package org.unixusergroup.tutorial_time.application.users;
+package org.unixusergroup.tutorial_time.api.rest;
 
 import java.util.Arrays;
 
