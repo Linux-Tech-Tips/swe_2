@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.unixusergroup.tutorial_time.api.rest.LecturerController;
+import org.unixusergroup.tutorial_time.application.users.dto.AddLecturerResponse;
 import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 import org.unixusergroup.tutorial_time.domain.timetable.Availability;
@@ -81,6 +82,18 @@ class LecturerControllerTest {
             }
         }
         assertEquals(expectedResult.toString(), response.getBody());
+    }
+
+    @Test
+    void addLecturerToRepository() {
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        LecturerController controller = new LecturerController(lecturerRepository);
+        Lecturer expectedLecturer = new Lecturer("Jonny test", "j.test@test.ie", 1002);
+        ResponseEntity<?> response = controller.addLecturer("Jonny test", "j.test@test.ie", 1002);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        Lecturer retrievedLecturer = lecturerRepository.getLecturerById(1002);
+        assertEquals(expectedLecturer, retrievedLecturer);
     }
 }
 
