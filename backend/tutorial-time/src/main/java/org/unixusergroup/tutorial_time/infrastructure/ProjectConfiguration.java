@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 public class ProjectConfiguration {
 
     /** The backend domain name of the project, for CORS reasons */
-    public static final String FRONTEND_DOMAIN_NAME = "https://frontend.unixusergroup.org/"; /* Change this to 'http://localhost:5173/' for testing */
+    public static final String BACKEND_DOMAIN_NAME = "https://frontend.unixusergroup.org/"; /* Change this to 'http://localhost:5173/' for testing */
 
     @Bean
     public StudentRepository studentRepository(StudentJPARepository studentJPARepository) {
