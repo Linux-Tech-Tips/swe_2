@@ -3,6 +3,8 @@ package org.unixusergroup.tutorial_time.application.module;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.unixusergroup.tutorial_time.application.common.exceptions.ModuleNotFoundException; 
+import org.unixusergroup.tutorial_time.application.common.exceptions.StudentNotFoundException;
 import org.unixusergroup.tutorial_time.application.module.dto.ModuleResponse;
 import org.unixusergroup.tutorial_time.domain.module.Module;
 import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
@@ -24,12 +26,12 @@ public class UpdateModuleEnrollmentService implements UpdateModuleEnrollmentUseC
         
         Module module = moduleRepository.getModuleByCode(moduleCode);
         if (module == null) {
-            throw new UnsupportedOperationException("Error");
+            throw new ModuleNotFoundException("Module not found with code: " + moduleCode);
         }
 
         List<Student> newStudents = studentRepository.findStudentsByIds(newStudentIds);
         if (newStudents == null) {
-            throw new UnsupportedOperationException("Error");
+            throw new StudentNotFoundException("Students not found");
         }
 
         module.replaceEnrolledStudents(newStudents);
