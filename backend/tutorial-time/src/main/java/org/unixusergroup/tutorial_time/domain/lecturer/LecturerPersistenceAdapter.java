@@ -16,18 +16,26 @@ public class LecturerPersistenceAdapter implements LecturerRepository {
     @Override
     public void saveLecturer(Lecturer lecturer) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         lecturerJPARepository.save(lecturer);
 =======
 
 >>>>>>> 701837a (dded JPA repositories that'll connect to the database, with adapters to bridge between the backend and the db.)
+=======
+        lecturerJPARepository.save(lecturer);
+>>>>>>> 5d3e196 (Added a test to ensure database connectivity and modified the entities to ensure that they are represented correctly)
     }
 
     @Override
     public Lecturer getLecturerById(long staffId) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         return lecturerJPARepository.findById(staffId).get();
 =======
         return null;
 >>>>>>> 701837a (dded JPA repositories that'll connect to the database, with adapters to bridge between the backend and the db.)
+=======
+        return lecturerJPARepository.findById(staffId).get();
+>>>>>>> 5d3e196 (Added a test to ensure database connectivity and modified the entities to ensure that they are represented correctly)
     }
 }
