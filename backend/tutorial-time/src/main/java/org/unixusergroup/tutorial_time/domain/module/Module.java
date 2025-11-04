@@ -1,13 +1,13 @@
 /** 
- * @author Ethan, Martin
+ * @author Ethan, Martin, Lilian
  */
 package org.unixusergroup.tutorial_time.domain.module;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.student.Student;
-
-import java.util.List;
-import java.util.ArrayList;
 
 /** Class representing a university Module entity */
 public class Module {
@@ -58,5 +58,10 @@ public class Module {
     /** Adds a Student instance to the list of TA students for the module */
     public void addTAStudent(Student student) {
         taStudents.add(student);
+    }
+
+    /** Replaces the current list of enrolled students with the new list */
+    public void replaceEnrolledStudents(List<Student> newStudents) {
+        this.students = newStudents;
     }
 }
