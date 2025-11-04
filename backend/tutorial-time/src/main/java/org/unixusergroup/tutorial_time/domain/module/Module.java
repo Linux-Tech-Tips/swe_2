@@ -29,6 +29,7 @@ public class Module {
     @JdbcTypeCode(SqlTypes.JSON)
     private Lecturer lecturer;
 
+    public Module() {};
     /** Constructor creating an empty module with a given code and associated lecturer */
     public Module(String moduleCode, Lecturer lecturer) {
         this(moduleCode, new ArrayList<>(), new ArrayList<>(), lecturer);

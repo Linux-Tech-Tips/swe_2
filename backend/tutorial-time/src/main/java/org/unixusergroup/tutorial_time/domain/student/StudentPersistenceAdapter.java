@@ -16,11 +16,11 @@ public class StudentPersistenceAdapter implements StudentRepository {
 
     @Override
     public void saveStudent(Student student) {
-
+        studentJPARepository.save(student);
     }
 
     @Override
     public Student getStudentById(long studentId) {
-        return null;
+        return studentJPARepository.findById(studentId).get();
     }
 }

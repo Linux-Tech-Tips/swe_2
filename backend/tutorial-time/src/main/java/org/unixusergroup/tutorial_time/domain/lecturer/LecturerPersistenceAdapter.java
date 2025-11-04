@@ -15,11 +15,11 @@ public class LecturerPersistenceAdapter implements LecturerRepository {
 
     @Override
     public void saveLecturer(Lecturer lecturer) {
-
+        lecturerJPARepository.save(lecturer);
     }
 
     @Override
     public Lecturer getLecturerById(long staffId) {
-        return null;
+        return lecturerJPARepository.findById(staffId).get();
     }
 }

@@ -30,6 +30,8 @@ public abstract class User {
     @JdbcTypeCode(SqlTypes.JSON)
     protected Timetable timetable;
 
+    /** Empty default constructor for database storage */
+    protected User() {};
     /** Creates a user with the given identity and an empty timetable */
     public User(String name, String universityEmail, long universityId) {
         this(name, universityEmail, universityId, new Timetable());
@@ -45,6 +47,15 @@ public abstract class User {
     @Override
     public String toString() {
         return String.format("%s[name='%s', email='%s', id='%d']", this.getClass(), this.name, this.universityEmail, this.universityId);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof User) {
+            return ((User)obj).getUniversityId() ==  this.getUniversityId();
+        } else {
+            return false;
+        }
     }
 
     public String getName() {

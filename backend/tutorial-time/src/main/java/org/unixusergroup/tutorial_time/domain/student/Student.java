@@ -14,6 +14,7 @@ import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 /** Class representing a Student entity, inheriting from User */
 public class Student extends User {
 
+    public Student() {};
     public Student(String name, String email, long studentId) {
         super(name, email, studentId);
     }

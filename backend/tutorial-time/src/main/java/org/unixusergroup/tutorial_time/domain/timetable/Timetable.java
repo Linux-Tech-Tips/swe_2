@@ -3,10 +3,14 @@
  */
 package org.unixusergroup.tutorial_time.domain.timetable;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /** Data Value Object representing user availability in a timetable  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Timetable {
 
     /** The availability matrix signifying which timeslots are available and which are busy */
