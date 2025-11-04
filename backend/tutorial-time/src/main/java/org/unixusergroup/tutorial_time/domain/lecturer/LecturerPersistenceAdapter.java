@@ -17,6 +17,7 @@ public class LecturerPersistenceAdapter implements LecturerRepository {
     public void saveLecturer(Lecturer lecturer) {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         lecturerJPARepository.save(lecturer);
 =======
 
@@ -24,10 +25,14 @@ public class LecturerPersistenceAdapter implements LecturerRepository {
 =======
         lecturerJPARepository.save(lecturer);
 >>>>>>> 5d3e196 (Added a test to ensure database connectivity and modified the entities to ensure that they are represented correctly)
+=======
+
+>>>>>>> fad0fd0 (dded JPA repositories that'll connect to the database, with adapters to bridge between the backend and the db.)
     }
 
     @Override
     public Lecturer getLecturerById(long staffId) {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
         return lecturerJPARepository.findById(staffId).get();
@@ -37,5 +42,8 @@ public class LecturerPersistenceAdapter implements LecturerRepository {
 =======
         return lecturerJPARepository.findById(staffId).get();
 >>>>>>> 5d3e196 (Added a test to ensure database connectivity and modified the entities to ensure that they are represented correctly)
+=======
+        return null;
+>>>>>>> fad0fd0 (dded JPA repositories that'll connect to the database, with adapters to bridge between the backend and the db.)
     }
 }
