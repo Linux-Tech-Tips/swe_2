@@ -42,4 +42,29 @@ public class ModuleControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedModule, moduleRepository.getModuleByCode("CT202"));
     }
+
+
+    /** Test for getModule rest API function. */
+    @Test
+    void getModuleTest() {
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+
+        /** Creating a lecturer and adding it to the test lecturer repo. */
+        Lecturer lecturer = new Lecturer("Johnny test", "j.test@test.ie", 10002);
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        lecturerRepository.saveLecturer(lecturer);
+
+        /** Creating a module and save it to the module repo. */
+        Module expectedModule = new Module("CT202", lecturer);
+        moduleRepository.saveModule(expectedModule);
+
+        /** Calling the rest api function after creating the controller */
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+        ResponseEntity<?> response = moduleController.getModule("CT202");
+
+        /** Verifying that the useCase was successful and checking if the correct module was saved. */
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(expectedModule, response.getBody());
+    }
 }
