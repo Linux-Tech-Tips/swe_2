@@ -3,7 +3,9 @@
  */
 package org.unixusergroup.tutorial_time.domain.module;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.student.Student;
 
@@ -15,12 +17,16 @@ import java.util.ArrayList;
 public class Module {
 
     /** The module code uniquely identifying a module */
+    @Id
     private String moduleCode;
     /** Students enrolled in the module */
+    @OneToMany
     private List<Student> students;
     /** Students working as teaching assistants (TA) for this module */
+    @OneToMany
     private List<Student> taStudents;
     /** The lecturer in charge of this module */
+    @JdbcTypeCode(SqlTypes.JSON)
     private Lecturer lecturer;
 
     /** Constructor creating an empty module with a given code and associated lecturer */

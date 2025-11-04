@@ -5,11 +5,15 @@ package org.unixusergroup.tutorial_time.domain;
 
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+import org.hibernate.annotations.JdbcType;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import org.hibernate.type.descriptor.jdbc.SqlTypedJdbcType;
 import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 import org.unixusergroup.tutorial_time.domain.timetable.Availability;
 
-@MappedSuperclass
 /** A class representing the basis for a student and lecturer */
+@MappedSuperclass
 public abstract class User {
     
     /** Enumeration defining which type a concrete user is */
@@ -19,10 +23,11 @@ public abstract class User {
     protected String name;
     /** The university email of the user */
     protected String universityEmail;
-    @Id
     /** The university (student or staff) ID of the user */
+    @Id
     protected long universityId;
     /** The user's personal timetable */
+    @JdbcTypeCode(SqlTypes.JSON)
     protected Timetable timetable;
 
     /** Creates a user with the given identity and an empty timetable */
