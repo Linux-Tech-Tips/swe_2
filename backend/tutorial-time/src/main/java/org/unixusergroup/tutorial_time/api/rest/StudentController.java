@@ -19,7 +19,7 @@ import org.unixusergroup.tutorial_time.infrastructure.ProjectConfiguration;
 
 /** The API controller exposing Student Use Cases */
 @RestController
-@CrossOrigin(origins=ProjectConfiguration.BACKEND_DOMAIN_NAME)
+@CrossOrigin(origins=ProjectConfiguration.FRONTEND_DOMAIN_NAME)
 @RequestMapping(path="/api/student")
 public class StudentController {
     StudentRepository studentRepository;
