@@ -134,7 +134,7 @@ const LecturerTimetable = () => {
   const [scheduled, setScheduled] = useState(false);
   //scheduledTimes should (presuming no errors) contain a string represenation of an array of time IDs
   //dummy data for testing the print
-  const [scheduledTimes, setScheduledTimes] = useState('1,4,2');
+  const [scheduledTimes, setScheduledTimes] = useState('');
   //function to assemble constraints and call scheduler API
   async function Schedule() {
     let blockedTimes = [];
@@ -147,26 +147,32 @@ const LecturerTimetable = () => {
     }
 
    try{
-     const params = {
-        moduleCode: selectedModuleId,
-        studentLimit: currentStudentLimit,
-        minTAs: currentMinTAs,
-        blockedTimes: blockedTimes 
+    const params = {
+       //moduleCode: selectedModuleId,
+       moduleCode: 'testModule',
+       studentLimit: currentStudentLimit,
+       minTAs: currentMinTAs,
+       blockedTimes: blockedTimes 
      };
-     const options = {
-        method: 'POST',
-        body: JSON.stringify( params )  
-      };
 
-     await fetch( 'localhost:8080/api/scheduler/schedule', options ).then(() => {
-       setScheduledTimes('hyellow :)');
-       alert(response.status);});
-     //set scheduledTimes to be whatever the api returns
+     const response = await fetch( "http://localhost:8080/api/scheduler/schedule?" + new URLSearchParams(params).toString(), {
+        mode: "cors",
+        method: "POST",
+      });
+     if(!response.ok) {
+       alert("Error: " + response.status);
+       //do exception handling here
      }
-     catch (error) {
-       //CURRENTLY THROWING A TYPEERROR
-       alert(error);
+     else {
+       const data = await response.text();
+       //data is in the format of a string '{"times": [t1,t2,...,tn]}'
+       const times = data.slice(10, -2);
+       setScheduledTimes(times);
      }
+   }
+   catch (error) {
+      alert(error);
+   }
     //exception handling???  
   }
 
@@ -195,11 +201,10 @@ const LecturerTimetable = () => {
       <div>{"Please run the scheduling algorithm to see suggested tutorial times"}</div>
       );
     }
-    
+   if(scheduledTimes.length>0) { 
     //given a time ID t --> t%5 = index of its day in the day array, t//5 = index of its time in the time array
     let stringTimes = "";
     let splitScheduledTimes = scheduledTimes.split(",");
-    //for my current dummy data: it should be Tuesday 9am, Wednesday 9am, Friday 9am 
     for(let i=0; i<splitScheduledTimes.length; i++) {
       stringTimes+=days[parseInt(splitScheduledTimes[i])%5] + " at " + times[Math.floor(parseInt(splitScheduledTimes[i])/5)] + "\n";
     }
@@ -207,6 +212,8 @@ const LecturerTimetable = () => {
     return (
       <div> {convertedTimes} </div>
     );
+   }
+  return <div> {"Scheduling..."} </div>
   }
 
   return (

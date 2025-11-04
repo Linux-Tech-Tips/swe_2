@@ -40,6 +40,7 @@ public record ScheduleRequest(String moduleCode, int studentLimit, int minTAs, i
 
         try {
             Module module = moduleRepository.getModuleByCode(moduleCode);
+            System.out.println(module);
             List<Student> students = module.getStudents();
             for(Student student : students) {
                 timetables.add(student.getTimetable().getArray());
