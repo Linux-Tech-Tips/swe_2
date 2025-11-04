@@ -35,20 +35,23 @@ public class CreateModuleUseCase implements UseCase<CreateModuleResponse, Create
     public CreateModuleResponse execute(CreateModuleRequest moduleRequest) {
         try {
 
+            //TODO: write tests for checking that each given id is associated with a real student
+
             /** This is using the student ids from the module request if it's not empty to retrieve the students from the repository */
-            List<Student> enrolledStudents = new ArrayList<Student>();
             if(!moduleRequest.studentIds().isEmpty()) {
                 for(long studentId: moduleRequest.studentIds()) {
-                    Student student = this.studentRepository.getStudentById(studentId);
-                    enrolledStudents.add(student);
+                    if(this.studentRepository.getStudentById(studentId)==null) {
+                        throw new IllegalArgumentException("The given student ID " + studentId + " is not a registered student");
+                    }
                 }
             }
             /** This is using the ta student ids from the module request if it's not empty to retrieve the ta's from the repository */
             List<Student> taStudents = new ArrayList<Student>();
             if(!moduleRequest.taStudentIds().isEmpty()) {
                 for(long taStudentId: moduleRequest.taStudentIds()) {
-                    Student ta = this.studentRepository.getStudentById(taStudentId);
-                    taStudents.add(ta);
+                    if(this.studentRepository.getStudentById(taStudentId)==null) {
+                        throw new IllegalArgumentException("The given student ID " + taStudentId + " is not a registered student");
+                    }
                 }
             }
 
@@ -62,7 +65,7 @@ public class CreateModuleUseCase implements UseCase<CreateModuleResponse, Create
             if (lecturer == null) {
                 throw new IllegalArgumentException("The provided lecturer id is not present in the repo.");
             }
-            Module newModule = new Module(moduleRequest.moduleCode(), enrolledStudents, taStudents, lecturer);
+            Module newModule = new Module(moduleRequest.moduleCode(), moduleRequest.studentIds(), moduleRequest.taStudentIds(), moduleRequest.lecturerId());
 
             this.moduleRepository.saveModule(newModule);
             return new CreateModuleResponse();

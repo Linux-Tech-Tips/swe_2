@@ -34,7 +34,7 @@ public class ModuleControllerTest {
         lecturerRepository.saveLecturer(lecturer);
 
         /** Calling the rest api function after creating the controller */
-        Module expectedModule = new Module("CT202", lecturer);
+        Module expectedModule = new Module("CT202", 10002);
         ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
         ResponseEntity<?> response = moduleController.createNewModule(10002, "CT202", new ArrayList<>(), new ArrayList<>());
 
@@ -56,7 +56,7 @@ public class ModuleControllerTest {
         lecturerRepository.saveLecturer(lecturer);
 
         /** Creating a module and save it to the module repo. */
-        Module expectedModule = new Module("CT202", lecturer);
+        Module expectedModule = new Module("CT202", 1002);
         moduleRepository.saveModule(expectedModule);
 
         /** Calling the rest api function after creating the controller */
