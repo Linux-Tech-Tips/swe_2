@@ -3,8 +3,8 @@ import styles from './GridCell.module.css';
 const GridCell = ({ day, time, isUnavailable, toggleAvailability }) => {
   const cellId = `${day}-${time}`;
   const className = isUnavailable
-    ? `${styles.gridCell} ${styles.unavailable}`
-    : `${styles.gridCell} ${styles.available}`;
+    ? `${styles.gridCell} ${styles.unavailableBox}`
+    : `${styles.gridCell} ${styles.availableBox}`;
 
   return (
     <div

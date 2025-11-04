@@ -21,15 +21,7 @@ const getInitialAvailability = () => days.reduce((acc, day) => {
 }, {});
 
 const LecturerTimetable = () => {
-  const dummyModules = [
-  { id: 'CS101', name: 'CS101 - Introduction to Computer Science', students: 45 },
-  { id: 'MA203', name: 'MA203 - Discrete Mathematics', students: 30 },
-  { id: 'SE301', name: 'SE301 - Software Engineering Project', students: 20 },
-];
-
-  const [selectedModuleId, setSelectedModuleId] = useState('CS101');
-
-  const [currentModule, setCurrentModule] = useState(dummyModules.find(mod => mod.id === selectedModuleId));
+  const [selectedModuleId, setSelectedModuleId] = useState('Enter a module code here');
 
   const [currentStudentLimit, setCurrentStudentLimit] = useState(0);
   const [currentMinTAs, setCurrentMinTAs] = useState(0);
@@ -132,8 +124,7 @@ const LecturerTimetable = () => {
   }
 
   const [scheduled, setScheduled] = useState(false);
-  //scheduledTimes should (presuming no errors) contain a string represenation of an array of time IDs
-  //dummy data for testing the print
+  //scheduledTimes contains all optimal times separated by a , after Schedule() has been called
   const [scheduledTimes, setScheduledTimes] = useState('');
   //function to assemble constraints and call scheduler API
   async function Schedule() {
@@ -159,12 +150,12 @@ const LecturerTimetable = () => {
         mode: "cors",
         method: "POST",
       });
+     const data = await response.text();
      if(!response.ok) {
-       alert("Error: " + response.status);
+       alert("Error: " + data);
        //do exception handling here
      }
      else {
-       const data = await response.text();
        //data is in the format of a string '{"times": [t1,t2,...,tn]}'
        const times = data.slice(10, -2);
        setScheduledTimes(times);
@@ -176,21 +167,27 @@ const LecturerTimetable = () => {
     //exception handling???  
   }
 
-  function ChangeModule(moduleCode) {
-    //CALL GET API FOR MODULE CODES
-    const tempModule = dummyModules.find(mod => mod.id === moduleCode);
-    if(tempModule?.id===undefined) {
-      alert("Module not found");
+  async function ChangeModule(moduleId) {
+    try {
+      const response = await fetch("http://localhost:8080/api/module/getModule?" + new URLSearchParams({moduleCode: moduleId}).toString(), {mode: "cors", method: "GET",});
+      if(response.ok) {
+         setSelectedModuleId(moduleId);
+         setBlockingTimes(false); 
+         setOpenAlgorithmSettings(false); 
+         setScheduled(false);
+         setCurrentStudentLimit(0);
+         setCurrentMinTAs(0);
+         setCurrentAvailability(getInitialAvailability);
+         alert("A-OKAY");
+      }
+     else {
+       const data = await response.text();
+       alert(data); 
+     }
+   } catch (error) {
+      alert(error);
       return;
     }
-    setSelectedModuleId(moduleCode);
-    setCurrentModule(tempModule);
-    setBlockingTimes(false); 
-    setOpenAlgorithmSettings(false); 
-    setScheduled(false);
-    setCurrentStudentLimit(0);
-    setCurrentMinTAs(0);
-    setCurrentAvailability(getInitialAvailability);
   }
 
   const [convertedTimes, setConvertedTimes] = useState("Times have not been scheduled yet");
@@ -239,7 +236,6 @@ const LecturerTimetable = () => {
         <p className={styles.cardDescription}>Choose a module to schedule tutorials. Note that switching modules will erase any inputted algorithm settings data</p>
         <div className={styles.moduleSelector}>
             <input defaultValue={selectedModuleId} onKeyDown={(e) => {if (e.key === "Enter") {ChangeModule(e.target.value)}}}/>
-          <span className={styles.studentCount}>{currentModule?.students || 0} Students</span>
         </div>
         <div className={styles.actionButtons}>
           <button className={styles.actionButton}>
