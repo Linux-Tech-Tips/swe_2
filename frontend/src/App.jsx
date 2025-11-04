@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Auth from './pages/Auth.jsx';
 import StudentTimetable from './pages/StudentTimetable.jsx';
 import LecturerTimetable from './pages/LecturerTimetable.jsx';
+import LecturerCreateModule from './pages/LecturerCreateModule.jsx'
 
 // Simple placeholder for an authentication state
 const App = () => {
@@ -35,6 +36,10 @@ const App = () => {
                     }
                 />
 
+                <Route
+                    path="/createModule"
+                    element={<LecturerCreateModule />}
+                    />
                 {/* Route for the Student Timetable Page.
                   If not logged in, redirects to the root (Auth) page.
                 */}
