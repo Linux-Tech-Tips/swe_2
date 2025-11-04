@@ -55,7 +55,7 @@ public class CreateModuleUseCaseTest {
     /** This is just a test case of correct module creation functionality. */
     @Test
     void testValidModuleCreation() {
-        Module module = new Module("CT2021", lecturer);
+        Module module = new Module("CT2021", 20000);
         testLecturerRepository.saveLecturer(lecturer);
         CreateModuleResponse response = testCreateModuleUseCase.execute(createModuleRequest);
         assertTrue(response.ok());

@@ -25,7 +25,7 @@ public class GetModuleUseCaseTest {
     @BeforeEach
     void setup() {
         Lecturer lecturer = new Lecturer("Johnny Test", "j.test1@nuigalway.ie", 20000, new Timetable(2, 2, Availability.UNAVAILABLE));
-        expectedModule = new Module("CT2020", lecturer);
+        expectedModule = new Module("CT2020", 20000);
         testModuleRepository.saveModule(expectedModule);
         getModuleUseCaseTest = new GetModuleUseCase(testModuleRepository);
     }
