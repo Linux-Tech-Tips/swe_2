@@ -19,6 +19,7 @@ public class StudentPersistenceAdapter implements StudentRepository {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         studentJPARepository.save(student);
 =======
 
@@ -29,6 +30,9 @@ public class StudentPersistenceAdapter implements StudentRepository {
 =======
 
 >>>>>>> fad0fd0 (dded JPA repositories that'll connect to the database, with adapters to bridge between the backend and the db.)
+=======
+        studentJPARepository.save(student);
+>>>>>>> bf1c27d (Added a test to ensure database connectivity and modified the entities to ensure that they are represented correctly)
     }
 
     @Override
@@ -36,6 +40,7 @@ public class StudentPersistenceAdapter implements StudentRepository {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         return studentJPARepository.findById(studentId).get();
 =======
         return null;
@@ -46,5 +51,8 @@ public class StudentPersistenceAdapter implements StudentRepository {
 =======
         return null;
 >>>>>>> fad0fd0 (dded JPA repositories that'll connect to the database, with adapters to bridge between the backend and the db.)
+=======
+        return studentJPARepository.findById(studentId).get();
+>>>>>>> bf1c27d (Added a test to ensure database connectivity and modified the entities to ensure that they are represented correctly)
     }
 }
