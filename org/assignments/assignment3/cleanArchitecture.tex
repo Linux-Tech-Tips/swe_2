@@ -1,2 +1,52 @@
 \section{Clean Architecture}
-explanation of how CA and DDD principles are being followed
+
+The main Clean Architecture principles that are considered are Separation of Concerns and the inwards Dependency Rule.
+
+In addition to purely Clean Architecture itself, the SOLID principles have also served as inspiration in the development process.
+
+\subsection{Separation of Concerns}
+
+The separation of concerns is apparent in the project structure.
+The backend folder is organised into subfolders and corresponding Java packages, 
+based on the planned layer organisation as per the Clean Architecture design document.
+
+As the document says, there are 4 layers, the \textit{Domain}, \textit{Use Cases}, \textit{Adapters/Interfaces} and \textit{UI + Infrastructure}.
+
+The \textit{Domain} layer exists within the folder \verb|domain| within the backend section of the project.
+
+The \textit{Use Cases} layer is mainly contained within the \verb|application| folder in the backend section of the project,
+as it contains the behaviors and core application logic.
+
+The \textit{Adapters/Interfaces} layer is contained mainly within the \verb|api| folder, containing the interfacing with outside data
+using a REST API (with REST controllers in the folder \verb|api/rest|).
+
+The last layer, \textit{UI + Infrastructure} is split into two parts.
+The Infrastructure component exists in the \verb|infrastructure| folder, consisting mainly of concrete implementations
+of \textit{Domain} repositories that actually interact with a database.
+The UI component is fully contained within the frontend component of the project, independent of the backend.
+
+In essence, this can be interpreted as a 4-layer (or 5-layer, if we consider UI to be fully separate from the Infrastructure part)
+model, in accordance with Clean Architecture, and following our original architecture design document well.
+
+As well as the Clean Architecture, this internal structure also plays into the Single Responsibility Principle, as part of SOLID.
+Since each part has a very clear role in the project, the responsibilities are already fairly divided.
+Keeping the SRP in mind, the project extends this concept so that each object in each layer is responsible for a single self-contained feature.
+
+\subsection{Dependency Rule}
+
+The way the dependency rule is followed can be seen within the backend project structure.
+
+The \textit{Domain} layer doesn't depend on any additional pieces of our codebase, and acts as a standalone component.
+The \textit{Use Cases} layer (\verb|application| folder) depends on classes from the \textit{Domain} layer.
+In the same fashion, the \textit{Adapters/Interfaces} layer primarily uses the classes from the \textit{Use Cases} layer.
+
+The \textit{UI + Infrastructure} layer is somewhat different, being split into two separate components.
+The UI component follows the inward dependency precisely, using the REST controllers provided by the \textit{Adapters/Interfaces} layer.
+
+While the Infrastructure component still follows the dependency rule, it skips a few layers
+and implements the \textit{Domain} repository interfaces with concrete classes capable of persistent data storage.
+This also follows the Dependency Inversion Principle proposed by the SOLID principles,
+as it allows both the high level (application) and low level (infrastructure) layers to not depend on one another,
+instead using a shared abstraction, in this case the repository interfaces.
+
+
