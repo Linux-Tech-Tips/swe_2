@@ -3,9 +3,11 @@
  */
 package org.unixusergroup.tutorial_time.domain.lecturer;
 
+import jakarta.persistence.Entity;
 import org.unixusergroup.tutorial_time.domain.User;
 import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 
+@Entity
 /** Class representing a Lecturer entity, inheriting from User */
 public class Lecturer extends User {
 

@@ -3,12 +3,14 @@
  */
 package org.unixusergroup.tutorial_time.domain.module;
 
+import jakarta.persistence.Entity;
 import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.student.Student;
 
 import java.util.List;
 import java.util.ArrayList;
 
+@Entity
 /** Class representing a university Module entity */
 public class Module {
 

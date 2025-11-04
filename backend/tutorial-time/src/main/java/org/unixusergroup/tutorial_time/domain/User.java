@@ -3,9 +3,12 @@
  */
 package org.unixusergroup.tutorial_time.domain;
 
+import jakarta.persistence.Id;
+import jakarta.persistence.MappedSuperclass;
 import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 import org.unixusergroup.tutorial_time.domain.timetable.Availability;
 
+@MappedSuperclass
 /** A class representing the basis for a student and lecturer */
 public abstract class User {
     
@@ -16,6 +19,7 @@ public abstract class User {
     protected String name;
     /** The university email of the user */
     protected String universityEmail;
+    @Id
     /** The university (student or staff) ID of the user */
     protected long universityId;
     /** The user's personal timetable */
