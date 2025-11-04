@@ -8,15 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.JdbcProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 
+import org.unixusergroup.tutorial_time.infrastructure.ProjectConfiguration;
+
 @RestController
+@CrossOrigin(origins=ProjectConfiguration.FRONTEND_DOMAIN_NAME)
 @RequestMapping("/api/db")
 public class DatabaseConnectivity {
 

@@ -14,9 +14,11 @@ import org.unixusergroup.tutorial_time.application.common.UseCase;
 import org.unixusergroup.tutorial_time.application.users.CreateTimetableUseCase;
 import org.unixusergroup.tutorial_time.application.users.GetTimetableUseCase;
 import org.unixusergroup.tutorial_time.application.users.dto.*;
+import org.unixusergroup.tutorial_time.infrastructure.ProjectConfiguration;
 
 /** The API controller exposing Lecturer use cases */
 @RestController
+@CrossOrigin(origins=ProjectConfiguration.FRONTEND_DOMAIN_NAME)
 @RequestMapping(path="/api/lecturer")
 public class LecturerController {
     LecturerRepository lecturerRepository;
