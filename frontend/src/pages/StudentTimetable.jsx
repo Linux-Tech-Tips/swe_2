@@ -4,19 +4,30 @@ import { Cog } from 'lucide-react';
 
 /* Import local page components */
 import GridCell from "../components/GridCell.jsx";
+import gridStyles from '../components/GridCell.module.css';
 import styles from './StudentTimetable.module.css';
+
+import PostRequest from '../services/PostRequest.jsx';
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 const times = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
 
-/* Initial state function */
-const getInitialAvailability = () => days.reduce((acc, day) => {
-    acc[day] = times.reduce((timeAcc, time) => {
-        timeAcc[time] = false; // 'true' means UNAVAILABLE
-        return timeAcc;
-    }, {});
-    return acc;
-}, {});
+// Initial state function
+const getInitialAvailability = () => {
+    // TODO work in progress
+}
+//const getInitialAvailability = () => days.reduce((acc, day) => {
+//    // Get student availability from database
+//    PostRequest("api/student/gettimetable", {studentId: 123456}).then((result) => {
+//        const availArray = new URLSearchParams(result[1]).getAll("availability");
+//        console.log(availArray);
+//    });
+//    acc[day] = times.reduce((timeAcc, time) => {
+//        timeAcc[time] = false; // 'true' means UNAVAILABLE
+//        return timeAcc;
+//    }, {});
+//    return acc;
+//}, {});
 
 /* NavItem Component (Legend Item) */
 const NavItem = ({ colorClass, label }) => (
@@ -43,12 +54,22 @@ const StudentTimetable = ({ onLogout }) => {
     const handleSave = () => {
         const unavailableSlotsCount = Object.values(availability).flatMap(Object.values).filter(Boolean).length;
 
-        // PLACEHOLDER fake api call
-        console.log("Saving Availability data:", availability);
-
-        setSaveMessage({
-            type: 'success',
-            text: `Availability saved! You marked ${unavailableSlotsCount} slots as unavailable.`
+        // Saving availability into array as per the backend requirement
+        let availArray = [];
+        for(let i = 0; i < 8; ++i) {
+            for(let j = 0; j < 5; ++j) {
+                let val = Object.values(Object.values(availability)[j])[i];
+                availArray.push(val ? 0 : 1);
+            }
+        }
+        // API call to save data into backend, demo student for now
+        //console.log({availability: availArray});
+        PostRequest("api/student/createtimetable", {studentId: 123456, availability: availArray}).then((result) => {
+            console.log(result);
+            setSaveMessage({
+                type: 'success',
+                text: `Availability saved! You marked ${unavailableSlotsCount} slots as unavailable.`
+            });
         });
 
         setTimeout(() => setSaveMessage(null), 4000);
