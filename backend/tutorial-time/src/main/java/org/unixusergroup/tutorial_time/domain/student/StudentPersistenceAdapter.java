@@ -16,11 +16,19 @@ public class StudentPersistenceAdapter implements StudentRepository {
 
     @Override
     public void saveStudent(Student student) {
+<<<<<<< HEAD
         studentJPARepository.save(student);
+=======
+
+>>>>>>> 701837a (dded JPA repositories that'll connect to the database, with adapters to bridge between the backend and the db.)
     }
 
     @Override
     public Student getStudentById(long studentId) {
+<<<<<<< HEAD
         return studentJPARepository.findById(studentId).get();
+=======
+        return null;
+>>>>>>> 701837a (dded JPA repositories that'll connect to the database, with adapters to bridge between the backend and the db.)
     }
 }
