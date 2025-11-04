@@ -6,6 +6,7 @@ import UserIcon from '../components/UserIcon.jsx';
 import UsersIcon from '../components/UsersIcon.jsx';
 import UserCogIcon from '../components/UserCogIcon.jsx';
 import PercentageGridCell from '../components/PercentageGridCell.jsx';
+import EditStudentsModal from '../components/EditStudentsModal.jsx';
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 const times = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
@@ -35,9 +36,18 @@ const dummyAvailability = {
 
 const LecturerTimetable = () => {
   const [selectedModuleId, setSelectedModuleId] = useState(dummyModules[0].id);
+  const [showEditStudentsModal, setShowEditStudentsModal] = useState(false);
+
+    // State to manage student IDs for each module
+  const [moduleStudents, setModuleStudents] = useState({
+    'CS101': ['S001', 'S002', 'S003', 'S004', 'S005'],
+    'MA203': ['S006', 'S007', 'S008'],
+    'SE301': ['S009', 'S010'],
+  });
 
   const currentModule = dummyModules.find(mod => mod.id === selectedModuleId);
   const currentAvailability = dummyAvailability[selectedModuleId] || {};
+  const currentEnrolledStudents = moduleStudents[selectedModuleId] || [];
 
   // Placeholder which highlights 2 highest percentages
   const allPercentages = Object.values(currentAvailability)
@@ -49,6 +59,20 @@ const LecturerTimetable = () => {
 
   const isOptimalSlot = (percentage) => {
     return percentage !== null && optimalPercentages.includes(percentage);
+  };
+
+    const handleAddStudent = (studentId) => {
+    setModuleStudents(prev => ({
+      ...prev,
+      [selectedModuleId]: [...(prev[selectedModuleId] || []), studentId],
+    }));
+  };
+
+  const handleRemoveStudent = (studentIdToRemove) => {
+    setModuleStudents(prev => ({
+      ...prev,
+      [selectedModuleId]: (prev[selectedModuleId] || []).filter(id => id !== studentIdToRemove),
+    }));
   };
 
   return (
@@ -85,10 +109,13 @@ const LecturerTimetable = () => {
               </option>
             ))}
           </select>
-          <span className={styles.studentCount}>{currentModule?.students || 0} Students</span>
+          <span className={styles.studentCount}>{currentEnrolledStudents.length} Students</span>
         </div>
         <div className={styles.actionButtons}>
-          <button className={styles.actionButton}>
+          <button 
+            className={styles.actionButton}
+            onClick={() => setShowEditStudentsModal(true)}
+          >
             <UsersIcon className={styles.actionIcon} />
             Edit Students
           </button>
@@ -140,6 +167,14 @@ const LecturerTimetable = () => {
           </div>
         </div>
       </div>
+      <EditStudentsModal
+        isOpen={showEditStudentsModal}
+        onClose={() => setShowEditStudentsModal(false)}
+        moduleName={currentModule?.name || 'Selected Module'}
+        enrolledStudents={currentEnrolledStudents}
+        onAddStudent={handleAddStudent}
+        onRemoveStudent={handleRemoveStudent}
+      />      
     </div>
   );
 };
