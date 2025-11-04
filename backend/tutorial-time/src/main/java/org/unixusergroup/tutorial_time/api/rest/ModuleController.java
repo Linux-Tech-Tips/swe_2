@@ -4,8 +4,6 @@
 
 package org.unixusergroup.tutorial_time.api.rest;
 
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -17,8 +15,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.unixusergroup.tutorial_time.application.common.exceptions.ModuleNotFoundException;
 import org.unixusergroup.tutorial_time.application.common.exceptions.StudentNotFoundException;
-import org.unixusergroup.tutorial_time.application.module.UpdateModuleEnrollmentUseCase;
+import org.unixusergroup.tutorial_time.application.module.UpdateEnrollmentStatusUseCase;
 import org.unixusergroup.tutorial_time.application.module.dto.ModuleResponse;
+import org.unixusergroup.tutorial_time.application.module.dto.UpdateEnrollmentStatusRequest;
 
 /**
  * REST Controller responsible for handling web requests regarding Module management.
@@ -27,27 +26,39 @@ import org.unixusergroup.tutorial_time.application.module.dto.ModuleResponse;
 @RequestMapping("/api/modules")
 public class ModuleController {
 
-    /* Constructs ModuleController & automatically injects Use Case implementation.*/
-    private final UpdateModuleEnrollmentUseCase updateModuleEnrollmentUseCase;
-
-    public ModuleController (UpdateModuleEnrollmentUseCase updateModuleEnrollmentUseCase) {
-        this.updateModuleEnrollmentUseCase = updateModuleEnrollmentUseCase;
+    public enum EnrollmentAction {
+        ADD,
+        REMOVE
     }
 
-    /*dTO for request body regarding updating student enrollment */
-    public record EnrollmentUpdateRequest(List<Long> studentIds) {}
+    private final UpdateEnrollmentStatusUseCase updateEnrollmentStatusUseCase;
 
-    /*Deals with PATCH requests for updating enrollment of students in specific module
-     * Replaces existing student list with new list provided
-     */
-    @PatchMapping("/{moduleCode}/enrollment")
-    public ResponseEntity<ModuleResponse> updateEnrollment (
-        @PathVariable String moduleCode,
-        @RequestBody EnrollmentUpdateRequest request
-    ) {
-        ModuleResponse updateModule = updateModuleEnrollmentUseCase.execute(moduleCode, request.studentIds());
-        return ResponseEntity.ok(updateModule);
-    }
+        public ModuleController (UpdateEnrollmentStatusUseCase updateEnrollmentStatusUseCase) {
+            this.updateEnrollmentStatusUseCase = updateEnrollmentStatusUseCase;
+        }
+
+        public record EnrollmentUpdateRequest(
+            long studentId,
+            EnrollmentAction action
+        ) {}
+
+        /**
+         * Handles PATCH requests to add or remove a single student from a specific module.
+         */
+        @PatchMapping("/{moduleCode}/enrollment")
+        public ResponseEntity<ModuleResponse> updateEnrollment (
+            @PathVariable String moduleCode,
+            @RequestBody EnrollmentUpdateRequest apiRequest
+        ) {
+            UpdateEnrollmentStatusRequest useCaseRequest = new UpdateEnrollmentStatusRequest(
+                moduleCode,
+                apiRequest.studentId(),
+                apiRequest.action()
+            );
+
+            ModuleResponse updatedModule = updateEnrollmentStatusUseCase.execute(useCaseRequest);
+            return ResponseEntity.ok(updatedModule);
+        }
 
     /* Handler for a 404 (Not Found)*/ 
     @ExceptionHandler(ModuleNotFoundException.class)

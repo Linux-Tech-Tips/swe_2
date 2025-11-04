@@ -60,8 +60,14 @@ public class Module {
         taStudents.add(student);
     }
 
-    /** Replaces the current list of enrolled students with the new list */
-    public void replaceEnrolledStudents(List<Student> newStudents) {
-        this.students = newStudents;
+    /*Added this as I didn't want to modify others code in case it would break */
+    public void addStudentToModule(Student student) {
+        if (!this.students.contains(student)) { 
+            this.students.add(student);
+        }
+    }
+
+    public void removeStudentFromModule(Student student) {
+        this.students.remove(student);
     }
 }
