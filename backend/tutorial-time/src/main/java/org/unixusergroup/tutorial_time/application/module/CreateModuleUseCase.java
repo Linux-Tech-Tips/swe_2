@@ -4,35 +4,34 @@
 package org.unixusergroup.tutorial_time.application.module;
 
 import org.unixusergroup.tutorial_time.domain.module.Module;
+import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
 import org.unixusergroup.tutorial_time.application.common.UseCase;
-import org.unixusergroup.tutorial_time.application.module.dto.ModuleRequest;
-import org.unixusergroup.tutorial_time.application.module.dto.ModuleResponse;
+import org.unixusergroup.tutorial_time.application.module.dto.CreateModuleRequest;
+import org.unixusergroup.tutorial_time.application.module.dto.CreateModuleResponse;
 
-public class CreateModuleUseCase implements UseCase<ModuleResponse, ModuleRequest> {
+public class CreateModuleUseCase implements UseCase<CreateModuleResponse, CreateModuleRequest> {
 
-    public CreateModuleUseCase() {};
+    /** The module repository associated with this use case. */
+    private final ModuleRepository moduleRepository;
+    public CreateModuleUseCase(ModuleRepository moduleRepository) {
+        this.moduleRepository = moduleRepository;
+    };
 
-    /**
-     * TODO: implement the logic that allows the repository to create a module and saves it into the repository.
-     *
-     * So atm
-     * Need to run checks such that an invalid module, throws an exception.
-     * @param moduleRequest
-     * @return
-     */
+    /** Creates a module with the request params and saves it in ModuleRepository
+     * while providing an appropriate response.*/
     @Override
-    public ModuleResponse execute(ModuleRequest moduleRequest) throws RuntimeException {
+    public CreateModuleResponse execute(CreateModuleRequest moduleRequest) {
         try {
             Module newModule = new Module(moduleRequest.moduleCode(), moduleRequest.students(), moduleRequest.taStudents(), moduleRequest.lecturer());
             if (newModule.getModuleCode().isEmpty() || newModule.getLecturer() == null) {
-                throw new RuntimeException();
+                throw new IllegalArgumentException();
             }
 
-            moduleRequest.moduleRepository().saveModule(newModule);
-            return new ModuleResponse(newModule);
+            this.moduleRepository.saveModule(newModule);
+            return new CreateModuleResponse();
 
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+        } catch (Exception e) {
+            return new CreateModuleResponse(e.getMessage());
         }
     }
 }

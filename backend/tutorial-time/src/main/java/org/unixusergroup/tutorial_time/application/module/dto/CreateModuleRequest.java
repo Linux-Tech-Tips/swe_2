@@ -18,5 +18,5 @@ import java.util.List;
  * @param taStudents A list of TA students that associated with this module
  * @param lecturer The lecturer teaching this module.
  */
-public record ModuleRequest(String moduleCode, List<Student> students, List<Student> taStudents, Lecturer lecturer) {
+public record CreateModuleRequest(String moduleCode, List<Student> students, List<Student> taStudents, Lecturer lecturer) {
 }
