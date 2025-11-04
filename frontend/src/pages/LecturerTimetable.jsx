@@ -61,18 +61,9 @@ const LecturerTimetable = () => {
     return percentage !== null && optimalPercentages.includes(percentage);
   };
 
-    const handleAddStudent = (studentId) => {
-    setModuleStudents(prev => ({
-      ...prev,
-      [selectedModuleId]: [...(prev[selectedModuleId] || []), studentId],
-    }));
-  };
-
-  const handleRemoveStudent = (studentIdToRemove) => {
-    setModuleStudents(prev => ({
-      ...prev,
-      [selectedModuleId]: (prev[selectedModuleId] || []).filter(id => id !== studentIdToRemove),
-    }));
+  const refreshStudentList = () => {
+    console.log(`[DATA REFRESH] Module ${selectedModuleId} students need to be re-fetched.`);
+    setShowEditStudentsModal(false);
   };
 
   return (
@@ -170,10 +161,10 @@ const LecturerTimetable = () => {
       <EditStudentsModal
         isOpen={showEditStudentsModal}
         onClose={() => setShowEditStudentsModal(false)}
-        moduleName={currentModule?.name || 'Selected Module'}
+        moduleCode={selectedModuleId} 
+        moduleTitle={currentModule?.name || 'Selected Module'}
         enrolledStudents={currentEnrolledStudents}
-        onAddStudent={handleAddStudent}
-        onRemoveStudent={handleRemoveStudent}
+        onUpdateSuccess={refreshStudentList}
       />      
     </div>
   );
