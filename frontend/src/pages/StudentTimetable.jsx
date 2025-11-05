@@ -1,5 +1,4 @@
-/* Library imports */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Cog } from 'lucide-react';
 
 /* Import local page components */
@@ -12,22 +11,13 @@ import PostRequest from '../services/PostRequest.jsx';
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 const times = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
 
-// Initial state function
-const getInitialAvailability = () => {
-    // TODO work in progress
-}
-//const getInitialAvailability = () => days.reduce((acc, day) => {
-//    // Get student availability from database
-//    PostRequest("api/student/gettimetable", {studentId: 123456}).then((result) => {
-//        const availArray = new URLSearchParams(result[1]).getAll("availability");
-//        console.log(availArray);
-//    });
-//    acc[day] = times.reduce((timeAcc, time) => {
-//        timeAcc[time] = false; // 'true' means UNAVAILABLE
-//        return timeAcc;
-//    }, {});
-//    return acc;
-//}, {});
+const getInitialAvailability = () => days.reduce((acc, day) => {
+    acc[day] = times.reduce((timeAcc, time) => {
+        timeAcc[time] = false; // 'true' means UNAVAILABLE
+        return timeAcc;
+    }, {});
+    return acc;
+}, {});
 
 /* NavItem Component (Legend Item) */
 const NavItem = ({ colorClass, label }) => (
@@ -51,6 +41,28 @@ const StudentTimetable = ({ onLogout }) => {
         }));
     };
 
+    let loaded = false;
+    const loadDatabaseTimetable = () => {
+        if(!loaded) {
+            PostRequest("api/student/gettimetable", {studentId: 123456}).then((result) => {
+                let availArray = new URLSearchParams(result[1]).getAll("availability");
+                for(let dayIdx in days) {
+                    for(let timeIdx in times) {
+                        let flatIdx = parseInt(parseInt(timeIdx) * 5) + parseInt(dayIdx);
+                        if(availArray[flatIdx] == "0") {
+                            toggleAvailability(days[dayIdx], times[timeIdx]);
+                        }
+                    }
+                }
+            });
+            loaded = true;
+        }
+    };
+
+    useEffect(() => {
+        loadDatabaseTimetable();
+    }, []);
+
     const handleSave = () => {
         const unavailableSlotsCount = Object.values(availability).flatMap(Object.values).filter(Boolean).length;
 
@@ -63,7 +75,6 @@ const StudentTimetable = ({ onLogout }) => {
             }
         }
         // API call to save data into backend, demo student for now
-        //console.log({availability: availArray});
         PostRequest("api/student/createtimetable", {studentId: 123456, availability: availArray}).then((result) => {
             console.log(result);
             setSaveMessage({
