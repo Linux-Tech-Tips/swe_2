@@ -17,7 +17,7 @@ import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 import org.unixusergroup.tutorial_time.infrastructure.InMemoryModuleRepository;
 import org.unixusergroup.tutorial_time.infrastructure.InMemoryStudentRepository;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,7 +29,7 @@ public class ScheduleTutorialsUseCaseTest {
     private static final InMemoryStudentRepository studentRepository = new InMemoryStudentRepository();
     ScheduleRequest request;
     ScheduleTutorialsUseCase testUseCase = new ScheduleTutorialsUseCase();
-    int[] blockedTimes = new int[9];
+    int[] blockedTimes = {};
 
     /**
      * method for initialising variables
@@ -40,15 +40,19 @@ public class ScheduleTutorialsUseCaseTest {
         Module testModule = new Module("testModule", testLecturer.getUniversityId());
         Student student1 = new Student("Student1", "s1@university.ie", 1111, new Timetable(2, 2, Availability.UNAVAILABLE));
         student1.setAvailable(0,0);
+        studentRepository.saveStudent(student1);
         testModule.addStudent(student1.getUniversityId());
         Student student2 = new Student("Student2", "s2@university.ie", 2222, new Timetable(2, 2, Availability.UNAVAILABLE));
         student2.setAvailable(0,0);
+        studentRepository.saveStudent(student2);
         testModule.addStudent(student2.getUniversityId());
         Student student3 = new Student("Student3", "s3@university.ie", 3333, new Timetable(2, 2, Availability.UNAVAILABLE));
         student3.setAvailable(1,1);
+        studentRepository.saveStudent(student3);
         testModule.addStudent(student3.getUniversityId());
         Student student4 = new Student("Student4", "s4@university.ie", 4444, new Timetable(2, 2, Availability.UNAVAILABLE));
         student4.setAvailable(0,1);
+        studentRepository.saveStudent(student4);
         testModule.addStudent(student4.getUniversityId());
         moduleRepository.saveModule(testModule);
         request = new ScheduleRequest("testModule", 0, 0, blockedTimes, moduleRepository, studentRepository);
@@ -70,7 +74,7 @@ public class ScheduleTutorialsUseCaseTest {
      */
     @Test
     public void impossibleBlockedTimesTest() {
-        int[] badTimes = {1};
+        int[] badTimes = {2};
         request = new ScheduleRequest("testModule", 0, 0, badTimes, moduleRepository, studentRepository);
         assertThrows(RuntimeException.class, () -> testUseCase.execute(request));
     }
@@ -93,18 +97,23 @@ public class ScheduleTutorialsUseCaseTest {
         Module testModule = new Module("testModule", testLecturer.getUniversityId());
         Student student1 = new Student("Student1", "s1@university.ie", 1111, new Timetable(2, 2, Availability.UNAVAILABLE));
         student1.setAvailable(0,0);
+        studentRepository.saveStudent(student1);
         testModule.addStudent(student1.getUniversityId());
         Student student2 = new Student("Student2", "s2@university.ie", 2222, new Timetable(2, 2, Availability.UNAVAILABLE));
         student2.setAvailable(0,0);
         testModule.addStudent(student2.getUniversityId());
+        studentRepository.saveStudent(student2);
         Student student3 = new Student("Student3", "s3@university.ie", 3333, new Timetable(2, 2, Availability.UNAVAILABLE));
         student3.setAvailable(1,1);
+        studentRepository.saveStudent(student3);
         testModule.addStudent(student3.getUniversityId());
         Student student4 = new Student("Student4", "s4@university.ie", 4444, new Timetable(2, 2, Availability.UNAVAILABLE));
         student4.setAvailable(0,1);
+        studentRepository.saveStudent(student4);
         testModule.addStudent(student4.getUniversityId());
         Student ta1 = new Student("TA1", "ta1@university.ie", 1111, new Timetable(2, 2, Availability.AVAILABLE));
         ta1.setUnavailable(0,0);
+        studentRepository.saveStudent(ta1);
         testModule.addTAStudent(ta1.getUniversityId());
         moduleRepository.saveModule(testModule);
         request = new ScheduleRequest("testModule", 1, 2, blockedTimes, moduleRepository, studentRepository);

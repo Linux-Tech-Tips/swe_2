@@ -6,6 +6,7 @@
 package org.unixusergroup.tutorial_time.domain.scheduler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import jakarta.persistence.ElementCollection;
@@ -128,9 +129,9 @@ public class Scheduler {
                 if(!unionOfTimes(timeSlots.get(i)).containsAll(timeSlots.get(i).getStudents())) {
                     //TODO: make this exception better (i.e. say which time/students it is
                     // also should it throw a warning instead of an exception? maybe lecturers want to force it??
-                    throw new IllegalArgumentException("There are students who are only available at this time");
+                    throw new IllegalArgumentException("Students who are only available at this time");
                 }
-                System.out.println("We have removed time " + id);
+
                 timeSlots.remove(i);
                 numberOfTimeSlots--;
                 //check if the adjacency matrix exists yet (this method will be called before it's created if times are blocked off)

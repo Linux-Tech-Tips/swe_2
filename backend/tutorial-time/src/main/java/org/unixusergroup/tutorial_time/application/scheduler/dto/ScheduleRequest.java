@@ -38,10 +38,8 @@ public record ScheduleRequest(String moduleCode, int studentLimit, int minTAs, i
      */
     public Scheduler scheduler() {
         ArrayList<int[]> timetables = new ArrayList<>();
-
         try {
             Module module = moduleRepository.getModuleByCode(moduleCode);
-            System.out.println(module);
             List<Long> students = module.getStudents();
             for(Long student : students) {
                 timetables.add(studentRepository.getStudentById(student).getTimetable().getArray());
@@ -50,7 +48,7 @@ public record ScheduleRequest(String moduleCode, int studentLimit, int minTAs, i
                 ArrayList<int[]> taTimetables = new ArrayList<>();
                 List<Long> TAs = module.getTAStudents();
                 for(Long student : TAs) {
-                    timetables.add(studentRepository.getStudentById(student).getTimetable().getArray());
+                    taTimetables.add(studentRepository.getStudentById(student).getTimetable().getArray());
                 }
                 return new Scheduler(timetables, taTimetables);
             }

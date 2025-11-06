@@ -69,12 +69,14 @@ public class ScheduleRequestTest {
     @Test
     public void testFetchingTATimetables() {
         Module testModule = getModule();
-        Student ta1 = new Student("TA1", "ta1@university.ie", 1111, new Timetable(2, 2, Availability.AVAILABLE));
+        Student ta1 = new Student("TA1", "ta1@university.ie", 5555, new Timetable(2, 2, Availability.AVAILABLE));
         ta1.setUnavailable(1,0);
         testModule.addTAStudent(ta1.getUniversityId());
-        Student ta2 = new Student("TA2", "ta2@university.ie", 2222, new Timetable(2, 2, Availability.AVAILABLE));
+        studentRepository.saveStudent(ta1);
+        Student ta2 = new Student("TA2", "ta2@university.ie", 6666, new Timetable(2, 2, Availability.AVAILABLE));
         ta2.setUnavailable(1,0);
         testModule.addTAStudent(ta2.getUniversityId());
+        studentRepository.saveStudent(ta2);
         moduleRepository.saveModule(testModule);
         ScheduleRequest request = new ScheduleRequest("testModule", 0, 1, blockedTimes, moduleRepository, studentRepository);
         Scheduler requestScheduler = request.scheduler();
@@ -103,16 +105,20 @@ public class ScheduleRequestTest {
         Module testModule = new Module("testModule", testLecturer.getUniversityId());
         Student student1 = new Student("Student1", "s1@university.ie", 1111, new Timetable(2, 2, Availability.UNAVAILABLE));
         student1.setAvailable(0,0);
+        studentRepository.saveStudent(student1);
         testModule.addStudent(student1.getUniversityId());
         Student student2 = new Student("Student2", "s2@university.ie", 2222, new Timetable(2, 2, Availability.UNAVAILABLE));
         student2.setAvailable(0,0);
         testModule.addStudent(student2.getUniversityId());
+        studentRepository.saveStudent(student2);
         Student student3 = new Student("Student3", "s3@university.ie", 3333, new Timetable(2, 2, Availability.UNAVAILABLE));
         student3.setAvailable(1,1);
         testModule.addStudent(student3.getUniversityId());
+        studentRepository.saveStudent(student3);
         Student student4 = new Student("Student4", "s4@university.ie", 4444, new Timetable(2, 2, Availability.UNAVAILABLE));
         student4.setAvailable(0,1);
         testModule.addStudent(student4.getUniversityId());
+        studentRepository.saveStudent(student4);
         return testModule;
     }
 }
