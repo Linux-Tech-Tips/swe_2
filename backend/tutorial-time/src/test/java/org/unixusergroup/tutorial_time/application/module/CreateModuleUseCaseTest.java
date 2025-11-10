@@ -1,3 +1,7 @@
+/**
+ * @author Ethan
+ */
+
 package org.unixusergroup.tutorial_time.application.module;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +34,6 @@ public class CreateModuleUseCaseTest {
 
     @BeforeEach
     void setup() {
-        ArrayList<Student> students = new ArrayList<>();
         lecturer = new Lecturer("Johnny Test", "j.test1@nuigalway.ie", 20000, new Timetable(2, 2, Availability.UNAVAILABLE));
         createModuleRequest = new CreateModuleRequest("CT2021", new ArrayList<>(), new ArrayList<>(), lecturer.getUniversityId());
 
@@ -61,5 +64,25 @@ public class CreateModuleUseCaseTest {
         assertTrue(response.ok());
         Module generatedModule = testModuleRepository.getModuleByCode("CT2021");
         assertEquals(module, generatedModule);
+    }
+
+    /** This is testing creating a module with an invalid student ID */
+    @Test
+    void testModuleCreationWithInvalidStudent() {
+        ArrayList<Long> studentIDs = new ArrayList<>();
+        studentIDs.add(000L);
+        createModuleRequest = new CreateModuleRequest("", studentIDs, new ArrayList<>(), 20000);
+        CreateModuleResponse response = testCreateModuleUseCase.execute(createModuleRequest);
+        assertFalse(response.ok());
+    }
+
+    /** This is testing creating an invalid TA ID */
+    @Test
+    void testModuleCreationWithInvalidTA() {
+        ArrayList<Long> taIDs = new ArrayList<>();
+        taIDs.add(000L);
+        createModuleRequest = new CreateModuleRequest("", new ArrayList<>(), taIDs, 20000);
+        CreateModuleResponse response = testCreateModuleUseCase.execute(createModuleRequest);
+        assertFalse(response.ok());
     }
 }

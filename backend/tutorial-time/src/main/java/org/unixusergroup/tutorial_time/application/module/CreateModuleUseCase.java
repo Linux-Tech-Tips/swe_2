@@ -35,7 +35,17 @@ public class CreateModuleUseCase implements UseCase<CreateModuleResponse, Create
     public CreateModuleResponse execute(CreateModuleRequest moduleRequest) {
         try {
 
-            //TODO: write tests for checking that each given id is associated with a real student
+            /** Verifing that the module code is not empty */
+            if (moduleRequest.moduleCode().isEmpty()) {
+                throw new IllegalArgumentException("The provided module code is empty.");
+            }
+
+            /** If lecturer doesn't exist in the database, the use case will throw an error which will lead to the response */
+            Lecturer lecturer = lecturerRepository.getLecturerById(moduleRequest.lecturerId());
+
+            if (lecturer == null) {
+                throw new IllegalArgumentException("The provided lecturer id is not present in the repo.");
+            }
 
             /** This is using the student ids from the module request if it's not empty to retrieve the students from the repository */
             if(!moduleRequest.studentIds().isEmpty()) {
@@ -46,7 +56,6 @@ public class CreateModuleUseCase implements UseCase<CreateModuleResponse, Create
                 }
             }
             /** This is using the ta student ids from the module request if it's not empty to retrieve the ta's from the repository */
-            List<Student> taStudents = new ArrayList<Student>();
             if(!moduleRequest.taStudentIds().isEmpty()) {
                 for(long taStudentId: moduleRequest.taStudentIds()) {
                     if(this.studentRepository.getStudentById(taStudentId)==null) {
@@ -55,16 +64,6 @@ public class CreateModuleUseCase implements UseCase<CreateModuleResponse, Create
                 }
             }
 
-            /** If lecturer doesn't exist in the database, the use case will throw an error which will lead to the response */
-            Lecturer lecturer = lecturerRepository.getLecturerById(moduleRequest.lecturerId());
-
-            /** Verifing that the module code is not empty */
-            if (moduleRequest.moduleCode().isEmpty()) {
-                throw new IllegalArgumentException("The provided module code is empty.");
-            }
-            if (lecturer == null) {
-                throw new IllegalArgumentException("The provided lecturer id is not present in the repo.");
-            }
             Module newModule = new Module(moduleRequest.moduleCode(), moduleRequest.studentIds(), moduleRequest.taStudentIds(), moduleRequest.lecturerId());
 
             this.moduleRepository.saveModule(newModule);
