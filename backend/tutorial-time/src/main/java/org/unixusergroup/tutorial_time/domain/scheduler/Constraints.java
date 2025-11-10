@@ -6,7 +6,7 @@
 
 package org.unixusergroup.tutorial_time.domain.scheduler;
 
-import java.util.ArrayList;
+import org.unixusergroup.tutorial_time.application.exceptions.IllegalConstraintsException;
 
 public class Constraints {
     private final int studentLimit;
@@ -20,12 +20,12 @@ public class Constraints {
      * @param minTAs the minimum number of TAs that must be in each tutorial
      * @param blockedTimes time that should not be considered
      */
-    public Constraints(int studentLimit, int minTAs, int[] blockedTimes) throws IllegalArgumentException{
+    public Constraints(int studentLimit, int minTAs, int[] blockedTimes) throws IllegalConstraintsException{
         if(studentLimit<0) {
-            throw new IllegalArgumentException("The student limit must be positive");
+            throw new IllegalConstraintsException("The student limit must be positive");
         }
         if(minTAs<0) {
-            throw new IllegalArgumentException("The TA minimum must be 0 or more");
+            throw new IllegalConstraintsException("The TA minimum must be 0 or more");
         }
         this.studentLimit = studentLimit;
         this.minTAs = minTAs;

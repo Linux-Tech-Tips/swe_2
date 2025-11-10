@@ -3,6 +3,10 @@
  * @author Cedar
  */
 package org.unixusergroup.tutorial_time.domain.scheduler;
+import org.unixusergroup.tutorial_time.application.exceptions.IllegalModuleSizeException;
+import org.unixusergroup.tutorial_time.application.exceptions.IllegalStudentAdditionException;
+import org.unixusergroup.tutorial_time.application.exceptions.IllegalStudentRemovalException;
+
 import java.util.HashSet;
 
 public class TimeSlot implements Comparable<TimeSlot> {
@@ -17,9 +21,9 @@ public class TimeSlot implements Comparable<TimeSlot> {
      * @param id ID
      * @param moduleSize number of students in the module
      */
-    public TimeSlot(int id, int moduleSize) throws IllegalArgumentException{
+    public TimeSlot(int id, int moduleSize) throws IllegalModuleSizeException {
         if(moduleSize<1) {
-            throw new IllegalArgumentException("The module size must be positive");
+            throw new IllegalModuleSizeException("The module size must be positive");
         }
         this.id = id;
         size = 0;
@@ -28,22 +32,18 @@ public class TimeSlot implements Comparable<TimeSlot> {
         capacity = moduleSize;
     }
 
-    public int getCapacity() {
-        return capacity;
-    }
-
     /**
      * add a given student, increase the size
      * throw exceptions when the set is full or the student already exists in the set
      * @param student the studentID to be added
      */
-    public void addStudent(int student){
+    public void addStudent(int student) throws IllegalStudentAdditionException {
         if(size==capacity) {
-            throw new IllegalArgumentException("The student set is at capacity");
+            throw new IllegalStudentAdditionException("The student set is at capacity");
         }
 
         if (students.contains(student)) {
-            throw new IllegalArgumentException("That student is already included");
+            throw new IllegalStudentAdditionException("That student is already included");
         }
         students.add(student);
         size++;
@@ -54,13 +54,13 @@ public class TimeSlot implements Comparable<TimeSlot> {
      * throws exception when the student doesn't exist or the set is empty
      * @param student the studentID to be removed
      */
-    public void removeStudent(int student) {
+    public void removeStudent(int student) throws IllegalStudentRemovalException {
         if(size==0) {
-            throw new IllegalArgumentException("The student set is empty");
+            throw new IllegalStudentRemovalException("The student set is empty");
         }
 
         if (!students.contains(student)) {
-            throw new IllegalArgumentException("That student is not in the set");
+            throw new IllegalStudentRemovalException("That student is not in the set");
         }
         students.remove(student);
         size--;
@@ -79,8 +79,11 @@ public class TimeSlot implements Comparable<TimeSlot> {
     }
 
     public void decreaseDegree(int d) {
-        //TODO throw exception if it would become negative
-        degree-=d;
+        if(degree-d>=0) {
+            degree-=d;
+            return;
+        }
+        throw new IllegalArgumentException("The degree cannot be negative");
     }
 
     public void increaseDegree(int d) {
@@ -92,13 +95,12 @@ public class TimeSlot implements Comparable<TimeSlot> {
     }
 
     /**
-     * method for comparing timesets, is compared such that when a list is sorted it is sorted ascending for no. students available at each, when equal size sorted descending by degree
+     * method for comparing timeslots, is compared such that when a list is sorted it is sorted ascending for no. students available at each, when equal size sorted descending by degree
      * @param o object to be compared to
      * @return negative number if this is smaller, positive number if o is smaller
      */
     @Override
     public int compareTo(TimeSlot o) {
-        //TODO: TESTS
         if(size!=o.getSize()) {
             return size-o.getSize();
         }
@@ -118,7 +120,7 @@ public class TimeSlot implements Comparable<TimeSlot> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        TimeSlot otherTimeset = (TimeSlot) o;
-        return this.id == otherTimeset.getId();
+        TimeSlot otherTimeslot = (TimeSlot) o;
+        return this.id == otherTimeslot.getId();
     }
 }

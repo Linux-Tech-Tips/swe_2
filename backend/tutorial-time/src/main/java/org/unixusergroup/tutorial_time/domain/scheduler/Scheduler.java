@@ -6,12 +6,12 @@
 package org.unixusergroup.tutorial_time.domain.scheduler;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import jakarta.persistence.ElementCollection;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.unixusergroup.tutorial_time.application.exceptions.*;
 
 public class Scheduler {
     /**universal set U which contains the numbers of all students*/
@@ -32,7 +32,7 @@ public class Scheduler {
      */
     public Scheduler(ArrayList<int[]> studentTimetables) {
         if(studentTimetables.isEmpty()) {
-            throw new IllegalArgumentException("At least one student timetable must be entered");
+            throw new IllegalStudentTimetablesException( "At least one student timetable must be entered");
         }
         this.moduleSize = studentTimetables.size();
         this.studentTimetables = studentTimetables;
@@ -54,10 +54,10 @@ public class Scheduler {
      * @param studentTimetables student timetables
      * @param taTimetables TA timetables
      */
-    public Scheduler(ArrayList<int[]> studentTimetables, ArrayList<int[]> taTimetables) throws IllegalArgumentException{
+    public Scheduler(ArrayList<int[]> studentTimetables, ArrayList<int[]> taTimetables) throws IllegalStudentTimetablesException{
         this(studentTimetables);
         if(taTimetables.isEmpty()) {
-            throw new IllegalArgumentException("At least one TA timetable must be entered");
+            throw new IllegalStudentTimetablesException("At least one TA timetable must be entered");
         }
         this.taTimetables = taTimetables;
     }
@@ -66,10 +66,6 @@ public class Scheduler {
 
     public int getModuleSize() {
         return moduleSize;
-    }
-
-    public HashSet<Integer> getUniverse() {
-        return U;
     }
 
     public ArrayList<int[]> getStudentTimetables() {
@@ -91,7 +87,7 @@ public class Scheduler {
     /**
      * method to initialise all the timeslots, setting each to include all students that are available at that time
      */
-    public void createTimeSlots() throws IllegalArgumentException{
+    public void createTimeSlots() throws RuntimeException {
         timeSlots = new ArrayList<>();
         for(int i = 0; i< numberOfTimeSlots; i++) {
             try {
@@ -105,12 +101,16 @@ public class Scheduler {
         for(int j=0; j<moduleSize; j++) {
             for(int i = 0; i< numberOfTimeSlots; i++) {
                 if(studentTimetables.get(j)[i]==1) {
-                    timeSlots.get(i).addStudent(j);
+                    try {
+                        timeSlots.get(i).addStudent(j);
+                    } catch (IllegalStudentAdditionException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
         }
         /*
-        initialises numberOftimeslots empty HashSets
+        initialises numberOfTimeslots empty HashSets
         loops through each student timetable --> for each time they're available, add that student to that time set
         the student numbers are equivalent to their position in the schedules array
         the time numbers are equivalent to their position in the time set array
@@ -128,8 +128,7 @@ public class Scheduler {
                 //check if there's any students that are only available at this time
                 if(!unionOfTimes(timeSlots.get(i)).containsAll(timeSlots.get(i).getStudents())) {
                     //TODO: make this exception better (i.e. say which time/students it is
-                    // also should it throw a warning instead of an exception? maybe lecturers want to force it??
-                    throw new IllegalArgumentException("Students who are only available at this time");
+                    throw new IllegalTimeDeletionException("There are students who are only available at this time");
                 }
 
                 timeSlots.remove(i);
@@ -144,7 +143,7 @@ public class Scheduler {
                 return;
             }
         }
-        throw new IllegalArgumentException("The given time does not exist");
+        throw new IllegalTimeDeletionException("The given time does not exist");
     }
 
     /**
@@ -197,7 +196,11 @@ public class Scheduler {
             for(int a : timeSlots.get(i).getStudents()) {
                 //remove elements that are represented in other timeslots
                 if(unionOfOthers.contains(a)) {
-                    timeSlots.get(i).removeStudent(a);
+                    try {
+                        timeSlots.get(i).removeStudent(a);
+                    } catch (IllegalStudentRemovalException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
                 //once it fits into the limit --> stop
                 if(timeSlots.get(i).getSize()==limit) {
@@ -206,7 +209,7 @@ public class Scheduler {
             }
             if(timeSlots.get(i).getSize()>limit) {
                 //TODO should it throw a warning instead of an exception? maybe lecturers want to force it??
-                throw new IllegalArgumentException("This class size limit is not possible");
+                throw new IllegalConstraintsException( "This class size limit is not possible");
             }
 
         }
@@ -226,7 +229,7 @@ public class Scheduler {
      */
     public void minimumNumberOfTAs(int minTAs) throws RuntimeException{
         if(taTimetables.size()<minTAs) {
-            throw new IllegalArgumentException("The minimum number of TAs is above the number of TAs registered for this module");
+            throw new IllegalConstraintsException("The minimum number of TAs is above the number of TAs registered for this module");
         }
         int[] compiledTATimetables = new int[numberOfTimeSlots];
 
@@ -242,7 +245,7 @@ public class Scheduler {
                 try {
                     deleteTime(i);
                 } catch (IllegalArgumentException e) {
-                    throw new RuntimeException("The TA availability does not line up with student availability for this constraint to be possible");
+                    throw new IllegalConstraintsException("The TA availability does not line up with student availability for this constraint to be possible");
                 }
             }
         }

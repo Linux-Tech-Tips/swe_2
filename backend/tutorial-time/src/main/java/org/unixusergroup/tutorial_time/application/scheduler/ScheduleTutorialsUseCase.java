@@ -7,6 +7,8 @@ package org.unixusergroup.tutorial_time.application.scheduler;
 import java.util.ArrayList;
 
 import org.unixusergroup.tutorial_time.application.common.UseCase;
+import org.unixusergroup.tutorial_time.application.exceptions.IllegalConstraintsException;
+import org.unixusergroup.tutorial_time.application.exceptions.IllegalTimeDeletionException;
 import org.unixusergroup.tutorial_time.application.scheduler.dto.ScheduleRequest;
 import org.unixusergroup.tutorial_time.application.scheduler.dto.ScheduleResponse;
 import org.unixusergroup.tutorial_time.domain.scheduler.*;
@@ -32,7 +34,7 @@ public class ScheduleTutorialsUseCase implements UseCase <ScheduleResponse, Sche
         if(constraints.minTAs()) {
             try{
                 scheduler.minimumNumberOfTAs(request.minTAs());
-            } catch (RuntimeException e) {
+            } catch (IllegalConstraintsException e) {
                 throw new RuntimeException(e);
             }
         }
@@ -41,7 +43,7 @@ public class ScheduleTutorialsUseCase implements UseCase <ScheduleResponse, Sche
         if(constraints.blockedTimes()) {
             try {
                 scheduler.blockOutTimes(constraints.getBlockedTimes());
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalTimeDeletionException e) {
                 throw new RuntimeException(e);
             }
         }

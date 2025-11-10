@@ -5,22 +5,16 @@
 
 package org.unixusergroup.tutorial_time.api.rest;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
+
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.unixusergroup.tutorial_time.application.scheduler.ScheduleTutorialsUseCase;
 import org.springframework.web.bind.annotation.*;
 import org.unixusergroup.tutorial_time.application.scheduler.dto.ScheduleRequest;
-import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
-import org.unixusergroup.tutorial_time.domain.module.Module;
 import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
-import org.unixusergroup.tutorial_time.domain.student.Student;
 import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
-import org.unixusergroup.tutorial_time.domain.timetable.Availability;
-import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
-import org.unixusergroup.tutorial_time.infrastructure.InMemoryModuleRepository;
-import org.unixusergroup.tutorial_time.infrastructure.InMemoryStudentRepository;
+
+import static org.unixusergroup.tutorial_time.infrastructure.ProjectConfiguration.FRONTEND_DOMAIN_NAME;
 
 @RestController
 @RequestMapping(path="/api/scheduler")
@@ -49,7 +43,7 @@ public class SchedulerController {
      * @param blockedTimes arraylist of times that should not be considered
      * @return ScheduleResponse object containing the best times
      */
-    @CrossOrigin(origins="http://localhost:5173")
+    @CrossOrigin(origins=FRONTEND_DOMAIN_NAME)
     @PostMapping(path="/schedule")
     public ResponseEntity<?> schedule(@RequestParam String moduleCode, @RequestParam int studentLimit, @RequestParam int minTAs, @RequestParam int[] blockedTimes) {
         try {
