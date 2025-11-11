@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.unixusergroup.tutorial_time.application.users.AddLecturerUseCase;
+import org.unixusergroup.tutorial_time.application.users.GetLecturerUseCase;
 import org.unixusergroup.tutorial_time.domain.User;
 import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
@@ -25,6 +27,39 @@ public class LecturerController {
 
     public LecturerController(LecturerRepository lecturerRepository) {
         this.lecturerRepository = lecturerRepository;
+    }
+
+    @PostMapping(path="/createlecturer")
+    public ResponseEntity<?> addLecturer(@RequestParam String name, @RequestParam String email, @RequestParam long staffId) {
+        try {
+            AddLecturerUseCase addLecturerUseCase = new AddLecturerUseCase(this.lecturerRepository);
+            AddLecturerRequest addLecturerRequest = new AddLecturerRequest(name, email, staffId);
+            AddLecturerResponse response = addLecturerUseCase.execute(addLecturerRequest);
+
+            if(response.ok()) {
+                return ResponseEntity.status(HttpStatus.OK).body("Lecturer was added successfully");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.responseText());
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lecturer addLecturer API: " + e.getMessage());
+        }
+    }
+    @GetMapping(path="/getlecturer")
+    public ResponseEntity<?> getLecturer(@RequestParam long staffId) {
+        try {
+            GetLecturerRequest getLecturerRequest = new GetLecturerRequest(staffId);
+            GetLecturerUseCase getLecturerUseCase = new GetLecturerUseCase(this.lecturerRepository);
+            GetLecturerResponse response = getLecturerUseCase.execute(getLecturerRequest);
+
+            if (response.ok()) {
+                return ResponseEntity.status(HttpStatus.OK).body(response.lecturer());
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.responseText());
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lecturer getLecturer API: " + e.getMessage());
+        }
     }
 
     @PostMapping(path="/createtimetable")
