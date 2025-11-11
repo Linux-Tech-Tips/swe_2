@@ -10,7 +10,7 @@ package org.unixusergroup.tutorial_time.application.exceptions;
  * 2. to a module
  * is triggered if the student doesn't exist, already is in the given structure, or the given structure is full
  */
-public class IllegalStudentAdditionException extends Exception{
+public class IllegalStudentAdditionException extends IllegalArgumentException{
     public IllegalStudentAdditionException(String errorText){
         super(errorText);
     }

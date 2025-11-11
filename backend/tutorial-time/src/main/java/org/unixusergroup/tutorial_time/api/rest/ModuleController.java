@@ -45,7 +45,11 @@ public class ModuleController {
             CreateModuleRequest createModuleRequest = new CreateModuleRequest(moduleCode, studentIds, taStudentIds, lecturerId);
             createModuleUseCase.execute(createModuleRequest);
             return ResponseEntity.status(HttpStatus.OK).body("Module created successfully.");
-        } catch (Exception e) {
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Create module API: " + e.getMessage());
+        }
+        catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Create module API: " + e.getMessage());
         }
     }
@@ -57,7 +61,11 @@ public class ModuleController {
             GetModuleRequest getModuleRequest = new GetModuleRequest(moduleCode);
             GetModuleResponse response = getModuleUseCase.execute(getModuleRequest);
             return ResponseEntity.status(HttpStatus.OK).body(response.module());
-        } catch (Exception e) {
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Get module API: " + e.getMessage());
+        }
+        catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Get module API: " + e.getMessage());
         }
     }

@@ -33,7 +33,11 @@ public class LecturerController {
             CreateTimetableRequest request = new CreateTimetableRequest(availability, staffId, User.UserType.LECTURER);
             createTimetable.execute(request);
             return ResponseEntity.status(HttpStatus.OK).body("Timetable Created Successfully");
-        } catch (Exception e) {
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Lecturer Create Timetable API: " + e.getMessage());
+        }
+        catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lecturer createtimetable API: " + e.getMessage());
         }
     }
@@ -53,7 +57,11 @@ public class LecturerController {
                 }
             }
             return ResponseEntity.status(HttpStatus.OK).body(result.toString());
-        } catch(Exception e) {
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Lecturer Get Timetable API: " + e.getMessage());
+        }
+        catch(Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lecturer gettimetable API: " + e.getMessage());
         }
     }
