@@ -20,10 +20,8 @@ public class Module {
     @Id
     private String moduleCode;
     /** ids of students enrolled in the module */
-    @OneToMany
     private List<Long> students;
     /** ids of students working as teaching assistants (TA) for this module */
-    @OneToMany
     private List<Long> taStudents;
     /** The lecturer in charge of this module */
     private long lecturer;

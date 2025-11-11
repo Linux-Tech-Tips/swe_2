@@ -20,6 +20,6 @@ public class ModulePersistenceAdapter implements ModuleRepository {
 
     @Override
     public Module getModuleByCode(String moduleCode) {
-        return moduleJPARepository.findById(moduleCode).get();
+        return moduleJPARepository.findById(moduleCode).orElse(null);
     }
 }
