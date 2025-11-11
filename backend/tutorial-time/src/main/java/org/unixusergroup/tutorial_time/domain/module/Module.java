@@ -19,53 +19,60 @@ public class Module {
     /** The module code uniquely identifying a module */
     @Id
     private String moduleCode;
-    /** Students enrolled in the module */
+    /** ids of students enrolled in the module */
     @OneToMany
-    private List<Student> students;
-    /** Students working as teaching assistants (TA) for this module */
+    private List<Long> students;
+    /** ids of students working as teaching assistants (TA) for this module */
     @OneToMany
-    private List<Student> taStudents;
+    private List<Long> taStudents;
     /** The lecturer in charge of this module */
-    @JdbcTypeCode(SqlTypes.JSON)
-    private Lecturer lecturer;
+    private long lecturer;
 
     public Module() {};
     /** Constructor creating an empty module with a given code and associated lecturer */
-    public Module(String moduleCode, Lecturer lecturer) {
+    public Module(String moduleCode, long lecturer) {
         this(moduleCode, new ArrayList<>(), new ArrayList<>(), lecturer);
     }
 
     /** Constructor creating a module with the given code, lecturer and student lists */
-    public Module(String moduleCode, List<Student> students, List<Student> taStudents, Lecturer lecturer) {
+    public Module(String moduleCode, List<Long> students, List<Long> taStudents, long lecturer) {
         this.moduleCode = moduleCode;
         this.students = students;
         this.taStudents = taStudents;
         this.lecturer = lecturer;
     }
-
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Module) {
+            return ((Module)(obj)).getModuleCode().equals(this.getModuleCode());
+        }
+        else {
+            return false;
+        }
+    }
     public String getModuleCode() {
         return moduleCode;
     }
 
-    public List<Student> getStudents() {
+    public List<Long> getStudents() {
         return students;
     }
 
-    public List<Student> getTAStudents() {
+    public List<Long> getTAStudents() {
         return taStudents;
     }
 
-    public Lecturer getLecturer() {
+    public long getLecturer() {
         return lecturer;
     }
 
-    /** Adds a Student instance to the list of enrolled students */
-    public void addStudent(Student student) {
+    /** Adds a Student id to the list of enrolled students */
+    public void addStudent(long student) {
         students.add(student);
     }
 
-    /** Adds a Student instance to the list of TA students for the module */
-    public void addTAStudent(Student student) {
+    /** Adds a Student id to the list of TA students for the module */
+    public void addTAStudent(long student) {
         taStudents.add(student);
     }
 }

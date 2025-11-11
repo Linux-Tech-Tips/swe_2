@@ -1,4 +1,4 @@
-/** 
+/**
  * @author Ethan, Martin
  */
 package org.unixusergroup.tutorial_time.api.rest;
@@ -68,4 +68,4 @@ public class LecturerController {
         }
     }
 
- }
+}
