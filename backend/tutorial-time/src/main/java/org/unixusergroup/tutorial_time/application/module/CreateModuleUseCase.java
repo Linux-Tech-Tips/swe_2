@@ -68,7 +68,7 @@ public class CreateModuleUseCase implements UseCase<CreateModuleResponse, Create
             return new CreateModuleResponse();
 
         } catch (Exception e) {
-            return new CreateModuleResponse(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 }

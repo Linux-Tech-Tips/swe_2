@@ -24,7 +24,7 @@ public class Module {
     }
 
     /** Constructor creating a module with the given code, lecturer and student lists */
-    public Module(String moduleCode, List<Long> students, List<Long> taStudents, long lecturer) {
+    public Module(String moduleCode, List<Long> students, List<Long> taStudents, long lecturer) throws IllegalArgumentException {
         if(moduleCode.isEmpty()) {
             throw new IllegalArgumentException("The module code cannot be empty");
         }
@@ -62,12 +62,18 @@ public class Module {
     }
 
     /** Adds a Student id to the list of enrolled students */
-    public void addStudent(long student) {
+    public void addStudent(long student) throws IllegalArgumentException {
+        if(student < 1) {
+            throw new IllegalArgumentException("The student ID must be positive");
+        }
         students.add(student);
     }
 
     /** Adds a Student id to the list of TA students for the module */
-    public void addTAStudent(long student) {
+    public void addTAStudent(long student) throws IllegalArgumentException {
+        if(student < 1) {
+            throw new IllegalArgumentException("The student ID must be positive");
+        }
         taStudents.add(student);
     }
 }

@@ -43,16 +43,14 @@ public class CreateModuleUseCaseTest {
     @Test
     void testModuleCreationWithInvalidLecturer() {
         createModuleRequest = new CreateModuleRequest("CT2021", new ArrayList<>(), new ArrayList<>(), 0);
-        CreateModuleResponse response = testCreateModuleUseCase.execute(createModuleRequest);
-        assertFalse(response.ok());
+        assertThrows(RuntimeException.class, () -> testCreateModuleUseCase.execute(createModuleRequest));
     }
 
     /** This is testing creating a module with no code */
     @Test
     void testModuleCreationWithNullModuleCode() {
         createModuleRequest = new CreateModuleRequest("", new ArrayList<>(), new ArrayList<>(), 20000);
-        CreateModuleResponse response = testCreateModuleUseCase.execute(createModuleRequest);
-        assertFalse(response.ok());
+        assertThrows(RuntimeException.class, () -> testCreateModuleUseCase.execute(createModuleRequest));
     }
 
     /** This is just a test case of correct module creation functionality. */
@@ -60,8 +58,7 @@ public class CreateModuleUseCaseTest {
     void testValidModuleCreation() {
         Module module = new Module("CT2021", 20000);
         testLecturerRepository.saveLecturer(lecturer);
-        CreateModuleResponse response = testCreateModuleUseCase.execute(createModuleRequest);
-        assertTrue(response.ok());
+        testCreateModuleUseCase.execute(createModuleRequest);
         Module generatedModule = testModuleRepository.getModuleByCode("CT2021");
         assertEquals(module, generatedModule);
     }
@@ -72,8 +69,7 @@ public class CreateModuleUseCaseTest {
         ArrayList<Long> studentIDs = new ArrayList<>();
         studentIDs.add(000L);
         createModuleRequest = new CreateModuleRequest("", studentIDs, new ArrayList<>(), 20000);
-        CreateModuleResponse response = testCreateModuleUseCase.execute(createModuleRequest);
-        assertFalse(response.ok());
+        assertThrows(RuntimeException.class, () -> testCreateModuleUseCase.execute(createModuleRequest));
     }
 
     /** This is testing creating an invalid TA ID */
@@ -82,7 +78,6 @@ public class CreateModuleUseCaseTest {
         ArrayList<Long> taIDs = new ArrayList<>();
         taIDs.add(000L);
         createModuleRequest = new CreateModuleRequest("", new ArrayList<>(), taIDs, 20000);
-        CreateModuleResponse response = testCreateModuleUseCase.execute(createModuleRequest);
-        assertFalse(response.ok());
+        assertThrows(RuntimeException.class, () -> testCreateModuleUseCase.execute(createModuleRequest));
     }
 }
