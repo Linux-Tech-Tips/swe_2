@@ -3,8 +3,8 @@
  */
 package org.unixusergroup.tutorial_time.api.rest;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.unixusergroup.tutorial_time.domain.module.Module;
@@ -20,6 +20,7 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@SpringBootTest
 public class ModuleControllerTest {
 
     /** Test for createNewModule rest API function. */

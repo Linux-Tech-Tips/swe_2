@@ -3,16 +3,21 @@
  */
 package org.unixusergroup.tutorial_time.domain.module;
 
+import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.student.Student;
 
 import java.util.List;
 import java.util.ArrayList;
 
+@Entity
 /** Class representing a university Module entity */
 public class Module {
 
     /** The module code uniquely identifying a module */
+    @Id
     private String moduleCode;
     /** ids of students enrolled in the module */
     private List<Long> students;
@@ -21,6 +26,7 @@ public class Module {
     /** The lecturer in charge of this module */
     private long lecturer;
 
+    public Module() {};
     /** Constructor creating an empty module with a given code and associated lecturer */
     public Module(String moduleCode, long lecturer) {
         this(moduleCode, new ArrayList<>(), new ArrayList<>(), lecturer);
