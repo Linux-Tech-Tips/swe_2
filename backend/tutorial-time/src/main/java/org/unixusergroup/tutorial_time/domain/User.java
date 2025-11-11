@@ -1,5 +1,5 @@
 /**
- * @author Ethan, Martin
+ * @author Ethan, Martin, Cedar
  */
 package org.unixusergroup.tutorial_time.domain;
 
@@ -26,7 +26,17 @@ public abstract class User {
         this(name, universityEmail, universityId, new Timetable());
     }
     /** Creates a user with the given identity and the given timetable */
-    public User(String name, String universityEmail, long universityId, Timetable timetable) {
+    public User(String name, String universityEmail, long universityId, Timetable timetable) throws IllegalArgumentException {
+        if(name.isEmpty()) {
+            throw new IllegalArgumentException("A name must be inputted");
+        }
+        //TODO: edit this to look specifically for nuig emails
+        if(universityEmail.isEmpty()) {
+            throw new IllegalArgumentException("An email must be inputted");
+        }
+        if(universityId<1) {
+            throw new IllegalArgumentException("The ID must be a positive integer");
+        }
         this.name = name;
         this.universityEmail = universityEmail;
         this.universityId = universityId;
@@ -63,11 +73,23 @@ public abstract class User {
         return timetable;
     }
 
-    public void setAvailable(int day, int time) {
+    public void setAvailable(int day, int time) throws IllegalArgumentException {
+        if(day < 0 || day > 4) {
+            throw new IllegalArgumentException("Please enter a day integer between 0 and 4");
+        }
+        if(time < 0 || time > 8) {
+            throw new IllegalArgumentException("Please enter a time integer between 0 and 8");
+        }
         timetable.setAvailability(day, time, Availability.AVAILABLE);
     }
 
-    public void setUnavailable(int day, int time) {
+    public void setUnavailable(int day, int time) throws IllegalArgumentException {
+        if(day < 0 || day > 4) {
+            throw new IllegalArgumentException("Please enter a day integer between 0 and 4");
+        }
+        if(time < 0 || time > 8) {
+            throw new IllegalArgumentException("Please enter a time integer between 0 and 8");
+        }
         timetable.setAvailability(day, time, Availability.UNAVAILABLE);
     }
 }

@@ -3,9 +3,6 @@
  */
 package org.unixusergroup.tutorial_time.domain.module;
 
-import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
-import org.unixusergroup.tutorial_time.domain.student.Student;
-
 import java.util.List;
 import java.util.ArrayList;
 
@@ -28,6 +25,12 @@ public class Module {
 
     /** Constructor creating a module with the given code, lecturer and student lists */
     public Module(String moduleCode, List<Long> students, List<Long> taStudents, long lecturer) {
+        if(moduleCode.isEmpty()) {
+            throw new IllegalArgumentException("The module code cannot be empty");
+        }
+        if(lecturer<1) {
+            throw new IllegalArgumentException("The lecturer ID must be a positive integer");
+        }
         this.moduleCode = moduleCode;
         this.students = students;
         this.taStudents = taStudents;

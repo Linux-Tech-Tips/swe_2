@@ -58,11 +58,21 @@ public class Timetable {
 
     /** Sets the availability of a given time slot */
     public void setAvailability(int column, int row, Availability available) {
+        if(column < 0 || row < 0)
+            throw new IllegalArgumentException("Error: Column or Row index can't be negative");
+        if(column >= columns || row >= rows)
+            throw new IllegalArgumentException("Error: Column and Row out of bounds");
+
         availability.get(row).set(column, available);
     }
 
     /** Gets the availability of a given time slot */
     public Availability getAvailability(int column, int row) {
+        if(column < 0 || row < 0)
+            throw new IllegalArgumentException("Error: Column or Row index can't be negative");
+        if(column >= columns || row >= rows)
+            throw new IllegalArgumentException("Error: Column and Row out of bounds");
+
         return availability.get(row).get(column);
     }
 

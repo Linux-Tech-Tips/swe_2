@@ -12,7 +12,6 @@ import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
 import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
 import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
-import org.unixusergroup.tutorial_time.domain.timetable.Availability;
 
 /** Use case to create a Timetable instance from a given int[] and save it under a specific user */
 public class CreateTimetableUseCase implements UseCase<CreateTimetableResponse, CreateTimetableRequest> {

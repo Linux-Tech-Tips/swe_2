@@ -5,14 +5,9 @@ package org.unixusergroup.tutorial_time.application.users;
 
 import org.unixusergroup.tutorial_time.application.common.UseCase;
 import org.unixusergroup.tutorial_time.application.users.dto.*;
-
 import org.unixusergroup.tutorial_time.domain.User;
-import org.unixusergroup.tutorial_time.domain.student.Student;
 import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
-import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
-import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
-import org.unixusergroup.tutorial_time.domain.timetable.Availability;
 
 /** Use case to get the saved timetable of a user with a given ID */
 public class GetTimetableUseCase implements UseCase<GetTimetableResponse, GetTimetableRequest> {
