@@ -1,1 +1,0 @@
-Directory for external communication within the project.
