@@ -1,12 +1,15 @@
+/* Library imports */
 import React, { useState } from 'react';
 import { Cog } from 'lucide-react';
+
+/* Import local page components */
 import GridCell from "../components/GridCell.jsx";
 import styles from './StudentTimetable.module.css';
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 const times = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
 
-// Initial state function
+/* Initial state function */
 const getInitialAvailability = () => days.reduce((acc, day) => {
     acc[day] = times.reduce((timeAcc, time) => {
         timeAcc[time] = false; // 'true' means UNAVAILABLE
@@ -15,7 +18,7 @@ const getInitialAvailability = () => days.reduce((acc, day) => {
     return acc;
 }, {});
 
-// NavItem Component (Legend Item)
+/* NavItem Component (Legend Item) */
 const NavItem = ({ colorClass, label }) => (
     <div className={styles.navItem}>
         <div className={`${styles.navItemBox} ${colorClass}`}></div>
