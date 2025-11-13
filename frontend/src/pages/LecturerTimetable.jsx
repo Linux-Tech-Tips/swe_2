@@ -9,7 +9,7 @@ import UserCogIcon from '../components/UserCogIcon.jsx';
 import GridCell from "../components/GridCell.jsx";
 import {GetRequest} from "../services/Requests.jsx"
 import {PostRequest} from "../services/Requests.jsx"
-
+import {ErrorMessage} from "../services/ErrorParsing.jsx"
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 const times = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
@@ -126,7 +126,8 @@ const LecturerTimetable = () => {
     );
   }
 
-  const [scheduled, setScheduled] = useState(false);
+  //variable which is either 0 (no scheduler run), 1 (scheduler ran successfully) or 2 (scheduler ran unsuccessfully)
+  const [scheduled, setScheduled] = useState(0);
   //scheduledTimes contains all optimal times separated by a , after Schedule() has been called
   const [scheduledTimes, setScheduledTimes] = useState('');
   //function to assemble constraints and call scheduler API
@@ -142,8 +143,7 @@ const LecturerTimetable = () => {
 
    try{
     const params = {
-       //moduleCode: selectedModuleId,
-       moduleCode: 'testModule',
+       moduleCode: selectedModuleId,
        studentLimit: currentStudentLimit,
        minTAs: currentMinTAs,
        blockedTimes: blockedTimes
@@ -151,12 +151,14 @@ const LecturerTimetable = () => {
     const path = "api/scheduler/schedule";
 
     const [statusCode, result] = await PostRequest(path, params);
-     if(!(statusCode===200)) {
-       alert("Error: " + result);
-       //do exception handling here
+    
+    //if there was an error --> set scheduled back to false, display the error
+    if(!(statusCode===200)) {
+      setScheduled(2);
+      setScheduledTimes("Scheduling algorithm not run due to an error!\nHTTP status: " + statusCode + "\nError message: " + ErrorMessage(result));
      }
      else {
-       //data is in the format of a string '{"times": [t1,t2,...,tn]}'
+       //data is in the format of a string '{"times": [data]}'
        const times = result.slice(10, -2);
        setScheduledTimes(times);
      }
@@ -170,20 +172,19 @@ const LecturerTimetable = () => {
     try {
      const path = "api/module/getModule";
      const params = {moduleCode: moduleId};
-     //const response = await fetch("http://localhost:8080/api/module/getModule?" + new URLSearchParams({moduleCode: moduleId}).toString(), {mode: "cors", method: "GET",});
      const [statusCode, result] = await GetRequest(path, params);
       if(statusCode===200) {
          setSelectedModuleId(moduleId);
          setBlockingTimes(false); 
          setOpenAlgorithmSettings(false); 
-         setScheduled(false);
+         setScheduled(0);
          setCurrentStudentLimit(0);
          setCurrentMinTAs(0);
          setCurrentAvailability(getInitialAvailability);
-         alert("A-OKAY");
+         alert("Module switched successfully");
       }
      else {
-       alert(result); 
+       alert("HTTP status " + statusCode + "\nError: " + result +  "\nModule selection has not changed");
      }
    } catch (error) {
       alert(error);
@@ -191,25 +192,24 @@ const LecturerTimetable = () => {
     }
   }
 
-  const [convertedTimes, setConvertedTimes] = useState("Times have not been scheduled yet");
-
-  function DisplayTimes() {
-    if(!scheduled) {
+  function DisplayTimes() { 
+    if(scheduled===0) {
       return(
       <div>{"Please run the scheduling algorithm to see suggested tutorial times"}</div>
       );
     }
-   if(scheduledTimes.length>0) { 
-    //given a time ID t --> t%5 = index of its day in the day array, t//5 = index of its time in the time array
-    let stringTimes = "";
-    let splitScheduledTimes = scheduledTimes.split(",");
-    for(let i=0; i<splitScheduledTimes.length; i++) {
-      stringTimes+=days[parseInt(splitScheduledTimes[i])%5] + " at " + times[Math.floor(parseInt(splitScheduledTimes[i])/5)] + "\n";
+   if(scheduled===2) {
+     return(<div>{scheduledTimes}</div>);
+   }
+   if(scheduledTimes.length>0) {
+    let splitTimes = scheduledTimes.split("\\n"); 
+    let divs=[];
+    for(let i=0; i<splitTimes.length; i++) {
+      divs.push(<div>{splitTimes[i]}</div>);
     }
-    setConvertedTimes(stringTimes);
-    return (
-      <div> {convertedTimes} </div>
-    );
+     return (
+       <div>{divs}</div>
+     );
    }
   return <div> {"Scheduling..."} </div>
   }

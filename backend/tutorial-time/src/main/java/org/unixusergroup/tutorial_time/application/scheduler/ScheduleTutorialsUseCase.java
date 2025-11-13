@@ -58,7 +58,7 @@ public class ScheduleTutorialsUseCase implements UseCase <ScheduleResponse, Sche
         }
 
         //if base case 1 returns any times --> return those
-        ArrayList<Integer> times = scheduler.checkBaseCaseOne();
+        String times = scheduler.checkBaseCaseOne();
         if(!times.isEmpty()) {
             return new ScheduleResponse(times);
         }

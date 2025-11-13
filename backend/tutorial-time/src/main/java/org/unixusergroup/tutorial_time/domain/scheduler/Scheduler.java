@@ -128,7 +128,7 @@ public class Scheduler {
                 //check if there's any students that are only available at this time
                 if(!unionOfTimes(timeSlots.get(i)).containsAll(timeSlots.get(i).getStudents())) {
                     //TODO: make this exception better (i.e. say which time/students it is
-                    throw new IllegalTimeDeletionException("There are students who are only available at this time");
+                    throw new IllegalTimeDeletionException("There are students who are only available at " + convertToDate(id));
                 }
 
                 timeSlots.remove(i);
@@ -256,13 +256,13 @@ public class Scheduler {
      * COULD HAVE BETTER NAME
      * @return arraylist of ids of times when everyone is available
      */
-    public ArrayList<Integer> checkBaseCaseOne() {
+    public String checkBaseCaseOne() {
         //loop through all time sets, add the indices of each time set whose size is equal to the number of students to the returned array
 
-        ArrayList<Integer> times = new ArrayList<>();
+        String times = "";
         for(int i = 0; i< numberOfTimeSlots; i++) {
             if(timeSlots.get(i).getSize()==moduleSize) {
-                times.add(timeSlots.get(i).getId());
+                times+=convertToDate(timeSlots.get(i).getId());
             }
         }
         return times;
@@ -311,18 +311,18 @@ public class Scheduler {
      * COULD HAVE A BETTER NAME
      * @return an array representing those times
      */
-    public ArrayList<Integer> checkBaseCaseTwo() {
+    public String checkBaseCaseTwo() {
         createAdjacencyMatrix();
-        ArrayList<Integer> times = new ArrayList<>();
+        ArrayList<String> times = new ArrayList<>();
 
         for(int i = 0; i< numberOfTimeSlots; i++) {
             for (int j = 0; j < numberOfTimeSlots; j++) {
                 if(adjacencyMatrix.get(i)[j]==0) {
                     if(!times.contains(i)) {
-                        times.add(i);
+                        times.add(convertToDate(i));
                     }
                     if(!times.contains(j)) {
-                        times.add(j);
+                        times.add(convertToDate(j));
                     }
                 }
             }
@@ -332,15 +332,15 @@ public class Scheduler {
         e.g. if adjacencyMatrix [a][b] = 0 --> add a, b
         (0 means no ppl busy at both times)
          */
-        return times;
+        return String.join("", times);
     }
 
     /**
      * actual scheduling algorithm
      * @return an arraylist including all the times needed to cover all students
      */
-    public ArrayList<Integer> schedule() {
-        ArrayList<Integer> times = new ArrayList<>();
+    public String schedule() {
+        String times = "";
         HashSet<Integer> unionOfOthers;
         for(int i = 0; i< numberOfTimeSlots; i++) {
             Collections.sort(timeSlots);
@@ -349,10 +349,64 @@ public class Scheduler {
 
             //if not all students in a given timeslot are represented in other timeslots --> add it to the returned times
             if(!(unionOfOthers.containsAll(temp.getStudents()))) {
-                times.add(temp.getId());
+                times+=convertToDate(temp.getId());
             }
         }
         return times;
+    }
+
+    /**
+     * method for converting a time ID to a day/time
+     * @return string representation of a time
+     * t%5 = index of its day in the day array, t//5 = index of its time in the time array
+     */
+    public String convertToDate(int id) {
+        String date = "";
+        switch (id%5) {
+            case 0:
+                date+="Monday, ";
+                break;
+            case 1:
+                date+="Tuesday, ";
+                break;
+            case 2:
+                date+="Wednesday, ";
+                break;
+            case 3:
+                date+="Thursday, ";
+                break;
+            case 4:
+                date+="Friday, ";
+                break;
+        }
+        int time = id/5;
+        switch(time) {
+            case 0:
+                date+="9:00\n";
+                break;
+            case 1:
+                date+="10:00\n";
+                break;
+            case 2:
+                date+="11:00\n";
+                break;
+            case 3:
+                date+="12:00\n";
+                break;
+            case 4:
+                date+="13:00\n";
+                break;
+            case 5:
+                date+="14:00\n";
+                break;
+            case 6:
+                date+="15:00\n";
+                break;
+            case 7:
+                date+="16:00\n";
+                break;
+        }
+        return date;
     }
 
 }

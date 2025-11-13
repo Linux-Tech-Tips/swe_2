@@ -68,8 +68,6 @@ public class SchedulerController {
         student4.setAvailable(0,1);
         studentRepository.saveStudent(student4);
         testModule.addStudent(student4.getUniversityId());
-        System.out.println("I MADE THE MODULE :D");
-        System.out.println(testModule);
         moduleRepository.saveModule(testModule);
         try {
             ScheduleRequest request = new ScheduleRequest(moduleCode, studentLimit, minTAs, blockedTimes, moduleRepository, studentRepository);

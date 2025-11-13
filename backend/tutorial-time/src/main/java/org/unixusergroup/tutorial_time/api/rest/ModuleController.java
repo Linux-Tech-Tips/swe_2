@@ -3,8 +3,6 @@
  */
 
 package org.unixusergroup.tutorial_time.api.rest;
-
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -82,11 +80,8 @@ public class ModuleController {
         student4.setAvailable(0,1);
         studentRepository.saveStudent(student4);
         testModule.addStudent(student4.getUniversityId());
-        System.out.println("I MADE THE MODULE :D");
-        System.out.println(testModule);
         moduleRepository.saveModule(testModule);
         try {
-            Module module = moduleRepository.getModuleByCode(moduleCode);
             GetModuleUseCase getModuleUseCase = new GetModuleUseCase(this.moduleRepository);
             GetModuleRequest getModuleRequest = new GetModuleRequest(moduleCode);
             GetModuleResponse response = getModuleUseCase.execute(getModuleRequest);

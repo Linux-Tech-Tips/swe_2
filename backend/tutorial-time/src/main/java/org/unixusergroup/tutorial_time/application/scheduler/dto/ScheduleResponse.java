@@ -7,8 +7,8 @@ package org.unixusergroup.tutorial_time.application.scheduler.dto;
 
 import java.util.ArrayList;
 
-public record ScheduleResponse(ArrayList<Integer> times) {
-    public ArrayList<Integer> getTimes() {
+public record ScheduleResponse(String times) {
+    public String getTimes() {
         return times;
     }
 }
