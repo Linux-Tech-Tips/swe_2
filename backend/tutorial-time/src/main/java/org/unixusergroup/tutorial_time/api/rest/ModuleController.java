@@ -7,10 +7,7 @@ package org.unixusergroup.tutorial_time.api.rest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.unixusergroup.tutorial_time.application.module.CreateModuleUseCase;
 import org.unixusergroup.tutorial_time.application.module.GetModuleUseCase;
 import org.unixusergroup.tutorial_time.application.module.dto.CreateModuleRequest;
@@ -23,12 +20,16 @@ import org.unixusergroup.tutorial_time.domain.module.Module;
 import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
 import org.unixusergroup.tutorial_time.domain.student.Student;
 import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
+import org.unixusergroup.tutorial_time.domain.timetable.Availability;
+import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 
 import java.util.List;
 
+import static org.unixusergroup.tutorial_time.infrastructure.ProjectConfiguration.FRONTEND_DOMAIN_NAME;
+
 @RestController
 @RequestMapping(path="/api/module")
-
+@CrossOrigin(origins=FRONTEND_DOMAIN_NAME)
 /** The API controller exposing the Module use cases. */
 public class ModuleController {
     private final ModuleRepository moduleRepository;
@@ -42,6 +43,7 @@ public class ModuleController {
     }
 
     @PostMapping(path="/createModule")
+    @CrossOrigin(origins=FRONTEND_DOMAIN_NAME)
     public ResponseEntity<?> createNewModule(@RequestParam long lecturerId, @RequestParam String moduleCode,
                                              @RequestParam List<Long> studentIds, @RequestParam List<Long> taStudentIds) {
         try {
@@ -59,8 +61,30 @@ public class ModuleController {
         }
     }
 
-    @PostMapping(path="/getModule")
+    @GetMapping(path="/getModule")
+    @CrossOrigin(origins=FRONTEND_DOMAIN_NAME)
     public ResponseEntity<?> getModule(@RequestParam String moduleCode) {
+        Lecturer testLecturer = new Lecturer("Professor Test", "test@universityofgalway.ie", 00000);
+        Module testModule = new Module("testModule", testLecturer.getUniversityId());
+        Student student1 = new Student("Student1", "s1@university.ie", 1111, new Timetable(2, 2, Availability.UNAVAILABLE));
+        student1.setAvailable(0,0);
+        studentRepository.saveStudent(student1);
+        testModule.addStudent(student1.getUniversityId());
+        Student student2 = new Student("Student2", "s2@university.ie", 2222, new Timetable(2, 2, Availability.UNAVAILABLE));
+        student2.setAvailable(0,0);
+        studentRepository.saveStudent(student2);
+        testModule.addStudent(student2.getUniversityId());
+        Student student3 = new Student("Student3", "s3@university.ie", 3333, new Timetable(2, 2, Availability.UNAVAILABLE));
+        student3.setAvailable(1,1);
+        studentRepository.saveStudent(student3);
+        testModule.addStudent(student3.getUniversityId());
+        Student student4 = new Student("Student4", "s4@university.ie", 4444, new Timetable(2, 2, Availability.UNAVAILABLE));
+        student4.setAvailable(0,1);
+        studentRepository.saveStudent(student4);
+        testModule.addStudent(student4.getUniversityId());
+        System.out.println("I MADE THE MODULE :D");
+        System.out.println(testModule);
+        moduleRepository.saveModule(testModule);
         try {
             Module module = moduleRepository.getModuleByCode(moduleCode);
             GetModuleUseCase getModuleUseCase = new GetModuleUseCase(this.moduleRepository);

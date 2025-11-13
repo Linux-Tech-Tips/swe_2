@@ -7,6 +7,9 @@ import UserIcon from '../components/UserIcon.jsx';
 import UsersIcon from '../components/UsersIcon.jsx';
 import UserCogIcon from '../components/UserCogIcon.jsx';
 import GridCell from "../components/GridCell.jsx";
+import {GetRequest} from "../services/Requests.jsx"
+import {PostRequest} from "../services/Requests.jsx"
+
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 const times = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
@@ -143,34 +146,33 @@ const LecturerTimetable = () => {
        moduleCode: 'testModule',
        studentLimit: currentStudentLimit,
        minTAs: currentMinTAs,
-       blockedTimes: blockedTimes 
+       blockedTimes: blockedTimes
      };
+    const path = "api/scheduler/schedule";
 
-     const response = await fetch( "http://localhost:8080/api/scheduler/schedule?" + new URLSearchParams(params).toString(), {
-        mode: "cors",
-        method: "POST",
-      });
-     const data = await response.text();
-     if(!response.ok) {
-       alert("Error: " + data);
+    const [statusCode, result] = await PostRequest(path, params);
+     if(!(statusCode===200)) {
+       alert("Error: " + result);
        //do exception handling here
      }
      else {
        //data is in the format of a string '{"times": [t1,t2,...,tn]}'
-       const times = data.slice(10, -2);
+       const times = result.slice(10, -2);
        setScheduledTimes(times);
      }
    }
    catch (error) {
       alert(error);
    }
-    //exception handling???  
   }
 
   async function ChangeModule(moduleId) {
     try {
-      const response = await fetch("http://localhost:8080/api/module/getModule?" + new URLSearchParams({moduleCode: moduleId}).toString(), {mode: "cors", method: "GET",});
-      if(response.ok) {
+     const path = "api/module/getModule";
+     const params = {moduleCode: moduleId};
+     //const response = await fetch("http://localhost:8080/api/module/getModule?" + new URLSearchParams({moduleCode: moduleId}).toString(), {mode: "cors", method: "GET",});
+     const [statusCode, result] = await GetRequest(path, params);
+      if(statusCode===200) {
          setSelectedModuleId(moduleId);
          setBlockingTimes(false); 
          setOpenAlgorithmSettings(false); 
@@ -181,8 +183,7 @@ const LecturerTimetable = () => {
          alert("A-OKAY");
       }
      else {
-       const data = await response.text();
-       alert(data); 
+       alert(result); 
      }
    } catch (error) {
       alert(error);

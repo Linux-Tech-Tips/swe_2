@@ -3,13 +3,10 @@
  */
 package org.unixusergroup.tutorial_time.api.rest;
 
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import org.unixusergroup.tutorial_time.domain.User;
-import org.unixusergroup.tutorial_time.domain.student.Student;
 import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
 import org.unixusergroup.tutorial_time.application.common.UseCase;
 import org.unixusergroup.tutorial_time.application.users.CreateTimetableUseCase;
@@ -39,14 +36,13 @@ public class StudentController {
         try {
             UseCase<CreateTimetableResponse, CreateTimetableRequest> createTimetable = new CreateTimetableUseCase(studentRepository);
             CreateTimetableRequest request = new CreateTimetableRequest(availability, studentId, User.UserType.STUDENT);
-            CreateTimetableResponse response = createTimetable.execute(request);
-
-            if(response.ok()) {
-                return ResponseEntity.status(HttpStatus.OK).body("Timetable Created Successfully");
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.responseText());
-            }
-        } catch (Exception e) {
+            createTimetable.execute(request);
+            return ResponseEntity.status(HttpStatus.OK).body("Timetable Created Successfully");
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Student Create Timetable API: " + e.getMessage());
+        }
+        catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Student createtimetable API: " + e.getMessage());
         }
     }
@@ -58,19 +54,19 @@ public class StudentController {
             GetTimetableRequest request = new GetTimetableRequest(studentId, User.UserType.STUDENT);
             GetTimetableResponse response = getTimetable.execute(request);
 
-            if(response.ok()) {
-                StringBuilder result = new StringBuilder();
-                for(int i = 0; i < response.availability().length; ++i) {
-                    result.append("availability=").append(response.availability()[i]);
-                    if(i < response.availability().length - 1) {
-                        result.append("&");
-                    }
+            StringBuilder result = new StringBuilder();
+            for(int i = 0; i < response.availability().length; ++i) {
+                result.append("availability=").append(response.availability()[i]);
+                if(i < response.availability().length - 1) {
+                    result.append("&");
                 }
-                return ResponseEntity.status(HttpStatus.OK).body(result.toString());
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.responseText());
             }
-        } catch(Exception e) {
+            return ResponseEntity.status(HttpStatus.OK).body(result.toString());
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Student Get Timetable API: " + e.getMessage());
+        }
+        catch(Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Student gettimetable API: " + e.getMessage());
         }
     }
