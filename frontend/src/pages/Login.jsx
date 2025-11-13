@@ -1,24 +1,10 @@
+/* Library imports */
+import { useEffect } from 'react';
+import { ThreeDots } from 'react-loader-spinner';
+
 import styles from './Login.module.css';
 
-const Login = ({ onLoginSuccess }) => {
-
-    /* Login handler callback, using the passed onLoginSuccess prop */
-    const handleLogin = () => {
-        // TODO Here, implement actual OAuth2 behavior
-        /* Simulate successful authentication */
-        let demoId = window.prompt("Enter your ID");
-        let demoName = window.prompt("Enter your name");
-        let demoEmail = window.prompt("Enter your email");
-        let demoIsLecturer = window.confirm("Are you a lecturer?");
-        setTimeout(() => {
-            onLoginSuccess({
-                id: demoId, 
-                name: demoName, 
-                email: demoEmail, 
-                isLecturer: demoIsLecturer
-            });
-        }, 500);
-    };
+const Login = ({ handleLogin }) => {
 
     /* Return the app login page */
     return (
@@ -48,4 +34,34 @@ const Login = ({ onLoginSuccess }) => {
     );
 };
 
-export default Login;
+const CompleteLogin = ({ handleLoginCallback }) => {
+
+    useEffect(() => {
+        handleLoginCallback();
+    }, []);
+
+    return (
+        <div className={styles.loginContainer}>
+            <div className={styles.loginCard}>
+
+                {/* Heading and description */}
+                <h1 className={styles.heading}>Tutorial Time</h1>
+                <p className={styles.description}>
+                    Signing in...
+                </p>
+
+                {/* Loading circle */}
+                <ThreeDots 
+                    height={60}
+                    width={60}
+                    color="#499EE3"
+                    backgroundColor="#64AAE3"
+                    wrapperStyle={{display: 'flex', justifyContent: 'center'}}
+                    visible={true}
+                    ariaLabel="oval-loading"/>
+            </div>
+        </div>
+    )
+}
+
+export { Login, CompleteLogin };
