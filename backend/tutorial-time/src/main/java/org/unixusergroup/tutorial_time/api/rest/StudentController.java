@@ -6,6 +6,7 @@ package org.unixusergroup.tutorial_time.api.rest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
 import org.unixusergroup.tutorial_time.domain.User;
 import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
 import org.unixusergroup.tutorial_time.application.common.UseCase;
@@ -38,11 +39,7 @@ public class StudentController {
             CreateTimetableRequest request = new CreateTimetableRequest(availability, studentId, User.UserType.STUDENT);
             createTimetable.execute(request);
             return ResponseEntity.status(HttpStatus.OK).body("Timetable Created Successfully");
-        }
-        catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Student Create Timetable API: " + e.getMessage());
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Student createtimetable API: " + e.getMessage());
         }
     }
@@ -62,11 +59,7 @@ public class StudentController {
                 }
             }
             return ResponseEntity.status(HttpStatus.OK).body(result.toString());
-        }
-        catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Student Get Timetable API: " + e.getMessage());
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Student gettimetable API: " + e.getMessage());
         }
     }
