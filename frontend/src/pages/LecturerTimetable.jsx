@@ -16,11 +16,11 @@ const times = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '1
 
 //initial state function for blocked times, is called Availability everywhere bc of GridCell
 const getInitialAvailability = () => days.reduce((acc, day) => {
-    acc[day] = times.reduce((timeAcc, time) => {
-        timeAcc[time] = false; // 'true' means BLOCKED
-        return timeAcc;
-    }, {});
-    return acc;
+  acc[day] = times.reduce((timeAcc, time) => {
+    timeAcc[time] = false; // 'true' means BLOCKED
+     return timeAcc;
+  }, {});
+  return acc;
 }, {});
 
 const LecturerTimetable = () => {
@@ -59,13 +59,13 @@ const LecturerTimetable = () => {
       if(type === "students") {
         setCurrentStudentLimit(0);
       }
-     if(type === "tas") {
-       setCurrentMinTAs(0);
-     }
+      if(type === "tas") {
+        setCurrentMinTAs(0);
+      }
     }
   }
 
- //stuff for displaying the blocking, is called availability due to GridCell
+  //stuff for displaying the blocking, is called availability due to GridCell
   const [blockingTimes, setBlockingTimes] = useState(false);
   const [currentAvailability, setCurrentAvailability] = useState(getInitialAvailability);
 
@@ -141,52 +141,53 @@ const LecturerTimetable = () => {
       }
     }
 
-   try{
-    const params = {
-       moduleCode: selectedModuleId,
-       studentLimit: currentStudentLimit,
-       minTAs: currentMinTAs,
-       blockedTimes: blockedTimes
-     };
-    const path = "api/scheduler/schedule";
+    try{
+      const params = {
+        moduleCode: selectedModuleId,
+        studentLimit: currentStudentLimit,
+        minTAs: currentMinTAs,
+        blockedTimes: blockedTimes
+      };
+      const path = "api/scheduler/schedule";
 
-    const [statusCode, result] = await PostRequest(path, params);
+      const [statusCode, result] = await PostRequest(path, params);
     
-    //if there was an error --> set scheduled back to false, display the error
-    if(!(statusCode===200)) {
-      setScheduled(2);
-      setScheduledTimes("Scheduling algorithm not run due to an error!\nHTTP status: " + statusCode + "\nError message: " + ErrorMessage(result));
-     }
-     else {
-       //data is in the format of a string '{"times": [data]}'
-       const times = result.slice(10, -2);
-       setScheduledTimes(times);
-     }
-   }
-   catch (error) {
-      alert(error);
-   }
+      //if there was an error --> set scheduled back to false, display the error
+      if(!(statusCode===200)) {
+        setScheduled(2);
+        setScheduledTimes("HTTP status: " + statusCode + "\nError message: " + ErrorMessage(result));
+      }
+      else {
+        //data is in the format of a string '{"times": [data]}'
+        const times = result.slice(10, -2);
+        setScheduledTimes(times);
+        }
+    }
+    catch (error) {
+       alert(error);
+    }
   }
 
   async function ChangeModule(moduleId) {
     try {
-     const path = "api/module/getModule";
-     const params = {moduleCode: moduleId};
-     const [statusCode, result] = await GetRequest(path, params);
+      const path = "api/module/getModule";
+      const params = {moduleCode: moduleId};
+      const [statusCode, result] = await GetRequest(path, params);
       if(statusCode===200) {
-         setSelectedModuleId(moduleId);
-         setBlockingTimes(false); 
-         setOpenAlgorithmSettings(false); 
-         setScheduled(0);
-         setCurrentStudentLimit(0);
-         setCurrentMinTAs(0);
-         setCurrentAvailability(getInitialAvailability);
-         alert("Module switched successfully");
+        setSelectedModuleId(moduleId);
+        setBlockingTimes(false); 
+        setOpenAlgorithmSettings(false); 
+        setScheduled(0);
+        setCurrentStudentLimit(0);
+        setCurrentMinTAs(0);
+        setCurrentAvailability(getInitialAvailability);
+        alert("Module switched successfully");
       }
-     else {
-       alert("HTTP status " + statusCode + "\nError: " + result +  "\nModule selection has not changed");
-     }
-   } catch (error) {
+      else {
+        alert("HTTP status " + statusCode + "\nError: " + result +  "\nModule selection has not changed");
+      }
+    }
+    catch (error) {
       alert(error);
       return;
     }
@@ -198,20 +199,20 @@ const LecturerTimetable = () => {
       <div>{"Please run the scheduling algorithm to see suggested tutorial times"}</div>
       );
     }
-   if(scheduled===2) {
-     return(<div>{scheduledTimes}</div>);
-   }
-   if(scheduledTimes.length>0) {
-    let splitTimes = scheduledTimes.split("\\n"); 
-    let divs=[];
-    for(let i=0; i<splitTimes.length; i++) {
-      divs.push(<div>{splitTimes[i]}</div>);
+    if(scheduled===2) {
+      return(<div>Scheduling algorithm not run due to an error!<br/>{scheduledTimes}</div>);
     }
-     return (
-       <div>{divs}</div>
-     );
-   }
-  return <div> {"Scheduling..."} </div>
+    if(scheduledTimes.length>0) {
+      let splitTimes = scheduledTimes.split("\\n"); 
+      let divs=[];
+      for(let i=0; i<splitTimes.length; i++) {
+        divs.push(<div>{splitTimes[i]}</div>);
+      }
+      return (
+        <div>{divs}</div>
+      );
+    }
+   return <div> {"Scheduling..."} </div>
   }
 
   return (
@@ -236,7 +237,7 @@ const LecturerTimetable = () => {
         <h2 className={styles.cardTitle}>Module Selection</h2>
         <p className={styles.cardDescription}>Choose a module to schedule tutorials. Note that switching modules will erase any inputted algorithm settings data</p>
         <div className={styles.moduleSelector}>
-            <input defaultValue={selectedModuleId} onKeyDown={(e) => {if (e.key === "Enter") {ChangeModule(e.target.value)}}}/>
+          <input defaultValue={selectedModuleId} onKeyDown={(e) => {if (e.key === "Enter") {ChangeModule(e.target.value)}}}/>
         </div>
         <div className={styles.actionButtons}>
           <button className={styles.actionButton}>
@@ -258,13 +259,13 @@ const LecturerTimetable = () => {
             {openAlgorithmSettings && OpenAlgorithmSettings()}
           </button>
           <button onClick={() => {Schedule(); setScheduled(true); setBlockingTimes(false); setOpenAlgorithmSettings(false)}}className={`${styles.actionButton} ${styles.primaryButton}`}>
-            SCHEDULE
+              SCHEDULE
           </button>
         </div>
       </div>
-     <div> <BlockTimes/> </div>
-     <div> <DisplayTimes/> </div>
-    </div>
+    <div> <BlockTimes/> </div>
+    <div> <DisplayTimes/> </div>
+  </div>
   );
 };
 

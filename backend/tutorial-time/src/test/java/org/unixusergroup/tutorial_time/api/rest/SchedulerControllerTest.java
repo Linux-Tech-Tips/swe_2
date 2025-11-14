@@ -7,7 +7,6 @@ package org.unixusergroup.tutorial_time.api.rest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.unixusergroup.tutorial_time.application.scheduler.dto.ScheduleResponse;
 import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
@@ -63,10 +62,7 @@ public class SchedulerControllerTest {
      */
     @Test
     public void testSchedulerController() {
-        ArrayList<Integer> correctTimes = new ArrayList<>();
-        correctTimes.add(2);
-        correctTimes.add(3);
-        correctTimes.add(0);
+        String correctTimes = "Wednesday, 9:00\nThursday, 9:00\nMonday, 9:00\n";
         ScheduleResponse correctResponse = new ScheduleResponse(correctTimes);
         assertEquals(correctResponse, schedulerController.schedule("testModule", 0,0,blockedTimes).getBody());
     }

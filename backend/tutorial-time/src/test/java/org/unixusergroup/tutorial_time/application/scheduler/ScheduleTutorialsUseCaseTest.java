@@ -58,15 +58,13 @@ public class ScheduleTutorialsUseCaseTest {
         request = new ScheduleRequest("testModule", 0, 0, blockedTimes, moduleRepository, studentRepository);
     }
 
+    /**
+     * test to see if the scheduler schedules the correct times
+     */
     @Test
     public void scheduleTest() {
-        HashSet<Integer> correctTimes = new HashSet<>();
-        correctTimes.add(0);
-        correctTimes.add(2);
-        correctTimes.add(3);
-
-        //this is to check that they contain the same elements, not necessarily in the same order
-        assertEquals(correctTimes, new HashSet<>(testUseCase.execute(request).getTimes()));
+        String correctTimes = "Wednesday, 9:00\nThursday, 9:00\nMonday, 9:00\n";
+        assertEquals(correctTimes, testUseCase.execute(request).getTimes());
     }
 
     /**

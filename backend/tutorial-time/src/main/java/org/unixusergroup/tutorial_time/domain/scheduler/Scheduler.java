@@ -57,7 +57,7 @@ public class Scheduler {
     public Scheduler(ArrayList<int[]> studentTimetables, ArrayList<int[]> taTimetables) throws IllegalStudentTimetablesException{
         this(studentTimetables);
         if(taTimetables.isEmpty()) {
-            throw new IllegalStudentTimetablesException("At least one TA timetable must be entered");
+            throw new IllegalStudentTimetablesException("At least one TA must be registered for the module");
         }
         this.taTimetables = taTimetables;
     }
@@ -318,10 +318,10 @@ public class Scheduler {
         for(int i = 0; i< numberOfTimeSlots; i++) {
             for (int j = 0; j < numberOfTimeSlots; j++) {
                 if(adjacencyMatrix.get(i)[j]==0) {
-                    if(!times.contains(i)) {
+                    if(!times.contains(convertToDate(i))) {
                         times.add(convertToDate(i));
                     }
-                    if(!times.contains(j)) {
+                    if(!times.contains(convertToDate(j))) {
                         times.add(convertToDate(j));
                     }
                 }
