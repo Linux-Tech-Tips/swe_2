@@ -1,4 +1,18 @@
+import { useContext } from 'react';
+
 import BackendConfig from "../services/BackendConfig.jsx";
+import { AuthContext, AuthProvider } from '../context/Contexts.jsx';
+
+/* Utility function to get JWT from auth context */
+const GetToken = () => {
+    /* Getting JWT from current auth context */
+    const authContext = useContext(AuthContext);
+
+    /* Getting JWT from the authContext user information */
+    if(authContext.auth)
+        return authContext.auth.jwt;
+    return null;
+}
 
 /* Sends a GET request to the backend server
  *
@@ -7,13 +21,18 @@ import BackendConfig from "../services/BackendConfig.jsx";
  */
 const GetRequest = async (path, content) => {
 
+    let token = GetToken();
+
     let url = `${BackendConfig.domainName}${path}`;
     if(content) {
         url += "?" + new URLSearchParams(content);
     }
     const response = await fetch(url, {
         method: "GET",
-        mode: "cors"
+        mode: "cors",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
     });
 
     const result = await response.text();
@@ -27,10 +46,15 @@ const GetRequest = async (path, content) => {
  */
 const PostRequest = async (path, content) => {
 
+    let token = GetToken();
+
     const response = await fetch(`${BackendConfig.domainName}${path}`, {
         method: "POST",
         body: new URLSearchParams(content),
-        mode: "cors"
+        mode: "cors",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
     });
 
     const result = await response.text();
@@ -38,5 +62,5 @@ const PostRequest = async (path, content) => {
 }
 
 
-export GetRequest;
-export PostRequest;
+export { GetRequest };
+export { PostRequest };

@@ -44,7 +44,8 @@ const AuthProvider = ({children}) => {
                 id: user.profile.uni_id,
                 name: user.profile.name,
                 email: user.profile.email,
-                isLecturer: user.profile.groups.includes("Lecturer")
+                isLecturer: user.profile.groups.includes("Lecturer"),
+                jwt: user.access_token
             });
             console.log("Logged in user");
             window.location.href = window.location.origin;
