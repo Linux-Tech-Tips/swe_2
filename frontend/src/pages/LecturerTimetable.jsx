@@ -35,11 +35,11 @@ const LecturerTimetable = () => {
   function OpenAlgorithmSettings() {
     return (
       <div className={styles.algorithmSettings}>
-        {"Maximum number of students per session:"}
-        <input defaultValue={currentStudentLimit} onKeyDown={(e) => {if (e.key === "Enter") {ValidateConstraintsInput(e.target.value, "students")}}} />
+        {"Maximum number of students per session:  "}
+        <input className={styles.constraintsInput} defaultValue={currentStudentLimit} onKeyDown={(e) => {if (e.key === "Enter") {ValidateConstraintsInput(e.target.value, "students")}}} />
         <br />
-        {"Minimum number of TAs per session: "}
-        <input defaultValue={currentMinTAs} onKeyDown={(e) => {if (e.key === "Enter") {ValidateConstraintsInput(e.target.value, "tas")}}} />
+        {"Minimum number of TAs per session:  "}
+        <input className={styles.constraintsInput} defaultValue={currentMinTAs} onKeyDown={(e) => {if (e.key === "Enter") {ValidateConstraintsInput(e.target.value, "tas")}}} />
       </div>
     );
   }
@@ -200,7 +200,7 @@ const LecturerTimetable = () => {
       );
     }
     if(scheduled===2) {
-      return(<div>Scheduling algorithm not run due to an error!<br/>{scheduledTimes}</div>);
+      return(<div className={styles.errorMessage}>Scheduling algorithm not run due to an error!<br/>{scheduledTimes}</div>);
     }
     if(scheduledTimes.length>0) {
       let splitTimes = scheduledTimes.split("\\n"); 
@@ -235,9 +235,9 @@ const LecturerTimetable = () => {
       {/* Module Selection Card */}
       <div className={styles.card}>
         <h2 className={styles.cardTitle}>Module Selection</h2>
-        <p className={styles.cardDescription}>Choose a module to schedule tutorials. Note that switching modules will erase any inputted algorithm settings data</p>
-        <div className={styles.moduleSelector}>
-          <input defaultValue={selectedModuleId} onKeyDown={(e) => {if (e.key === "Enter") {ChangeModule(e.target.value)}}}/>
+        <p className={styles.cardDescription}>Choose a module to schedule tutorials. Note that switching modules will erase any inputted algorithm settings data <br/> Press Enter to confirm any inputs </p>
+        <div>
+          <input className={styles.moduleInput} defaultValue={selectedModuleId} onKeyDown={(e) => {if (e.key === "Enter") {ChangeModule(e.target.value)}}}/>
         </div>
         <div className={styles.actionButtons}>
           <button className={styles.actionButton}>
