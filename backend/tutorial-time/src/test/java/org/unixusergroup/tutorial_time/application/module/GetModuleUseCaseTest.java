@@ -34,15 +34,12 @@ public class GetModuleUseCaseTest {
     void validModuleRetrieval() {
         GetModuleRequest request = new GetModuleRequest("CT2020");
         GetModuleResponse response = getModuleUseCaseTest.execute(request);
-        assertTrue(response.ok());
         assertEquals(expectedModule, response.module());
     }
 
     @Test
     void testRetrievingNonPresentModule() {
         GetModuleRequest request = new GetModuleRequest("CT402");
-        GetModuleResponse response = getModuleUseCaseTest.execute(request);
-        assertNull(response.module());
-        assertFalse(response.ok());
+        assertThrows(RuntimeException.class, () -> getModuleUseCaseTest.execute(request));
     }
 }

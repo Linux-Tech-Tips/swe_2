@@ -9,14 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import org.unixusergroup.tutorial_time.application.module.CreateModuleUseCase;
 import org.unixusergroup.tutorial_time.application.module.GetModuleUseCase;
 import org.unixusergroup.tutorial_time.application.module.dto.CreateModuleRequest;
-import org.unixusergroup.tutorial_time.application.module.dto.CreateModuleResponse;
 import org.unixusergroup.tutorial_time.application.module.dto.GetModuleRequest;
 import org.unixusergroup.tutorial_time.application.module.dto.GetModuleResponse;
-import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
-import org.unixusergroup.tutorial_time.domain.module.Module;
 import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
-import org.unixusergroup.tutorial_time.domain.student.Student;
 import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
 import org.unixusergroup.tutorial_time.domain.timetable.Availability;
 import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
@@ -47,15 +43,14 @@ public class ModuleController {
         try {
             CreateModuleUseCase createModuleUseCase = new CreateModuleUseCase(this.moduleRepository, this.studentRepository, this.lecturerRepository);
             CreateModuleRequest createModuleRequest = new CreateModuleRequest(moduleCode, studentIds, taStudentIds, lecturerId);
-            CreateModuleResponse response = createModuleUseCase.execute(createModuleRequest);
-
-            if(response.ok()) {
-                return ResponseEntity.status(HttpStatus.OK).body("Module created successfully.");
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.responseText());
-            }
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body("Create module API: " + e.getMessage());
+            createModuleUseCase.execute(createModuleRequest);
+            return ResponseEntity.status(HttpStatus.OK).body("Module created successfully.");
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Create module API: " + e.getMessage());
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Create module API: " + e.getMessage());
         }
     }
 
@@ -85,13 +80,12 @@ public class ModuleController {
             GetModuleUseCase getModuleUseCase = new GetModuleUseCase(this.moduleRepository);
             GetModuleRequest getModuleRequest = new GetModuleRequest(moduleCode);
             GetModuleResponse response = getModuleUseCase.execute(getModuleRequest);
-
-            if(response.ok()) {
-                return ResponseEntity.status(HttpStatus.OK).body(response.module());
-            } else {
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.responseText());
-            }
-        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.OK).body(response.module());
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Get module API: " + e.getMessage());
+        }
+        catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Get module API: " + e.getMessage());
         }
     }

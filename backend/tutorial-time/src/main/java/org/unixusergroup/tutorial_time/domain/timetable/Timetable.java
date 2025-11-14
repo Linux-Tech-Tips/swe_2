@@ -3,10 +3,14 @@
  */
 package org.unixusergroup.tutorial_time.domain.timetable;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /** Data Value Object representing user availability in a timetable  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Timetable {
 
     /** The availability matrix signifying which timeslots are available and which are busy */
@@ -58,11 +62,21 @@ public class Timetable {
 
     /** Sets the availability of a given time slot */
     public void setAvailability(int column, int row, Availability available) {
+        if(column < 0 || row < 0)
+            throw new IllegalArgumentException("Error: Column or Row index can't be negative");
+        if(column >= columns || row >= rows)
+            throw new IllegalArgumentException("Error: Column and Row out of bounds");
+
         availability.get(row).set(column, available);
     }
 
     /** Gets the availability of a given time slot */
     public Availability getAvailability(int column, int row) {
+        if(column < 0 || row < 0)
+            throw new IllegalArgumentException("Error: Column or Row index can't be negative");
+        if(column >= columns || row >= rows)
+            throw new IllegalArgumentException("Error: Column and Row out of bounds");
+
         return availability.get(row).get(column);
     }
 

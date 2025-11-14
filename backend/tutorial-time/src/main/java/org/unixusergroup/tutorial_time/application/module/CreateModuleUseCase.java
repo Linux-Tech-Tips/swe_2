@@ -1,8 +1,9 @@
 /** 
- * @author Ethan, Martin
+ * @author Ethan, Martin, Cedar
  */
 package org.unixusergroup.tutorial_time.application.module;
 
+import org.unixusergroup.tutorial_time.application.exceptions.IllegalStudentAdditionException;
 import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
 import org.unixusergroup.tutorial_time.domain.module.Module;
@@ -10,11 +11,7 @@ import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
 import org.unixusergroup.tutorial_time.application.common.UseCase;
 import org.unixusergroup.tutorial_time.application.module.dto.CreateModuleRequest;
 import org.unixusergroup.tutorial_time.application.module.dto.CreateModuleResponse;
-import org.unixusergroup.tutorial_time.domain.student.Student;
 import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CreateModuleUseCase implements UseCase<CreateModuleResponse, CreateModuleRequest> {
 
@@ -35,43 +32,43 @@ public class CreateModuleUseCase implements UseCase<CreateModuleResponse, Create
     public CreateModuleResponse execute(CreateModuleRequest moduleRequest) {
         try {
 
-            //TODO: write tests for checking that each given id is associated with a real student
-
-            /** This is using the student ids from the module request if it's not empty to retrieve the students from the repository */
-            if(!moduleRequest.studentIds().isEmpty()) {
-                for(long studentId: moduleRequest.studentIds()) {
-                    if(this.studentRepository.getStudentById(studentId)==null) {
-                        throw new IllegalArgumentException("The given student ID " + studentId + " is not a registered student");
-                    }
-                }
-            }
-            /** This is using the ta student ids from the module request if it's not empty to retrieve the ta's from the repository */
-            List<Student> taStudents = new ArrayList<Student>();
-            if(!moduleRequest.taStudentIds().isEmpty()) {
-                for(long taStudentId: moduleRequest.taStudentIds()) {
-                    if(this.studentRepository.getStudentById(taStudentId)==null) {
-                        throw new IllegalArgumentException("The given student ID " + taStudentId + " is not a registered student");
-                    }
-                }
+            /** Verifying that the module code is not empty */
+            if (moduleRequest.moduleCode().isEmpty()) {
+                throw new IllegalArgumentException("The provided module code is empty.");
             }
 
             /** If lecturer doesn't exist in the database, the use case will throw an error which will lead to the response */
             Lecturer lecturer = lecturerRepository.getLecturerById(moduleRequest.lecturerId());
 
-            /** Verifing that the module code is not empty */
-            if (moduleRequest.moduleCode().isEmpty()) {
-                throw new IllegalArgumentException("The provided module code is empty.");
-            }
             if (lecturer == null) {
                 throw new IllegalArgumentException("The provided lecturer id is not present in the repo.");
             }
+
+            /** This is using the student ids from the module request (if it's not empty) to retrieve the students from the repository */
+            if(!moduleRequest.studentIds().isEmpty()) {
+                for(long studentId: moduleRequest.studentIds()) {
+                    if(this.studentRepository.getStudentById(studentId)==null) {
+                        throw new IllegalStudentAdditionException("The given student ID " + studentId + " is not a registered student");
+                    }
+                }
+            }
+
+            /** This is using the ta student ids from the module request (if it's not empty) to retrieve the ta's from the repository */
+            if(!moduleRequest.taStudentIds().isEmpty()) {
+                for(long taStudentId: moduleRequest.taStudentIds()) {
+                    if(this.studentRepository.getStudentById(taStudentId)==null) {
+                        throw new IllegalStudentAdditionException("The given student ID " + taStudentId + " is not a registered student");
+                    }
+                }
+            }
+
             Module newModule = new Module(moduleRequest.moduleCode(), moduleRequest.studentIds(), moduleRequest.taStudentIds(), moduleRequest.lecturerId());
 
             this.moduleRepository.saveModule(newModule);
             return new CreateModuleResponse();
 
         } catch (Exception e) {
-            return new CreateModuleResponse(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 }

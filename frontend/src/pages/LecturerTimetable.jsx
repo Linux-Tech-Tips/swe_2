@@ -1,5 +1,8 @@
+/* Library imports */
 import React, { useState } from 'react';
 import { Cog } from 'lucide-react';
+
+/* Import local page components */
 import styles from './LecturerTimetable.module.css';
 import otherStyles from "../assets/BlockOutGrid.module.css"
 import PlusIcon from '../components/PlusIcon.jsx';

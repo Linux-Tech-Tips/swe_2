@@ -24,12 +24,12 @@ public class GetModuleUseCase implements UseCase<GetModuleResponse, GetModuleReq
             }
             Module module = this.moduleRepository.getModuleByCode(getModuleRequest.moduleCode());
             if (module==null) {
-                return new GetModuleResponse("Error: Module not found in GetModuleUseCase.");
+                throw new IllegalArgumentException("Error: Module not found in GetModuleUseCase.");
             }
             return new GetModuleResponse(module);
 
         } catch (Exception e) {
-            return new GetModuleResponse(e.getMessage());
+            throw new RuntimeException(e);
         }
     }
 }

@@ -2,7 +2,6 @@
  * @author Cedar
  */
 package org.unixusergroup.tutorial_time.application.exceptions;
-import org.unixusergroup.tutorial_time.application.exceptions.IllegalConstraintsException;
 
 /**
  * more fine-grained version of illegalConstraintsException
