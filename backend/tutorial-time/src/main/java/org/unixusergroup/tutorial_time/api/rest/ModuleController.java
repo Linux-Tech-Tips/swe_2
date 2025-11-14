@@ -60,7 +60,7 @@ public class ModuleController {
     @GetMapping(path="/getModule")
     @CrossOrigin(origins=FRONTEND_DOMAIN_NAME)
     public ResponseEntity<?> getModule(@RequestParam String moduleCode) {
-        Lecturer testLecturer = new Lecturer("Professor Test", "test@universityofgalway.ie", 00000);
+        Lecturer testLecturer = new Lecturer("Professor Test", "test@universityofgalway.ie", 10000);
         Module testModule = new Module("testModule", testLecturer.getUniversityId());
         Student student1 = new Student("Student1", "s1@university.ie", 1111, new Timetable(2, 2, Availability.UNAVAILABLE));
         student1.setAvailable(0,0);

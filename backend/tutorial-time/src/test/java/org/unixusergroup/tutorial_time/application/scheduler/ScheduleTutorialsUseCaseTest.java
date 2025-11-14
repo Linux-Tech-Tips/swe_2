@@ -36,7 +36,7 @@ public class ScheduleTutorialsUseCaseTest {
      */
     @BeforeEach
     public void setVariables() {
-        Lecturer testLecturer = new Lecturer("Professor Test", "test@universityofgalway.ie", 00000);
+        Lecturer testLecturer = new Lecturer("Professor Test", "test@universityofgalway.ie", 10000);
         Module testModule = new Module("testModule", testLecturer.getUniversityId());
         Student student1 = new Student("Student1", "s1@university.ie", 1111, new Timetable(2, 2, Availability.UNAVAILABLE));
         student1.setAvailable(0,0);
@@ -91,7 +91,7 @@ public class ScheduleTutorialsUseCaseTest {
      */
     @Test
     public void impossibleTAMinimum() {
-        Lecturer testLecturer = new Lecturer("Professor Test", "test@universityofgalway.ie", 00000);
+        Lecturer testLecturer = new Lecturer("Professor Test", "test@universityofgalway.ie", 10000);
         Module testModule = new Module("testModule", testLecturer.getUniversityId());
         Student student1 = new Student("Student1", "s1@university.ie", 1111, new Timetable(2, 2, Availability.UNAVAILABLE));
         student1.setAvailable(0,0);
