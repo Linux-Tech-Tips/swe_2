@@ -87,8 +87,8 @@ class LecturerControllerTest {
     void addLecturerToRepository() {
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
         LecturerController controller = new LecturerController(lecturerRepository);
-        Lecturer expectedLecturer = new Lecturer("Jonny test", "j.test@test.ie", 1002);
-        ResponseEntity<?> response = controller.addLecturer("Jonny test", "j.test@test.ie", 1002);
+        Lecturer expectedLecturer = new Lecturer("Jonny test", "j.test@nuigalway.ie", 1002);
+        ResponseEntity<?> response = controller.addLecturer("Jonny test", "j.test@nuigalway.ie", 1002);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         Lecturer retrievedLecturer = lecturerRepository.getLecturerById(1002);
@@ -99,7 +99,7 @@ class LecturerControllerTest {
     void retrieveLecturerFromRepository() {
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
         LecturerController controller = new LecturerController(lecturerRepository);
-        Lecturer expectedLecturer = new Lecturer("Jonny test", "j.test@test.ie", 1002);
+        Lecturer expectedLecturer = new Lecturer("Jonny test", "johnny.test@nuigalway.ie", 1002);
         lecturerRepository.saveLecturer(expectedLecturer);
 
         ResponseEntity<?> response = controller.getLecturer(1002);

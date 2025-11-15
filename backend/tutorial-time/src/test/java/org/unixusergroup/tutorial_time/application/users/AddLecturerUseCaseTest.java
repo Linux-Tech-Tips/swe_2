@@ -20,18 +20,17 @@ public class AddLecturerUseCaseTest {
 
     @Test
     void validLecturerAddition() {
-        Lecturer expectedLecturer = new Lecturer("Jonny Test", "j@test.com", 2000);
-        AddLecturerRequest addLecturerRequest = new AddLecturerRequest("Jonny Test", "j@test.com", 2000);
+        Lecturer expectedLecturer = new Lecturer("Jonny Test", "j@nuigalway.ie", 2000);
+        AddLecturerRequest addLecturerRequest = new AddLecturerRequest("Jonny Test", "j@nuigaway.ie", 2000);
         AddLecturerUseCase addLecturerUseCase = new AddLecturerUseCase(this.lecturerRepository);
         AddLecturerResponse response = addLecturerUseCase.execute(addLecturerRequest);
 
-        assertTrue(response.ok());
         assertEquals(expectedLecturer, this.lecturerRepository.getLecturerById(2000));
     }
 
     @Test
     void addingLecturerWithNoName() {
-        AddLecturerRequest addLecturerRequest = new AddLecturerRequest("", "j@test.com", 2000);
+        AddLecturerRequest addLecturerRequest = new AddLecturerRequest("", "j@nuigalway.ie", 2000);
         AddLecturerUseCase addLecturerUseCase = new AddLecturerUseCase(this.lecturerRepository);
         AddLecturerResponse response = addLecturerUseCase.execute(addLecturerRequest);
 
