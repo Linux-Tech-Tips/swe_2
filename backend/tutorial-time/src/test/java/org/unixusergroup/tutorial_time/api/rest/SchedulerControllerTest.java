@@ -72,6 +72,6 @@ public class SchedulerControllerTest {
      */
     @Test
     public void testSchedulerControllerException() {
-        assertEquals(HttpStatusCode.valueOf(500), schedulerController.schedule("testModule", 1,1,blockedTimes).getStatusCode());
+        assertEquals(HttpStatusCode.valueOf(400), schedulerController.schedule("testModule", 1,1,blockedTimes).getStatusCode());
     }
 }

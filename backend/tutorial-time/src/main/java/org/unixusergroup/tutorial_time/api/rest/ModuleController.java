@@ -40,7 +40,6 @@ public class ModuleController {
     }
 
     @PostMapping(path="/createModule")
-    @CrossOrigin(origins=FRONTEND_DOMAIN_NAME)
     public ResponseEntity<?> createNewModule(@RequestParam long lecturerId, @RequestParam String moduleCode,
                                              @RequestParam List<Long> studentIds, @RequestParam List<Long> taStudentIds) {
         try {
@@ -58,7 +57,6 @@ public class ModuleController {
     }
 
     @GetMapping(path="/getModule")
-    @CrossOrigin(origins=FRONTEND_DOMAIN_NAME)
     public ResponseEntity<?> getModule(@RequestParam String moduleCode) {
         Lecturer testLecturer = new Lecturer("Professor Test", "test@universityofgalway.ie", 10000);
         Module testModule = new Module("testModule", testLecturer.getUniversityId());

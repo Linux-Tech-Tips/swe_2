@@ -54,11 +54,6 @@ public class SchedulerTest {
      */
     @Test
     public void testConstructor() {
-        HashSet<Integer> universe = new HashSet<>(4);
-        for(int i=0; i<4; i++) {
-            universe.add(i);
-        }
-
         assertEquals(4, testScheduler.getModuleSize());
         assertEquals(timetables, testScheduler.getStudentTimetables());
         assertFalse(testScheduler.getAdjacencyMatrixSet());

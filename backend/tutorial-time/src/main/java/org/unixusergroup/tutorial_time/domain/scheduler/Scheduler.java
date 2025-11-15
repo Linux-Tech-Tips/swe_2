@@ -259,11 +259,14 @@ public class Scheduler {
     public String checkBaseCaseOne() {
         //loop through all time sets, add the indices of each time set whose size is equal to the number of students to the returned array
 
-        String times = "";
+        String times = "All students are available at each of the following times:\n";
         for(int i = 0; i< numberOfTimeSlots; i++) {
             if(timeSlots.get(i).getSize()==moduleSize) {
                 times+=convertToDate(timeSlots.get(i).getId());
             }
+        }
+        if(times.equals("All students are available at each of the following times:\n")) {
+            times = "";
         }
         return times;
     }
@@ -318,6 +321,7 @@ public class Scheduler {
         for(int i = 0; i< numberOfTimeSlots; i++) {
             for (int j = 0; j < numberOfTimeSlots; j++) {
                 if(adjacencyMatrix.get(i)[j]==0) {
+                    times.add("The following two times cover all students:\n");
                     if(!times.contains(convertToDate(i))) {
                         times.add(convertToDate(i));
                     }

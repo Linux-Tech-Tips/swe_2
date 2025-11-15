@@ -11,14 +11,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.unixusergroup.tutorial_time.application.scheduler.dto.ScheduleRequest;
 import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.module.Module;
+import org.unixusergroup.tutorial_time.domain.scheduler.Constraints;
 import org.unixusergroup.tutorial_time.domain.student.Student;
 import org.unixusergroup.tutorial_time.domain.timetable.Availability;
 import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 import org.unixusergroup.tutorial_time.infrastructure.InMemoryModuleRepository;
 import org.unixusergroup.tutorial_time.infrastructure.InMemoryStudentRepository;
-
-import java.util.Arrays;
-import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,7 +26,7 @@ public class ScheduleTutorialsUseCaseTest {
     private static final InMemoryModuleRepository moduleRepository = new InMemoryModuleRepository();
     private static final InMemoryStudentRepository studentRepository = new InMemoryStudentRepository();
     ScheduleRequest request;
-    ScheduleTutorialsUseCase testUseCase = new ScheduleTutorialsUseCase();
+    ScheduleTutorialsUseCase testUseCase = new ScheduleTutorialsUseCase(moduleRepository, studentRepository);
     int[] blockedTimes = {};
 
     /**
@@ -55,7 +53,7 @@ public class ScheduleTutorialsUseCaseTest {
         studentRepository.saveStudent(student4);
         testModule.addStudent(student4.getUniversityId());
         moduleRepository.saveModule(testModule);
-        request = new ScheduleRequest("testModule", 0, 0, blockedTimes, moduleRepository, studentRepository);
+        request = new ScheduleRequest("testModule", 0, 0, blockedTimes);
     }
 
     /**
@@ -73,7 +71,7 @@ public class ScheduleTutorialsUseCaseTest {
     @Test
     public void impossibleBlockedTimesTest() {
         int[] badTimes = {2};
-        request = new ScheduleRequest("testModule", 0, 0, badTimes, moduleRepository, studentRepository);
+        request = new ScheduleRequest("testModule", 0, 0, badTimes);
         assertThrows(RuntimeException.class, () -> testUseCase.execute(request));
     }
 
@@ -82,7 +80,7 @@ public class ScheduleTutorialsUseCaseTest {
      */
     @Test
     public void impossibleStudentLimitTest() {
-        request = new ScheduleRequest("testModule", 1, 0, blockedTimes, moduleRepository, studentRepository);
+        request = new ScheduleRequest("testModule", 1, 0, blockedTimes);
         assertThrows(RuntimeException.class, () -> testUseCase.execute(request));
     }
 
@@ -114,7 +112,23 @@ public class ScheduleTutorialsUseCaseTest {
         studentRepository.saveStudent(ta1);
         testModule.addTAStudent(ta1.getUniversityId());
         moduleRepository.saveModule(testModule);
-        request = new ScheduleRequest("testModule", 1, 2, blockedTimes, moduleRepository, studentRepository);
+        request = new ScheduleRequest("testModule", 1, 2, blockedTimes);
+        assertThrows(RuntimeException.class, () -> testUseCase.execute(request));
+    }
+
+    /**
+     * test that the request throws an exception when module code that doesn't link to any module is given
+     */
+    @Test
+    public void testSchedulerIllegalModuleCode() {
+        request = new ScheduleRequest("fakeModule", 1, 2, blockedTimes);
+        assertThrows(IllegalArgumentException.class, () -> testUseCase.execute(request));
+    }
+
+
+    @Test
+    public void testConstraintsIllegalParameter() {
+        request = new ScheduleRequest("testModule", -1, 0, blockedTimes);
         assertThrows(RuntimeException.class, () -> testUseCase.execute(request));
     }
 }

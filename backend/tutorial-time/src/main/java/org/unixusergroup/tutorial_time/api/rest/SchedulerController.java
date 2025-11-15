@@ -18,6 +18,8 @@ import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
 import org.unixusergroup.tutorial_time.domain.timetable.Availability;
 import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 
+import java.util.Arrays;
+
 import static org.unixusergroup.tutorial_time.infrastructure.ProjectConfiguration.FRONTEND_DOMAIN_NAME;
 
 @RestController
@@ -35,7 +37,7 @@ public class SchedulerController {
     public SchedulerController(ModuleRepository moduleRepository, StudentRepository studentRepository) {
         this.moduleRepository = moduleRepository;
         this.studentRepository = studentRepository;
-        this.scheduleTutorialsUseCase = new ScheduleTutorialsUseCase();
+        this.scheduleTutorialsUseCase = new ScheduleTutorialsUseCase(moduleRepository, studentRepository);
     }
 
     /**
@@ -48,7 +50,6 @@ public class SchedulerController {
      * @return ScheduleResponse object containing the best times
      */
     @PostMapping(path="/schedule")
-    @CrossOrigin(origins=FRONTEND_DOMAIN_NAME)
     public ResponseEntity<?> schedule(@RequestParam String moduleCode, @RequestParam int studentLimit, @RequestParam int minTAs, @RequestParam int[] blockedTimes) {
         Lecturer testLecturer = new Lecturer("Professor Test", "test@universityofgalway.ie", 10000);
         Module testModule = new Module("testModule", testLecturer.getUniversityId());
@@ -70,8 +71,11 @@ public class SchedulerController {
         testModule.addStudent(student4.getUniversityId());
         moduleRepository.saveModule(testModule);
         try {
-            ScheduleRequest request = new ScheduleRequest(moduleCode, studentLimit, minTAs, blockedTimes, moduleRepository, studentRepository);
+            ScheduleRequest request = new ScheduleRequest(moduleCode, studentLimit, minTAs, blockedTimes);
             return ResponseEntity.status(HttpStatus.OK).body(scheduleTutorialsUseCase.execute(request));
+        }
+        catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
         catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
