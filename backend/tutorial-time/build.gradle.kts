@@ -2,6 +2,7 @@ plugins {
 	java
 	id("org.springframework.boot") version "3.5.6"
 	id("io.spring.dependency-management") version "1.1.7"
+  id("jacoco")
 }
 
 group = "com.example"
@@ -36,4 +37,10 @@ tasks.withType<Test> {
   testLogging {
     events("passed", "failed")
   }
+
+  finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
 }
