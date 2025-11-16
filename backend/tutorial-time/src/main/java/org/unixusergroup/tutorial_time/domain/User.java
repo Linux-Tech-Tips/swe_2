@@ -24,6 +24,8 @@ public abstract class User {
     protected String name;
     /** The university email of the user */
     protected String universityEmail;
+    private final String universityEmailRegex = ".*@universityofgalway\\.ie";
+    private final String oldUniversityEmailRegex = ".*@nuigalway\\.ie";
     /** The university (student or staff) ID of the user */
     @Id
     protected long universityId;
@@ -42,7 +44,7 @@ public abstract class User {
         if(name.isEmpty()) {
             throw new IllegalArgumentException("A name must be inputted");
         }
-        if(!(Pattern.matches(".*@universityofgalway\\.ie", universityEmail)) && !(Pattern.matches(".*@nuigalway\\.ie", universityEmail))) {
+        if(!(Pattern.matches(universityEmailRegex, universityEmail)) && !(Pattern.matches(oldUniversityEmailRegex, universityEmail))) {
             throw new IllegalArgumentException("You must input a university of galway email address");
         }
         if(universityId<1) {
