@@ -253,7 +253,6 @@ public class Scheduler {
 
     /**
      * check base case 1: there is one or more times when everyone is available
-     * COULD HAVE BETTER NAME
      * @return arraylist of ids of times when everyone is available
      */
     public String checkBaseCaseOne() {
@@ -262,7 +261,7 @@ public class Scheduler {
         String times = "All students are available at each of the following times:\n";
         for(int i = 0; i< numberOfTimeSlots; i++) {
             if(timeSlots.get(i).getSize()==moduleSize) {
-                times+=convertToDate(timeSlots.get(i).getId());
+                times+=moduleSize + " students are available at " + convertToDate(timeSlots.get(i).getId());
             }
         }
         if(times.equals("All students are available at each of the following times:\n")) {
@@ -311,26 +310,29 @@ public class Scheduler {
 
     /**
      * check base case 2: two (n) or more times when everyone is available at n-1 of the times
-     * COULD HAVE A BETTER NAME
      * @return an array representing those times
      */
     public String checkBaseCaseTwo() {
         createAdjacencyMatrix();
         ArrayList<String> times = new ArrayList<>();
+        ArrayList<Integer> timesAdded = new ArrayList<>();
 
         for(int i = 0; i< numberOfTimeSlots; i++) {
             for (int j = 0; j < numberOfTimeSlots; j++) {
                 if(adjacencyMatrix.get(i)[j]==0) {
-                    times.add("The following two times cover all students:\n");
-                    if(!times.contains(convertToDate(i))) {
-                        times.add(convertToDate(i));
+                    if(!timesAdded.contains(i)) {
+                        times.add("The following two times cover all students:\n");
+                        timesAdded.add(i);
+                        times.add(timeSlots.get(i).getSize() + " students are available at " + convertToDate(i));
                     }
-                    if(!times.contains(convertToDate(j))) {
-                        times.add(convertToDate(j));
+                    if(!timesAdded.contains(j)) {
+                        timesAdded.add(j);
+                        times.add(timeSlots.get(j).getSize() + " students are available at " + convertToDate(j));
                     }
                 }
             }
         }
+
         /*
         runs through the adjacency matrix, adds all nodes with an intersection of 0 to the times array
         e.g. if adjacencyMatrix [a][b] = 0 --> add a, b
@@ -353,7 +355,7 @@ public class Scheduler {
 
             //if not all students in a given timeslot are represented in other timeslots --> add it to the returned times
             if(!(unionOfOthers.containsAll(temp.getStudents()))) {
-                times+=convertToDate(temp.getId());
+                times+=timeSlots.get(i).getSize() + " students are available at " + convertToDate(temp.getId());
             }
         }
         return times;
