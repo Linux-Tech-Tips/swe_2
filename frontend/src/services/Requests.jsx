@@ -61,6 +61,4 @@ const PostRequest = async (path, content) => {
     return [response.status, result];
 }
 
-
-export { GetRequest };
-export { PostRequest };
+export {GetRequest, PostRequest,};
