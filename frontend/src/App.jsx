@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
 /* Import the page components */
-import Login from './pages/Login.jsx';
+import { Login, CompleteLogin } from './pages/Login.jsx';
 import StudentTimetable from './pages/StudentTimetable.jsx';
 import LecturerTimetable from './pages/LecturerTimetable.jsx';
 import { AuthContext, AuthProvider } from './context/Contexts.jsx';
@@ -24,7 +24,16 @@ const AppRouter = () => {
                     path="/"
                     element={authContext.auth
                         ? <Navigate to={authContext.auth.isLecturer ? "/lecturer-timetable" : "/timetable"} replace />
-                        : <Login onLoginSuccess={authContext.login} />
+                        : <Login handleLogin={authContext.login} />
+                    }
+                />
+
+                {/* Route for the 'signing in...' page, also processes the actual login */}
+                <Route
+                    path="/auth-callback"
+                    element={authContext.auth
+                        ? <Navigate to="/" replace />
+                        : <CompleteLogin handleLoginCallback={authContext.loginCallback} />
                     }
                 />
 
