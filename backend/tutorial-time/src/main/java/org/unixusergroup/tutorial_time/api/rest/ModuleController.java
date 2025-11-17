@@ -3,14 +3,9 @@
  */
 
 package org.unixusergroup.tutorial_time.api.rest;
-
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.unixusergroup.tutorial_time.application.module.CreateModuleUseCase;
 import org.unixusergroup.tutorial_time.application.module.GetModuleUseCase;
 import org.unixusergroup.tutorial_time.application.module.dto.CreateModuleRequest;
@@ -22,9 +17,11 @@ import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
 
 import java.util.List;
 
+import static org.unixusergroup.tutorial_time.infrastructure.ProjectConfiguration.FRONTEND_DOMAIN_NAME;
+
 @RestController
 @RequestMapping(path="/api/module")
-
+@CrossOrigin(origins=FRONTEND_DOMAIN_NAME)
 /** The API controller exposing the Module use cases. */
 public class ModuleController {
     private final ModuleRepository moduleRepository;
@@ -54,7 +51,7 @@ public class ModuleController {
         }
     }
 
-    @PostMapping(path="/getModule")
+    @GetMapping(path="/getModule")
     public ResponseEntity<?> getModule(@RequestParam String moduleCode) {
         try {
             GetModuleUseCase getModuleUseCase = new GetModuleUseCase(this.moduleRepository);
