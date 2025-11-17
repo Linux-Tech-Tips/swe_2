@@ -61,7 +61,7 @@ public class ScheduleTutorialsUseCaseTest {
      */
     @Test
     public void scheduleTest() {
-        String correctTimes = "Wednesday, 9:00\nThursday, 9:00\nMonday, 9:00\n";
+        String correctTimes = "1 students are available at Wednesday, 9:00\n1 students are available at Thursday, 9:00\n2 students are available at Monday, 9:00\n";
         assertEquals(correctTimes, testUseCase.execute(request).getTimes());
     }
 

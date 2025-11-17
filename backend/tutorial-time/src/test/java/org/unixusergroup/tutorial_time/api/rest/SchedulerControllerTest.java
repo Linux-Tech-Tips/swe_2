@@ -62,7 +62,7 @@ public class SchedulerControllerTest {
      */
     @Test
     public void testSchedulerController() {
-        String correctTimes = "Wednesday, 9:00\nThursday, 9:00\nMonday, 9:00\n";
+        String correctTimes = "1 students are available at Wednesday, 9:00\n1 students are available at Thursday, 9:00\n2 students are available at Monday, 9:00\n";
         ScheduleResponse correctResponse = new ScheduleResponse(correctTimes);
         assertEquals(correctResponse, schedulerController.schedule("testModule", 0,0,blockedTimes).getBody());
     }

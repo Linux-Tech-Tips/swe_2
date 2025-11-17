@@ -250,7 +250,7 @@ public class SchedulerTest {
         testTimetables2.add(testTimeTable1);
         testTimetables2.add(testTimeTable2);
         Scheduler testScheduler2 = new Scheduler(testTimetables2);
-        String correctTimes = "Monday, 9:00\n";
+        String correctTimes = "All students are available at each of the following times:\n" + "2 students are available at Monday, 9:00\n";
         assertEquals(correctTimes, testScheduler2.checkBaseCaseOne());
     }
 
@@ -295,7 +295,7 @@ public class SchedulerTest {
         testTimetables2.add(testTimeTable3);
 
         Scheduler testScheduler2 = new Scheduler(testTimetables2);
-        String correctTimes = "Monday, 9:00\nThursday, 9:00\n";
+        String correctTimes = "The following two times cover all students:\n2 students are available at Monday, 9:00\n1 students are available at Thursday, 9:00\n";
 
         assertEquals(correctTimes, testScheduler2.checkBaseCaseTwo());
     }
@@ -305,7 +305,7 @@ public class SchedulerTest {
      */
     @Test
     public void testSchedule() {
-        String correctTimes = "Wednesday, 9:00\nThursday, 9:00\nMonday, 9:00\n";
+        String correctTimes = "1 students are available at Wednesday, 9:00\n1 students are available at Thursday, 9:00\n2 students are available at Monday, 9:00\n";
         //this is to check that they contain the same elements, not necessarily in the same order
         assertEquals(correctTimes, testScheduler.schedule());
     }
