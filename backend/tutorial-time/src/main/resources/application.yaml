@@ -7,5 +7,5 @@ spring:
     username: guest
     password: guest
   jpa:
-    hibernate.ddl-auto: none
+    hibernate.ddl-auto: update
     show-sql: true
