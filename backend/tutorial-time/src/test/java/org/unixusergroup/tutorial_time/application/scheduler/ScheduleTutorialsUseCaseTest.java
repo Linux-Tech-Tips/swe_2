@@ -103,7 +103,7 @@ public class ScheduleTutorialsUseCaseTest {
         student3.setAvailable(1,1);
         studentRepository.saveStudent(student3);
         testModule.addStudent(student3.getUniversityId());
-        Student student4 = new Student("Student4", "s4@university.ofgalwayie", 4444, new Timetable(2, 2, Availability.UNAVAILABLE));
+        Student student4 = new Student("Student4", "s4@universityofgalway.ie", 4444, new Timetable(2, 2, Availability.UNAVAILABLE));
         student4.setAvailable(0,1);
         studentRepository.saveStudent(student4);
         testModule.addStudent(student4.getUniversityId());
