@@ -14,42 +14,47 @@
     Oh and it returns the response from the backend api.
  */
 
-function UploadModule(formData) {
+async function UploadModule(formData) {
     const obtainedModuleCode = formData.get("moduleCode");
-    const lecturerId = parseInt(formData.get("lecturerId"));
+    const lecturerId = BigInt(formData.get("lecturerId"));
 
     // Both of these need to be split by a delimiter of some sort and the resulting array is what's gonna be sent to the backend.
-    const enrolledStudentIds = formData.get("studentIds").split(" ").map((id) => parseInt(id));
-    const taStudentIds = formData.get("taStudentIds").split(" ").map((id) => parseInt(id));
+    const enrolledStudentIds = formData.get("studentIds").split(" ").map((id) => BigInt(id));
+    const taStudentIds = formData.get("taStudentIds").split(" ").map((id) => BigInt(id));
 
     // this calls the api in order to submit the data to the backend
     // todo: add a small little message that returns the status of API call.
     //await fetch("https:localhost:8080/api/module/createModule", moduleCode, staffId, studentIds, taStudentIds);
 
-    try{
-        const params = {
-            moduleCode: obtainedModuleCode,
-            staffId: lecturerId,
-            studentIds: enrolledStudentIds,
-            taStudentIds: taStudentIds,
-         };
 
-         const response = await fetch( "http://localhost:8080/api/module/createModule" + new URLSearchParams(params).toString(), {
-            mode: "cors",
-            method: "POST",
-          });
-         const data = await response.text();
-         if(!response.ok) {
-           alert("Error: " + data);
-           //do exception handling here
-         }
-         else {
-         }
+    /*
+        moduleCode: String,
+        staffId: long
+        studentIds: List<Long>
+        taStudentIds: List<Long>
+    */
+    // exceptions would be if the lecturer is not the
+    try{
+            const params = {
+                moduleCode: obtainedModuleCode,
+                staffId: lecturerId,
+                studentIds: enrolledStudentIds,
+                taStudentIds: taStudentIds,
+            };
+
+            const path = "api/module/createModule";
+            const [statusCode, result] = await PostRequest(path, params);
+
+            if (statusCode == 200) {
+                alert("The module has been added correctly.")
+            } else {
+                alert("HTTP status " + statusCode + " <\br>Error: " + result + "Module was not created.")
+            }
        }
        catch (error) {
           alert(error);
        }
-
+   }
 const LecturerModule = () => {
     // make a small form that takes in the data.
    return (<div>
@@ -82,7 +87,7 @@ const LecturerModule = () => {
                    <input type="text" name="taStudentIds" />
                </label>
                </div>
-                    <input onClick type="submit" value="Submit" />
+                    <input onClick="UploadModule()" type="submit" value="Submit" />
                   </form>
        </div>);
 };
