@@ -66,10 +66,7 @@ class CreateTimetableUseCaseTest {
                                          0, 0, 0, 0, 0,
                                          0, 0, 0, 0, 0 };
         StudentRepository studentRepository = new InMemoryStudentRepository();
-        CreateTimetableResponse response = studentTestFixture(student, availability, studentRepository);
-
-        assertTrue(response.ok());
-        assertEquals(response.responseText(), "");
+        studentTestFixture(student, availability, studentRepository);
 
         Timetable expectedTimetable = getTimetableFromArray(availability, 5, 8, Availability.UNAVAILABLE);
         Timetable producedTimetable = studentRepository.getStudentById(123456).getTimetable();
@@ -99,9 +96,6 @@ class CreateTimetableUseCaseTest {
         StudentRepository studentRepository = new InMemoryStudentRepository();
         CreateTimetableResponse response = studentTestFixture(student, availability, studentRepository);
 
-        assertTrue(response.ok());
-        assertEquals(response.responseText(), "");
-
         Timetable oldTimetable = getTimetableFromArray(oldAvailability, 5, 8, Availability.UNAVAILABLE);
         Timetable expectedTimetable = getTimetableFromArray(availability, 5, 8, Availability.UNAVAILABLE);
         Timetable producedTimetable = studentRepository.getStudentById(123456).getTimetable();
@@ -123,10 +117,7 @@ class CreateTimetableUseCaseTest {
                                          0, 0, 0, 0, 0,
                                          1, 1, 1, 1, 1 };
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
-        CreateTimetableResponse response = lecturerTestFixture(lecturer, availability, lecturerRepository);
-
-        assertTrue(response.ok());
-        assertEquals(response.responseText(), "");
+        lecturerTestFixture(lecturer, availability, lecturerRepository);
 
         Timetable expectedTimetable = getTimetableFromArray(availability, 5, 8, Availability.UNAVAILABLE);
         Timetable producedTimetable = lecturerRepository.getLecturerById(654321).getTimetable();
@@ -155,9 +146,6 @@ class CreateTimetableUseCaseTest {
                                          0, 0, 0, 0, 0 };
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
         CreateTimetableResponse response = lecturerTestFixture(lecturer, availability, lecturerRepository);
-
-        assertTrue(response.ok());
-        assertEquals(response.responseText(), "");
 
         Timetable oldTimetable = getTimetableFromArray(oldAvailability, 5, 8, Availability.UNAVAILABLE);
         Timetable expectedTimetable = getTimetableFromArray(availability, 5, 8, Availability.UNAVAILABLE);

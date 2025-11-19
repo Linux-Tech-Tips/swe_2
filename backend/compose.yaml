@@ -9,6 +9,7 @@ services:
       - ./database/.env
     volumes:
       - ./database/init.sql/:/docker-entrypoint-initdb.d/1.sql
+      - db-data:/var/lib/mysql
     healthcheck:
       test: ["CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized"]
       interval: 10s
@@ -26,3 +27,6 @@ services:
         condition: service_healthy
     ports:
       - "8080:8080"
+
+volumes:
+  db-data:

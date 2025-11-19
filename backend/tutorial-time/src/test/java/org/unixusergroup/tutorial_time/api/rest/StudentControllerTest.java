@@ -1,7 +1,7 @@
 /** 
- * @author Martin
+ * @author Martin, Ethan
  */
-package org.unixusergroup.tutorial_time.application.users;
+package org.unixusergroup.tutorial_time.api.rest;
 
 import java.util.Arrays;
 
@@ -13,10 +13,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.unixusergroup.tutorial_time.api.rest.StudentController;
+import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
+import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
 import org.unixusergroup.tutorial_time.domain.student.Student;
 import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 import org.unixusergroup.tutorial_time.domain.timetable.Availability;
 import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
+import org.unixusergroup.tutorial_time.infrastructure.InMemoryLecturerRepository;
 import org.unixusergroup.tutorial_time.infrastructure.InMemoryStudentRepository;
 
 @SpringBootTest
@@ -81,6 +84,37 @@ class StudentControllerTest {
             }
         }
         assertEquals(expectedResult.toString(), response.getBody());
+    }
+
+
+    @Test
+    void addStudentToRepository() {
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        StudentController controller = new StudentController(studentRepository);
+
+        Student expectedStudent = new Student("Lance test", "L.test@nuigalway.ie", 20003);
+        studentRepository.saveStudent(expectedStudent);
+
+
+        ResponseEntity<?> response = controller.addStudent("Lance test", "L.test@nuigalway.ie", 20003);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        Student retrievedStudent = studentRepository.getStudentById(20003);
+        assertEquals(expectedStudent, retrievedStudent);
+    }
+
+    @Test
+    void retrieveStudentFromRepository() {
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        StudentController controller = new StudentController(studentRepository);
+
+        Student expectedStudent = new Student("Lance test", "L.test@nuigalway.ie", 20003);
+        studentRepository.saveStudent(expectedStudent);
+
+        ResponseEntity<?> response = controller.getStudent(20003);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        assertEquals(expectedStudent, response.getBody());
     }
 }
 

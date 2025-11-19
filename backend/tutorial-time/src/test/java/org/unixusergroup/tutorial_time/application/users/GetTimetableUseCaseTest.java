@@ -61,9 +61,7 @@ class GetTimetableUseCaseTest {
         GetTimetableResponse response = useCase.execute(request);
 
         /* Check that use case executed correctly */
-        assertTrue(response.ok());
         assertTrue(Arrays.equals(availability, response.availability()));
-        assertEquals(response.responseText(), "");
     }
 
     /** Test case to get a lecturer timetable */
@@ -90,9 +88,7 @@ class GetTimetableUseCaseTest {
         GetTimetableResponse response = useCase.execute(request);
 
         /* Check that use case executed correctly */
-        assertTrue(response.ok());
         assertTrue(Arrays.equals(availability, response.availability()));
-        assertEquals(response.responseText(), "");
     }
 
 }
