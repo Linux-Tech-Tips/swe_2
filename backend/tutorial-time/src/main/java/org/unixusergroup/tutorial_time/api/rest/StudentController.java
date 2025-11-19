@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import org.unixusergroup.tutorial_time.application.users.AddStudentUseCase;
+import org.unixusergroup.tutorial_time.application.users.GetStudentUseCase;
 import org.unixusergroup.tutorial_time.domain.User;
 import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
 import org.unixusergroup.tutorial_time.application.common.UseCase;
@@ -27,9 +29,37 @@ public class StudentController {
     }
 
     @PostMapping(path="/addstudent")
-    public ResponseEntity<?> addStudent(@RequestParam int studentId, @RequestParam String name) {
-        // TODO IMPLEMENT THIS WITH A USE CASE
-        return ResponseEntity.status(HttpStatus.NOT_IMPLEMENTED).body("NOT IMPLEMENTED");
+    public ResponseEntity<?> addStudent(@RequestParam String name, @RequestParam String email, @RequestParam long studentId) {
+        try {
+            AddStudentRequest addStudentRequest = new AddStudentRequest(name, email, studentId);
+            AddStudentUseCase addStudentUseCase = new AddStudentUseCase(this.studentRepository);
+            AddStudentResponse response = addStudentUseCase.execute(addStudentRequest);
+
+            if (response.ok()) {
+                return ResponseEntity.status(HttpStatus.OK).body("Student added successfully");
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.responseText());
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Student add student API: " + e.getMessage());
+        }
+    }
+
+    @GetMapping(path="/getstudent")
+    public ResponseEntity<?> getStudent(@RequestParam long studentId) {
+        try {
+            GetStudentRequest getStudentRequest = new GetStudentRequest(studentId);
+            GetStudentUseCase getStudentUseCase = new GetStudentUseCase(this.studentRepository);
+            GetStudentResponse response = getStudentUseCase.execute(getStudentRequest);
+
+            if (response.ok()) {
+                return ResponseEntity.status(HttpStatus.OK).body(response.student());
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response.responseText());
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Student get student API: " + e.getMessage());
+        }
     }
 
     @PostMapping(path="/createtimetable")
