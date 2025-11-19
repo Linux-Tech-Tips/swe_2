@@ -28,7 +28,7 @@ public class StudentController {
         this.studentRepository = studentRepository;
     }
 
-    @PostMapping(path="/addstudent")
+    @PostMapping(path="/createstudent")
     public ResponseEntity<?> addStudent(@RequestParam String name, @RequestParam String email, @RequestParam long studentId) {
         try {
             AddStudentRequest addStudentRequest = new AddStudentRequest(name, email, studentId);
