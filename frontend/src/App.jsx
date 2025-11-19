@@ -5,11 +5,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Login, CompleteLogin } from './pages/Login.jsx';
 import StudentTimetable from './pages/StudentTimetable.jsx';
 import LecturerTimetable from './pages/LecturerTimetable.jsx';
-<<<<<<< HEAD
 import { AuthContext, AuthProvider } from './context/Contexts.jsx';
-=======
 import LecturerCreateModule from './pages/LecturerCreateModule.jsx'
->>>>>>> 27b28fe (work in progress, doesn't even load atm)
 
 
 /* Separated out BrowserRouter into a separate function with a given authContext */
