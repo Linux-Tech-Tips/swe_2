@@ -4,10 +4,7 @@ import BackendConfig from "../services/BackendConfig.jsx";
 import { AuthContext, AuthProvider } from '../context/Contexts.jsx';
 
 /* Utility function to get JWT from auth context */
-const GetToken = () => {
-    /* Getting JWT from current auth context */
-    const authContext = useContext(AuthContext);
-
+const GetToken = (authContext) => {
     /* Getting JWT from the authContext user information */
     if(authContext.auth)
         return authContext.auth.jwt;
@@ -19,9 +16,9 @@ const GetToken = () => {
  * path: relative path from the server domain, for example "api/student/gettimetable" 
  * content: js object of request parameters, for example {param1: "value1", param2: "value2", ...}
  */
-const GetRequest = async (path, content) => {
+const GetRequest = async (path, content, authContext) => {
 
-    let token = GetToken();
+    let token = GetToken(authContext);
 
     let url = `${BackendConfig.domainName}${path}`;
     if(content) {
@@ -44,9 +41,9 @@ const GetRequest = async (path, content) => {
  * path: relative path from the server domain, for example "api/student/gettimetable" 
  * content: js object of request parameters, for example {param1: "value1", param2: "value2", ...}
  */
-const PostRequest = async (path, content) => {
+const PostRequest = async (path, content, authContext) => {
 
-    let token = GetToken();
+    let token = GetToken(authContext);
 
     const response = await fetch(`${BackendConfig.domainName}${path}`, {
         method: "POST",

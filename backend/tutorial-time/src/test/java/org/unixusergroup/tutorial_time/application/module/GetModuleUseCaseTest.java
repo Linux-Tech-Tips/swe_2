@@ -21,10 +21,10 @@ public class GetModuleUseCaseTest {
     private final InMemoryModuleRepository testModuleRepository = new InMemoryModuleRepository();
     private GetModuleUseCase getModuleUseCaseTest;
     private Module expectedModule;
+    private final Lecturer lecturer = new Lecturer("Johnny Test", "j.test1@nuigalway.ie", 20000, new Timetable(2, 2, Availability.UNAVAILABLE));
 
     @BeforeEach
     void setup() {
-        Lecturer lecturer = new Lecturer("Johnny Test", "j.test1@nuigalway.ie", 20000, new Timetable(2, 2, Availability.UNAVAILABLE));
         expectedModule = new Module("CT2020", 20000);
         testModuleRepository.saveModule(expectedModule);
         getModuleUseCaseTest = new GetModuleUseCase(testModuleRepository);
@@ -32,14 +32,20 @@ public class GetModuleUseCaseTest {
 
     @Test
     void validModuleRetrieval() {
-        GetModuleRequest request = new GetModuleRequest("CT2020");
+        GetModuleRequest request = new GetModuleRequest("CT2020", lecturer.getUniversityId());
         GetModuleResponse response = getModuleUseCaseTest.execute(request);
         assertEquals(expectedModule, response.module());
     }
 
     @Test
     void testRetrievingNonPresentModule() {
-        GetModuleRequest request = new GetModuleRequest("CT402");
+        GetModuleRequest request = new GetModuleRequest("CT402", lecturer.getUniversityId());
+        assertThrows(RuntimeException.class, () -> getModuleUseCaseTest.execute(request));
+    }
+
+    @Test
+    void testRetrievingModuleWithIncorrectLecturerId() {
+        GetModuleRequest request = new GetModuleRequest("CT402", 1111L);
         assertThrows(RuntimeException.class, () -> getModuleUseCaseTest.execute(request));
     }
 }
