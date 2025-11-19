@@ -30,7 +30,7 @@ public class ModuleControllerTest {
         StudentRepository studentRepository = new InMemoryStudentRepository();
 
         /** Creating a lecturer and adding it to the test lecturer repo. */
-        Lecturer lecturer = new Lecturer("Johnny test", "j.test@universityofgalway.ie", 10002);
+        Lecturer lecturer = new Lecturer("Johnny test", "j.test@nuigalway.ie", 10002);
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
         lecturerRepository.saveLecturer(lecturer);
 
@@ -52,7 +52,7 @@ public class ModuleControllerTest {
         StudentRepository studentRepository = new InMemoryStudentRepository();
 
         /** Creating a lecturer and adding it to the test lecturer repo. */
-        Lecturer lecturer = new Lecturer("Johnny test", "j.test@universityofgalway.ie", 10002);
+        Lecturer lecturer = new Lecturer("Johnny test", "j.test@nuigalway.ie", 10002);
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
         lecturerRepository.saveLecturer(lecturer);
 

@@ -11,6 +11,7 @@ import org.hibernate.type.SqlTypes;
 import org.hibernate.type.descriptor.jdbc.SqlTypedJdbcType;
 import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 import org.unixusergroup.tutorial_time.domain.timetable.Availability;
+import java.util.regex.Pattern;
 
 /** A class representing the basis for a student and lecturer */
 @MappedSuperclass
@@ -23,6 +24,8 @@ public abstract class User {
     protected String name;
     /** The university email of the user */
     protected String universityEmail;
+    private final String universityEmailRegex = ".*@universityofgalway\\.ie";
+    private final String oldUniversityEmailRegex = ".*@nuigalway\\.ie";
     /** The university (student or staff) ID of the user */
     @Id
     protected long universityId;
@@ -41,9 +44,8 @@ public abstract class User {
         if(name.isEmpty()) {
             throw new IllegalArgumentException("A name must be inputted");
         }
-        //TODO: edit this to look specifically for nuig emails
-        if(universityEmail.isEmpty()) {
-            throw new IllegalArgumentException("An email must be inputted");
+        if(!(Pattern.matches(universityEmailRegex, universityEmail)) && !(Pattern.matches(oldUniversityEmailRegex, universityEmail))) {
+            throw new IllegalArgumentException("You must input a university of galway email address");
         }
         if(universityId<1) {
             throw new IllegalArgumentException("The ID must be a positive integer");

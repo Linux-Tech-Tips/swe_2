@@ -19,15 +19,15 @@ public class LecturerDatabaseRepositoryTest {
     @BeforeEach
     void setup() {
         lecturerPersistenceAdapter = new LecturerPersistenceAdapter(lecturerJPARepository);
-        Lecturer testLecturer = new Lecturer("Jonny Test", "j.test@test.ie", 10002);
-        Lecturer testLecturer1 = new Lecturer("Landro Test", "L.tests@test.ie", 12342);
+        Lecturer testLecturer = new Lecturer("Jonny Test", "j.test@nuigalway.ie", 10002);
+        Lecturer testLecturer1 = new Lecturer("Landro Test", "L.tests@nuigalway.ie", 12342);
         lecturerPersistenceAdapter.saveLecturer(testLecturer);
         lecturerPersistenceAdapter.saveLecturer(testLecturer1);
     }
 
     @Test
     void retrieveLecturerById() {
-        Lecturer testLecturer = new Lecturer("Jonny Test", "j.test@test.ie", 10002);
+        Lecturer testLecturer = new Lecturer("Jonny Test", "j.test@nuigalway.ie", 10002);
         assertEquals(testLecturer, lecturerPersistenceAdapter.getLecturerById(10002));
     }
 
