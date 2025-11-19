@@ -44,7 +44,7 @@ const AuthProvider = ({children}) => {
             let getResult = await GetRequest(checkPath, content, {auth: details});
             if(getResult[0] != 200) {
                 /* Attempt to create User if GET fails */
-                let addPath = "api/" + (details.isLecturer ? "lecturer/createlecturer" : "student/addstudent");
+                let addPath = "api/" + (details.isLecturer ? "lecturer/createlecturer" : "student/createstudent");
                 let content = {name: details.name, email: details.email};
                 if(details.isLecturer)
                     content.staffId = details.id;
@@ -72,6 +72,7 @@ const AuthProvider = ({children}) => {
             }
         }).catch((err) => {
             console.log(err);
+            setAuth(null);
         });
     };
 
