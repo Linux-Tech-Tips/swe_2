@@ -81,6 +81,13 @@ public class ModuleTest {
     }
 
     @Test
+    public void testRemoveStudent() {
+        module.addStudent(10L);
+        module.removeStudent(10L);
+        assertEquals(module.getStudents(), students);
+    }
+
+    @Test
     public void testInvalidAddStudent() {
         assertThrows(IllegalArgumentException.class, () -> module.addStudent(0));
     }
@@ -90,6 +97,13 @@ public class ModuleTest {
         module.addTAStudent(10L);
         taStudents.add(10L);
         assertEquals(module.getTAStudents(), taStudents);
+    }
+
+    @Test
+    public void testRemoveTAStudent() {
+        module.addTAStudent(10L);
+        module.removeTAStudent(10L);
+        assertEquals(module.getStudents(), taStudents);
     }
 
     @Test

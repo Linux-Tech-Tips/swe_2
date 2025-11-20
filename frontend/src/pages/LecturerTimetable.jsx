@@ -10,10 +10,12 @@ import UserIcon from '../components/UserIcon.jsx';
 import UsersIcon from '../components/UsersIcon.jsx';
 import UserCogIcon from '../components/UserCogIcon.jsx';
 import GridCell from "../components/GridCell.jsx";
+import EditStudentsModal from '../components/EditStudentsModal.jsx';
 import {GetRequest} from "../services/Requests.jsx"
 import {PostRequest} from "../services/Requests.jsx"
 import {ErrorMessage} from "../services/ErrorParsing.jsx"
 import { AuthContext } from '../context/Contexts.jsx';
+
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 const times = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
@@ -34,7 +36,8 @@ const LecturerTimetable = () => {
   const [currentMinTAs, setCurrentMinTAs] = useState(0);
 
   const [openAlgorithmSettings, setOpenAlgorithmSettings] = useState(false);
-
+  const [showEditStudentsModal, setShowEditStudentsModal] = useState(false);
+  const [showEditTAsModal, setShowEditTAsModal] = useState(false);
   const authContext = useContext(AuthContext);
 
   // Function to make clicking the 'Algorithm Settings' button pop up a settings menu
@@ -174,15 +177,14 @@ const LecturerTimetable = () => {
     }
   }
 
-  const [currentModuleCode, setCurrentModuleCode] = useState("No Module Selected");
   const [currentStudents, setCurrentStudents] = useState("");
   const [currentTAs, setCurrentTAs] = useState("");
   const [moduleError, setModuleError] = useState("");
   //student and TA lists are saved in the format of a String like: 1111,2222,3333,4444
 
+  //call the getModule api to load module data
   async function ChangeModule(moduleId) {
     try {
-      //get current user id: authContext.auth.id
       const path = "api/module/getModule";
       const params = {moduleCode: moduleId, lecturerID: authContext.auth.id};
       const [statusCode, result] = await GetRequest(path, params, authContext);
@@ -195,9 +197,20 @@ const LecturerTimetable = () => {
         setCurrentMinTAs(0);
         setCurrentAvailability(getInitialAvailability);
         let moduleData = result.split(":");
-        setCurrentModuleCode(moduleData[1].slice(1, -12));
-        setCurrentStudents(moduleData[2].slice(1, -12));
-        setCurrentTAs(moduleData[4].slice(1, -2));
+        setSelectedModuleId(moduleData[1].slice(1, -12));
+        //these if statements are checking if the student/ta lists are empty, as it can disturb the editStudents display
+        if(moduleData[2].slice(1, -12)==="") {
+          setCurrentStudents("");
+        }
+        else{
+          setCurrentStudents(moduleData[2].slice(1, -12).split(','));
+        }
+        if(moduleData[4].slice(1, -2)==="") {
+          setCurrentTAs("");
+        }
+        else{
+          setCurrentTAs(moduleData[4].slice(1, -2).split(','));
+        }
         setModuleError("");
       }
       //the format of the result is: {"moduleCode":"testModule","students":[1111,2222,3333,4444],"lecturer":10000,"tastudents":[]}
@@ -218,6 +231,7 @@ const LecturerTimetable = () => {
     return (<div className={styles.errorMessage}> {moduleError} </div>)
   }
 
+  //function to display the scheduled times
   function DisplayTimes() { 
     if(scheduled===0) {
       return(
@@ -239,6 +253,13 @@ const LecturerTimetable = () => {
     }
    return <div> {"Scheduling..."} </div>
   }
+
+  //call ChangeModule to fetch the new student/ta lists
+  const refreshStudentList = () => {
+    ChangeModule(selectedModuleId);
+  };
+
+  
 
   return (
     <div className={styles.container}>
@@ -264,16 +285,20 @@ const LecturerTimetable = () => {
         <div> <DisplayModuleError/> </div>
         <div>
           <input className={styles.moduleInput} defaultValue={selectedModuleId} onKeyDown={(e) => {if (e.key === "Enter") {ChangeModule(e.target.value)}}}/>
+        <span className={styles.studentCount}>{currentStudents.length} Students</span>
         </div>
         <div>
-          The current module you have selected is: {currentModuleCode} <br/> 
+          The current module you have selected is: {selectedModuleId} <br/> 
         </div>
+        {/* The Buttons */}
         <div className={styles.actionButtons}>
-          <button className={styles.actionButton}>
+          <button className={styles.actionButton}
+          onClick={() => setShowEditStudentsModal(true)}>
             <UsersIcon className={styles.actionIcon} />
             Edit Students
           </button>
-          <button className={styles.actionButton}>
+          <button className={styles.actionButton}
+          onClick={() => setShowEditTAsModal(true)}>
             <UserCogIcon className={styles.actionIcon} />
             Manage TAs
           </button>
@@ -294,6 +319,22 @@ const LecturerTimetable = () => {
       </div>
     <div> <BlockTimes/> </div>
     <div> <DisplayTimes/> </div>
+   <EditStudentsModal
+        isOpen={showEditStudentsModal}
+        onClose={() => setShowEditStudentsModal(false)}
+        moduleCode={selectedModuleId} 
+        enrolledStudents={currentStudents}
+        onUpdateSuccess={refreshStudentList}
+        type={'student'}
+      />      
+   <EditStudentsModal
+        isOpen={showEditTAsModal}
+        onClose={() => setShowEditTAsModal(false)}
+        moduleCode={selectedModuleId} 
+        enrolledStudents={currentTAs}
+        onUpdateSuccess={refreshStudentList}
+        type={'ta'}
+      />       
   </div>
   );
 };
