@@ -1,5 +1,5 @@
 /**
- * @author Ethan
+ * @author Ethan, Cedar
  */
 
 package org.unixusergroup.tutorial_time.api.rest;
@@ -7,10 +7,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.unixusergroup.tutorial_time.application.module.CreateModuleUseCase;
+import org.unixusergroup.tutorial_time.application.module.EditEnrollmentUseCase;
 import org.unixusergroup.tutorial_time.application.module.GetModuleUseCase;
-import org.unixusergroup.tutorial_time.application.module.dto.CreateModuleRequest;
-import org.unixusergroup.tutorial_time.application.module.dto.GetModuleRequest;
-import org.unixusergroup.tutorial_time.application.module.dto.GetModuleResponse;
+import org.unixusergroup.tutorial_time.application.module.dto.*;
 import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
 import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
 import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
@@ -60,6 +59,36 @@ public class ModuleController {
             return ResponseEntity.status(HttpStatus.OK).body(response.module());
         }
         catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Get module API: " + e.getMessage());
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Get module API: " + e.getMessage());
+        }
+    }
+
+    @PostMapping(path="/removeta")
+    public ResponseEntity<?> removeTA(@RequestParam String moduleCode, @RequestParam long id) {
+        try {
+            EditEnrollmentUseCase editEnrollmentUseCase = new EditEnrollmentUseCase(this.moduleRepository);
+            EditEnrollmentRequest editEnrollmentRequest = new EditEnrollmentRequest(moduleCode, id, EditRequestType.TA_REMOVAL);
+            editEnrollmentUseCase.execute(editEnrollmentRequest);
+            return ResponseEntity.status(HttpStatus.OK).body("Module updated successfully.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Get module API: " + e.getMessage());
+        }
+        catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Get module API: " + e.getMessage());
+        }
+    }
+
+    @PostMapping(path="/addta")
+    public ResponseEntity<?> addTA(@RequestParam String moduleCode, @RequestParam long id) {
+        try {
+            EditEnrollmentUseCase editEnrollmentUseCase = new EditEnrollmentUseCase(this.moduleRepository);
+            EditEnrollmentRequest editEnrollmentRequest = new EditEnrollmentRequest(moduleCode, id, EditRequestType.TA_ADDITION);
+            editEnrollmentUseCase.execute(editEnrollmentRequest);
+            return ResponseEntity.status(HttpStatus.OK).body("Module updated successfully.");
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Get module API: " + e.getMessage());
         }
         catch (Exception e) {
