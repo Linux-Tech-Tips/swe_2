@@ -9,17 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import org.unixusergroup.tutorial_time.application.module.CreateModuleUseCase;
 import org.unixusergroup.tutorial_time.application.module.EditEnrollmentUseCase;
 import org.unixusergroup.tutorial_time.application.module.GetModuleUseCase;
-import org.unixusergroup.tutorial_time.application.module.dto.CreateModuleRequest;
-import org.unixusergroup.tutorial_time.application.module.dto.GetModuleRequest;
-import org.unixusergroup.tutorial_time.application.module.dto.GetModuleResponse;
-import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
+import org.unixusergroup.tutorial_time.application.module.dto.*;
 import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
 import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
-import org.unixusergroup.tutorial_time.domain.module.Module;
-import org.unixusergroup.tutorial_time.domain.student.Student;
 import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
-import org.unixusergroup.tutorial_time.domain.timetable.Availability;
-import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 
 import java.util.List;
 
@@ -81,10 +74,10 @@ public class ModuleController {
             editEnrollmentUseCase.execute(editEnrollmentRequest);
             return ResponseEntity.status(HttpStatus.OK).body("Module updated successfully.");
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Get module API: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
         catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Get module API: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 
@@ -96,10 +89,10 @@ public class ModuleController {
             editEnrollmentUseCase.execute(editEnrollmentRequest);
             return ResponseEntity.status(HttpStatus.OK).body("Module updated successfully.");
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Get module API: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
         catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Get module API: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
 }
