@@ -285,10 +285,12 @@ const LecturerTimetable = () => {
         <div> <DisplayModuleError/> </div>
         <div>
           <input className={styles.moduleInput} defaultValue={selectedModuleId} onKeyDown={(e) => {if (e.key === "Enter") {ChangeModule(e.target.value)}}}/>
+        <span className={styles.studentCount}>{currentStudents.length} Students</span>
         </div>
         <div>
           The current module you have selected is: {selectedModuleId} <br/> 
         </div>
+        {/* The Buttons */}
         <div className={styles.actionButtons}>
           <button className={styles.actionButton}
           onClick={() => setShowEditStudentsModal(true)}>
