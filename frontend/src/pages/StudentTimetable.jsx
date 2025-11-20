@@ -1,15 +1,18 @@
 /* Library imports */
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Cog } from 'lucide-react';
 
 /* Import local page components */
 import GridCell from "../components/GridCell.jsx";
+import gridStyles from '../components/GridCell.module.css';
 import styles from './StudentTimetable.module.css';
+
+import { PostRequest } from '../services/Requests.jsx';
+import { AuthContext } from '../context/Contexts.jsx';
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 const times = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
 
-/* Initial state function */
 const getInitialAvailability = () => days.reduce((acc, day) => {
     acc[day] = times.reduce((timeAcc, time) => {
         timeAcc[time] = false; // 'true' means UNAVAILABLE
@@ -30,6 +33,8 @@ const StudentTimetable = ({ onLogout }) => {
     const [availability, setAvailability] = useState(getInitialAvailability);
     const [saveMessage, setSaveMessage] = useState(null);
 
+    const authContext = useContext(AuthContext);
+
     const toggleAvailability = (day, time) => {
         setAvailability(prev => ({
             ...prev,
@@ -40,15 +45,45 @@ const StudentTimetable = ({ onLogout }) => {
         }));
     };
 
+    let loaded = false;
+    const loadDatabaseTimetable = () => {
+        if(!loaded) {
+            PostRequest("api/student/gettimetable", {studentId: authContext.auth.id}, authContext).then((result) => {
+                let availArray = new URLSearchParams(result[1]).getAll("availability");
+                for(let dayIdx in days) {
+                    for(let timeIdx in times) {
+                        let flatIdx = parseInt(parseInt(timeIdx) * 5) + parseInt(dayIdx);
+                        if(availArray[flatIdx] == "0") {
+                            toggleAvailability(days[dayIdx], times[timeIdx]);
+                        }
+                    }
+                }
+            });
+            loaded = true;
+        }
+    };
+
+    useEffect(() => {
+        loadDatabaseTimetable();
+    }, []);
+
     const handleSave = () => {
         const unavailableSlotsCount = Object.values(availability).flatMap(Object.values).filter(Boolean).length;
 
-        // PLACEHOLDER fake api call
-        console.log("Saving Availability data:", availability);
-
-        setSaveMessage({
-            type: 'success',
-            text: `Availability saved! You marked ${unavailableSlotsCount} slots as unavailable.`
+        // Saving availability into array as per the backend requirement
+        let availArray = [];
+        for(let i = 0; i < 8; ++i) {
+            for(let j = 0; j < 5; ++j) {
+                let val = Object.values(Object.values(availability)[j])[i];
+                availArray.push(val ? 0 : 1);
+            }
+        }
+        PostRequest("api/student/createtimetable", {studentId: authContext.auth.id, availability: availArray}, authContext).then((result) => {
+            console.log(result);
+            setSaveMessage({
+                type: 'success',
+                text: `Availability saved! You marked ${unavailableSlotsCount} slots as unavailable.`
+            });
         });
 
         setTimeout(() => setSaveMessage(null), 4000);

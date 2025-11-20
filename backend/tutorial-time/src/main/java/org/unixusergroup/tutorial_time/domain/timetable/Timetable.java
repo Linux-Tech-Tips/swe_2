@@ -3,21 +3,25 @@
  */
 package org.unixusergroup.tutorial_time.domain.timetable;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /** Data Value Object representing user availability in a timetable  */
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class Timetable {
 
     /** The availability matrix signifying which timeslots are available and which are busy */
+    @JsonIgnore
     private List<List<Availability>> availability;
     /** The number of columns in the timetable */
+    @JsonProperty("columns")
     private int columns;
     /** The number of rows in the timetable */
+    @JsonProperty("rows")
     private int rows;
 
     /** The default number of columns is 5, representing 5 workdays in a week */
@@ -51,6 +55,19 @@ public class Timetable {
         }
     }
 
+    /** Initializes a Timetable populated with Availability data from the given array */
+    @JsonCreator
+    public Timetable(@JsonProperty("columns") int columns, @JsonProperty("rows") int rows, @JsonProperty("availability") int[] array) {
+        this(columns, rows, DEFAULT_AVAILABILITY);
+        /* Populating with given availability array */
+        for(int idx = 0; idx < array.length; ++idx) {
+            int col = idx % columns;
+            int row = (idx - col) / columns;
+            Availability avail = (array[idx] == 0 ? Availability.UNAVAILABLE : Availability.AVAILABLE);
+            this.setAvailability(col, row, avail);
+        }
+    }
+
     /** Getter for the number of columns in the timetable instance */
     public int getColumns() {
         return columns;
@@ -81,6 +98,7 @@ public class Timetable {
     }
 
     /** Gets the flat (array) representation of the availability matrix */
+    @JsonIgnore
     public List<Availability> getMatrix() {
         List<Availability> result = new ArrayList<>(rows * columns);
         for(int i = 0; i < rows; ++i) {
@@ -92,6 +110,7 @@ public class Timetable {
     }
 
     /** Gets the flat (array) representation using an int array */
+    @JsonGetter("availability")
     public int[] getArray() {
         return this.getMatrix().stream().mapToInt((i) -> { return i.getValue(); }).toArray();
     }

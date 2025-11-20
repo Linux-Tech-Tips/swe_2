@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
+import java.util.Arrays;
 
 @SpringBootTest
 class TimetableTest {
@@ -36,6 +37,28 @@ class TimetableTest {
         assertThrows(IllegalArgumentException.class, () -> new Timetable(2, 0, Timetable.DEFAULT_AVAILABILITY));
         assertThrows(IllegalArgumentException.class, () -> new Timetable(0, 1, Timetable.DEFAULT_AVAILABILITY));
         assertThrows(IllegalArgumentException.class, () -> new Timetable(0, 0, Timetable.DEFAULT_AVAILABILITY));
+    }
+
+    /** Test case for the specific array constructor */
+    @Test
+    public void arrayConstructorTest() {
+        /* Create a timetable with a given availability */
+        int[] demoAvailability = new int[] {
+            1, 1, 1, 0, 1,
+            0, 1, 1, 0, 1,
+            1, 0, 0, 0, 1,
+            0, 0, 0, 1, 1,
+            1, 1, 1, 1, 0,
+            1, 1, 0, 0, 1,
+            0, 0, 1, 1, 0,
+            1, 1, 1, 1, 1
+        };
+        Timetable t = new Timetable(5, 8, demoAvailability);
+
+        /* Check that Timetable with given availability constructed properly */
+        assertEquals(t.getColumns(), 5);
+        assertEquals(t.getRows(), 8);
+        assertTrue(Arrays.equals(t.getArray(), demoAvailability));
     }
 
     /** Test case for getArray and getMatrix */

@@ -68,4 +68,49 @@ public class ModuleControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(expectedModule, response.getBody());
     }
+
+    @Test
+    void removeTATest() {
+        /** setting up data */
+        InMemoryModuleRepository moduleRepository = new InMemoryModuleRepository();
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        ArrayList<Long> students = new ArrayList<>();
+        ArrayList<Long> tas = new ArrayList<>();
+        students.add(1L);
+        tas.add(3L);
+        Module module = new Module("testModule", students, tas, 1000L);
+        moduleRepository.saveModule(module);
+
+        /** create and call the modulecontroller */
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+        ResponseEntity<?> response = moduleController.removeTA(module.getModuleCode(), 3L);
+
+        /** verify output */
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(new ArrayList<>(), module.getTAStudents());
+    }
+
+    @Test
+    void addTATest() {
+        /** setting up data */
+        InMemoryModuleRepository moduleRepository = new InMemoryModuleRepository();
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        ArrayList<Long> students = new ArrayList<>();
+        ArrayList<Long> tas = new ArrayList<>();
+        students.add(1L);
+        tas.add(3L);
+        Module module = new Module("testModule", students, tas, 1000L);
+        moduleRepository.saveModule(module);
+
+        /** create and call the modulecontroller */
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+        ResponseEntity<?> response = moduleController.addTA(module.getModuleCode(), 4L);
+        tas.add(4L);
+
+        /** verify output */
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(tas, module.getTAStudents());
+    }
 }

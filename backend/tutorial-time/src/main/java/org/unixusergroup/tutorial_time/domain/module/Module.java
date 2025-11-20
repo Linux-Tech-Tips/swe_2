@@ -78,11 +78,38 @@ public class Module {
         students.add(student);
     }
 
+    /**
+     * removes a given Student ID from the list of enrolled students
+     */
+
+    public void removeStudent(long student) throws IllegalArgumentException {
+        if(student < 1) {
+            throw new IllegalArgumentException("The student ID must be positive");
+        }
+        if(!students.remove(student)) {
+            throw new IllegalArgumentException("The given student is not registered for this module");
+        }
+    }
+
+
     /** Adds a Student id to the list of TA students for the module */
     public void addTAStudent(long student) throws IllegalArgumentException {
         if(student < 1) {
             throw new IllegalArgumentException("The student ID must be positive");
         }
         taStudents.add(student);
+    }
+
+    /**
+     * removes a given Student ID from the list of TAs
+     */
+
+    public void removeTAStudent(long student) throws IllegalArgumentException {
+        if(student < 1) {
+            throw new IllegalArgumentException("The student ID must be positive");
+        }
+        if(!taStudents.remove(student)) {
+            throw new IllegalArgumentException("The given student is not a TA for this module");
+        }
     }
 }
