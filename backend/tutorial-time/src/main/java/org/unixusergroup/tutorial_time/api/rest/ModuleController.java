@@ -46,7 +46,9 @@ public class ModuleController {
      * @param moduleCode the Module Code of the newly created module
      * @param studentIds a list of University Student ID numbers of students to be enrolled in the module
      * @param taStudentIds a list of University Student ID numbers of students to serve as Teaching Assistants for the module
-     * @return HTTP status of 200 on successful creation, 500 and the error message if any error occurs
+     * @return HTTP status of 200 on successful creation,
+     *         HTTP status of 400 and an error message when an error occurs due to incorrect user input,
+     *         HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/createmodule")
     public ResponseEntity<?> createNewModule(@RequestParam long lecturerId, @RequestParam String moduleCode,
@@ -71,7 +73,9 @@ public class ModuleController {
      * This API call retrieves the data associated with a specific module, given the module exists and the provided lecturer ID is authorized to access it.
      * @param moduleCode the University Module Code of the module to retrieve
      * @param lecturerId the University Staff ID of the lecturer with whom the module is associated
-     * @return HTTP status of 200 and Module data in string JSON format on success, 500 and the error message on failure
+     * @return HTTP status of 200 and Module data in string JSON format on success,
+     *         HTTP status of 400 and an error message when an error occurs due to incorrect user input,
+     *         HTTP status of 500 and the error message when any other error occurs
      */
     @GetMapping(path="/getmodule")
     public ResponseEntity<?> getModule(@RequestParam String moduleCode, @RequestParam long lecturerId) {
@@ -89,6 +93,16 @@ public class ModuleController {
         }
     }
 
+    /** 
+     * Remove TA API mapping (/api/module/removeta).
+     *
+     * This API call removes a student of a given ID from the list of teaching assistants for a given module.
+     * @param moduleCode the Module Code of the module which is affected by this change
+     * @param id the University Student ID of the student to be removed as a TA
+     * @return HTTP status of 200 if update successful,
+     *         HTTP status of 400 and an error message when an error occurs due to incorrect user input,
+     *         HTTP status of 500 and the error message when any other error occurs
+     */
     @PostMapping(path="/removeta")
     public ResponseEntity<?> removeTA(@RequestParam String moduleCode, @RequestParam long id) {
         try {
@@ -104,6 +118,16 @@ public class ModuleController {
         }
     }
 
+    /** 
+     * Add TA API mapping (/api/module/addta).
+     *
+     * This API call adds a student of a given ID to the list of teaching assistants for a given module.
+     * @param moduleCode the Module Code of the module which is affected by this change
+     * @param id the University Student ID of the student to be added as a TA
+     * @return HTTP status of 200 if update successful,
+     *         HTTP status of 400 and an error message when an error occurs due to incorrect user input,
+     *         HTTP status of 500 and the error message when any other error occurs
+     */
     @PostMapping(path="/addta")
     public ResponseEntity<?> addTA(@RequestParam String moduleCode, @RequestParam long id) {
         try {

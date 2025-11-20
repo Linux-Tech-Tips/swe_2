@@ -39,9 +39,10 @@ public class LecturerController {
      *
      * This API call creates a new lecturer with the given parameters and saves them into the database.
      * @param name The name of the new lecturer
-     * @param email The email of the new lecturer (must be a universityofgalway.ie address)
+     * @param email The email of the new lecturer (must be a universityofgalway.ie or nuigalway.ie address)
      * @param staffId The University Staff ID of the new lecturer
-     * @return HTTP status of 200 when created successfully, 500 and the error message when any error occurs
+     * @return HTTP status of 200 when created successfully,
+     *         HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/createlecturer")
     public ResponseEntity<?> addLecturer(@RequestParam String name, @RequestParam String email, @RequestParam long staffId) {
@@ -65,7 +66,8 @@ public class LecturerController {
      *
      * This API call retrieves details about a lecturer based on a given ID from the database, if the lecturer exists.
      * @param staffId The University Staff ID of the lecturer to retrieve
-     * @return HTTP status 200 and lecturer data in string JSON format if lecturer exists, 500 and the error message if any error occurs
+     * @return HTTP status 200 and lecturer data in string JSON format if lecturer exists, 
+     *         HTTP status of 500 and the error message when any other error occurs
      */
     @GetMapping(path="/getlecturer")
     public ResponseEntity<?> getLecturer(@RequestParam long staffId) {
@@ -92,7 +94,9 @@ public class LecturerController {
      * @param availability Array of 40 integer values indicating availability, 
      *                     a flattened 2D matrix of 8 rows and 5 columns constructed by adding all the rows from the top to bottom.
      *                     The number 0 indicates 'Unavailable', the number 1 indicates 'Available'
-     * @return HTTP status 200 if data written ok, 500 and the error message if any error occurs
+     * @return HTTP status 200 if data written ok,
+     *         HTTP status of 400 and an error message when an error occurs due to incorrect user input,
+     *         HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/createtimetable")
     public ResponseEntity<?> createLecturerTimetable(@RequestParam long staffId, @RequestParam int[] availability) {
@@ -115,7 +119,9 @@ public class LecturerController {
      *
      * This API call retrieves time availability data associated with a specified lecturer, if said lecturer exists.
      * @param staffId The University Staff ID of the lecturer to get the availability of
-     * @return HTTP status 200 and the availability data in URLSearchParams compatible format, 500 and the error message if any error occurs
+     * @return HTTP status 200 and the availability data in URLSearchParams compatible format,
+     *         HTTP status of 400 and an error message when an error occurs due to incorrect user input,
+     *         HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/gettimetable")
     public ResponseEntity<?> getLecturerTimetable(@RequestParam long staffId) {

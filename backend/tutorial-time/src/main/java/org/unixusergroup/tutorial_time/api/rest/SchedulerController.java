@@ -40,7 +40,9 @@ public class SchedulerController {
      * @param studentLimit the maximum number of students per tutorial
      * @param minTAs the minimum number of TAs per tutorial
      * @param blockedTimes a list of times that should not be considered, specified as indices in the 40-element Availability array format
-     * @return HTTP status 200 and a string in the format of "DAY,TIME\n..." representing the ideal time(s), 500 and the error message if any error occurs
+     * @return HTTP status 200 and a string in the format of "DAY,TIME\n(DAY2,TIME2\n...)" representing the ideal time(s),
+     *         HTTP status of 400 and an error message when an error occurs due to incorrect user input,
+     *         HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/schedule")
     public ResponseEntity<?> schedule(@RequestParam String moduleCode, @RequestParam int studentLimit, @RequestParam int minTAs, @RequestParam int[] blockedTimes) {

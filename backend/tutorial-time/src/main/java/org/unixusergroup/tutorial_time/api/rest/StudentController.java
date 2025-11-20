@@ -39,9 +39,10 @@ public class StudentController {
      *
      * This API call creates a new student with the given parameters and saves them into the database.
      * @param name The name of the new student
-     * @param email The email of the new student (must be a universityofgalway.ie address)
+     * @param email The email of the new student (must be a universityofgalway.ie or nuigalway.ie address)
      * @param studentId The University Student ID of the new student
-     * @return HTTP status of 200 when created successfully, 500 and the error message when any error occurs
+     * @return HTTP status of 200 when created successfully,
+     *         HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/createstudent")
     public ResponseEntity<?> addStudent(@RequestParam String name, @RequestParam String email, @RequestParam long studentId) {
@@ -65,7 +66,8 @@ public class StudentController {
      *
      * This API call retrieves details about a student based on a given student ID from the database, if said student exists.
      * @param studentId The University Student ID of the student to retrieve
-     * @return HTTP status 200 and student data in string JSON format if student exists, 500 and the error message if any error occurs
+     * @return HTTP status of 200 and student data in string JSON format if student exists,
+     *         HTTP status of 500 and the error message when any other error occurs
      */
     @GetMapping(path="/getstudent")
     public ResponseEntity<?> getStudent(@RequestParam long studentId) {
@@ -92,7 +94,8 @@ public class StudentController {
      * @param availability Array of 40 integer values indicating availability, 
      *                     a flattened 2D matrix of 8 rows and 5 columns constructed by adding all the rows from top to bottom.
      *                     The number 0 indicates 'Unavailable', the number 1 indicates 'Available'
-     * @return HTTP status 200 if data written ok, 500 and the error message if any error occurs
+     * @return HTTP status 200 if data written ok,
+     *         HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/createtimetable")
     public ResponseEntity<?> createStudentTimetable(@RequestParam long studentId, @RequestParam int[] availability) {
@@ -111,7 +114,8 @@ public class StudentController {
      *
      * This API call retrieves the time availability data associated with a specified student, if said student exists.
      * @param studentId The University Student ID of the student to get the availability of
-     * @return HTTP status 200 and the availability data in a URLSearchParams compatible format, 500 and the error message if any error occurs
+     * @return HTTP status 200 and the availability data in a URLSearchParams compatible format,
+     *         HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/gettimetable")
     public ResponseEntity<?> getStudentTimetable(@RequestParam long studentId) {
