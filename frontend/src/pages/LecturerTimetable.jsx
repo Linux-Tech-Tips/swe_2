@@ -1,5 +1,5 @@
 /* Library imports */
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Cog } from 'lucide-react';
 
 /* Import local page components */
@@ -13,6 +13,7 @@ import GridCell from "../components/GridCell.jsx";
 import {GetRequest} from "../services/Requests.jsx"
 import {PostRequest} from "../services/Requests.jsx"
 import {ErrorMessage} from "../services/ErrorParsing.jsx"
+import { AuthContext } from '../context/Contexts.jsx';
 
 const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 const times = ['09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00'];
@@ -33,6 +34,8 @@ const LecturerTimetable = () => {
   const [currentMinTAs, setCurrentMinTAs] = useState(0);
 
   const [openAlgorithmSettings, setOpenAlgorithmSettings] = useState(false);
+
+  const authContext = useContext(AuthContext);
 
   // Function to make clicking the 'Algorithm Settings' button pop up a settings menu
   function OpenAlgorithmSettings() {
@@ -153,7 +156,7 @@ const LecturerTimetable = () => {
       };
       const path = "api/scheduler/schedule";
 
-      const [statusCode, result] = await PostRequest(path, params);
+      const [statusCode, result] = await PostRequest(path, params, authContext);
     
       //if there was an error --> set scheduled back to false, display the error
       if(!(statusCode===200)) {
@@ -171,11 +174,18 @@ const LecturerTimetable = () => {
     }
   }
 
+  const [currentModuleCode, setCurrentModuleCode] = useState("No Module Selected");
+  const [currentStudents, setCurrentStudents] = useState("");
+  const [currentTAs, setCurrentTAs] = useState("");
+  const [moduleError, setModuleError] = useState("");
+  //student and TA lists are saved in the format of a String like: 1111,2222,3333,4444
+
   async function ChangeModule(moduleId) {
     try {
+      //get current user id: authContext.auth.id
       const path = "api/module/getModule";
-      const params = {moduleCode: moduleId};
-      const [statusCode, result] = await GetRequest(path, params);
+      const params = {moduleCode: moduleId, lecturerID: authContext.auth.id};
+      const [statusCode, result] = await GetRequest(path, params, authContext);
       if(statusCode===200) {
         setSelectedModuleId(moduleId);
         setBlockingTimes(false); 
@@ -184,16 +194,28 @@ const LecturerTimetable = () => {
         setCurrentStudentLimit(0);
         setCurrentMinTAs(0);
         setCurrentAvailability(getInitialAvailability);
-        alert("Module switched successfully");
+        let moduleData = result.split(":");
+        setCurrentModuleCode(moduleData[1].slice(1, -12));
+        setCurrentStudents(moduleData[2].slice(1, -12));
+        setCurrentTAs(moduleData[4].slice(1, -2));
+        setModuleError("");
       }
+      //the format of the result is: {"moduleCode":"testModule","students":[1111,2222,3333,4444],"lecturer":10000,"tastudents":[]}
       else {
-        alert("HTTP status " + statusCode + "\nError: " + result +  "\nModule selection has not changed");
+        setModuleError("HTTP status: " + statusCode + "\nError Message: " + ErrorMessage(result));
       }
     }
     catch (error) {
-      alert(error);
+      setModuleError(error);
       return;
     }
+  }
+
+  function DisplayModuleError() {
+    if(moduleError==="") {
+      return;
+    }
+    return (<div className={styles.errorMessage}> {moduleError} </div>)
   }
 
   function DisplayTimes() { 
@@ -239,8 +261,12 @@ const LecturerTimetable = () => {
       <div className={styles.card}>
         <h2 className={styles.cardTitle}>Module Selection</h2>
         <p className={styles.cardDescription}>Choose a module to schedule tutorials. Note that switching modules will erase any inputted algorithm settings data <br/> Press Enter to confirm any inputs </p>
+        <div> <DisplayModuleError/> </div>
         <div>
           <input className={styles.moduleInput} defaultValue={selectedModuleId} onKeyDown={(e) => {if (e.key === "Enter") {ChangeModule(e.target.value)}}}/>
+        </div>
+        <div>
+          The current module you have selected is: {currentModuleCode} <br/> 
         </div>
         <div className={styles.actionButtons}>
           <button className={styles.actionButton}>

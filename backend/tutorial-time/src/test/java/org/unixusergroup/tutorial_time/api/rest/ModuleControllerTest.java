@@ -57,12 +57,12 @@ public class ModuleControllerTest {
         lecturerRepository.saveLecturer(lecturer);
 
         /** Creating a module and save it to the module repo. */
-        Module expectedModule = new Module("CT202", 1002);
+        Module expectedModule = new Module("CT202", lecturer.getUniversityId());
         moduleRepository.saveModule(expectedModule);
 
         /** Calling the rest api function after creating the controller */
         ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
-        ResponseEntity<?> response = moduleController.getModule("CT202");
+        ResponseEntity<?> response = moduleController.getModule("CT202", lecturer.getUniversityId());
 
         /** Verifying that the useCase was successful and checking if the correct module was saved. */
         assertEquals(HttpStatus.OK, response.getStatusCode());
