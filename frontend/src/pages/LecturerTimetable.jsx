@@ -185,7 +185,8 @@ const LecturerTimetable = () => {
   //call the getModule api to load module data
   async function ChangeModule(moduleId) {
     try {
-      const path = "api/module/getModule";
+      //get current user id: authContext.auth.id
+      const path = "api/module/getmodule";
       const params = {moduleCode: moduleId, lecturerID: authContext.auth.id};
       const [statusCode, result] = await GetRequest(path, params, authContext);
       if(statusCode===200) {

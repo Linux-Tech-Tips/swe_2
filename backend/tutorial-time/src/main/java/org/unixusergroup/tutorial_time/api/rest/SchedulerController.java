@@ -2,7 +2,6 @@
  * @author Cedar
  * rest controller for the scheduler
  */
-
 package org.unixusergroup.tutorial_time.api.rest;
 
 import org.springframework.http.HttpStatus;
@@ -15,6 +14,11 @@ import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
 
 import static org.unixusergroup.tutorial_time.infrastructure.ProjectConfiguration.FRONTEND_DOMAIN_NAME;
 
+/** 
+ * The API controller exposing Scheduler Use Cases.
+ *
+ * The API calls for Scheduler Use Cases are mapped to '/api/scheduler/...'
+ */
 @RestController
 @RequestMapping(path="/api/scheduler")
 @CrossOrigin(origins=FRONTEND_DOMAIN_NAME)
@@ -22,21 +26,23 @@ public class SchedulerController {
 
     private final ScheduleTutorialsUseCase scheduleTutorialsUseCase;
 
-    /**
-     * constructor, create a new scheduleTutorialsUseCase instance
-     */
+    /** Constructor, requires a ModuleRepository and StudentRepository instance to get relevant data from the database */
     public SchedulerController(ModuleRepository moduleRepository, StudentRepository studentRepository) {
         this.scheduleTutorialsUseCase = new ScheduleTutorialsUseCase(moduleRepository, studentRepository);
     }
 
     /**
-     * post API for scheduling tutorials
-     * even when the lecturer doesn't specify constraints, the frontend sets them to defaults
-     * @param moduleCode the code of the module to be scheduled
-     * @param studentLimit maximum number of students per tutorial
-     * @param minTAs minimum number of TAs per tutorial
-     * @param blockedTimes arraylist of times that should not be considered
-     * @return ScheduleResponse object containing the best times
+     * Schedule Tutorials API mapping (/api/scheduler/schedule).
+     *
+     * The post API for scheduling tutorials, finds optimal tutorial times based on the provided module data and constraints.
+     * The constraints need to be populated for the API call, but can be set to defaults on the frontend side.
+     * @param moduleCode the Module Code of the module to be scheduled
+     * @param studentLimit the maximum number of students per tutorial
+     * @param minTAs the minimum number of TAs per tutorial
+     * @param blockedTimes a list of times that should not be considered, specified as indices in the 40-element Availability array format
+     * @return HTTP status 200 and a string in the format of "DAY,TIME\n(DAY2,TIME2\n...)" representing the ideal time(s),
+     *         HTTP status of 400 and an error message when an error occurs due to incorrect user input,
+     *         HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/schedule")
     public ResponseEntity<?> schedule(@RequestParam String moduleCode, @RequestParam int studentLimit, @RequestParam int minTAs, @RequestParam int[] blockedTimes) {
