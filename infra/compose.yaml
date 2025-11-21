@@ -10,7 +10,7 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - backend
+      - backend_wrapper
       - frontend
       - jenkins
 
@@ -21,12 +21,17 @@ services:
     expose:
       - "5173"
 
-  backend:
-    image: martin/backend
-    container_name: backend
+  backend_wrapper:
+    image: martin/backend_wrapper
+    container_name: backend_wrapper
     restart: unless-stopped
+    privileged: true
+    environment:
+      - DOCKER_TLS_CERTDIR=
     expose:
       - "8080"
+    ports:
+      - "8080:8080"
 
   jenkins:
     image: jenkins/jenkins:lts
