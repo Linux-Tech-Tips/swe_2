@@ -10,7 +10,7 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - backend_wrapper
+      - backend-wrapper
       - frontend
       - jenkins
 
@@ -21,9 +21,9 @@ services:
     expose:
       - "5173"
 
-  backend_wrapper:
-    image: martin/backend_wrapper
-    container_name: backend_wrapper
+  backend-wrapper:
+    image: martin/backend-wrapper
+    container_name: backend-wrapper
     restart: unless-stopped
     privileged: true
     environment:

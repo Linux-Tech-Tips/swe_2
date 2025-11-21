@@ -16,7 +16,7 @@ docker build --build-arg GIT_ACCESS_TOKEN=${GIT_ACCESS_TOKEN} -t martin/frontend
 popd
 
 pushd backend
-docker build --build-arg GIT_ACCESS_TOKEN=${GIT_ACCESS_TOKEN} -t martin/backend_wrapper .
+docker build --build-arg GIT_ACCESS_TOKEN=${GIT_ACCESS_TOKEN} -t martin/backend-wrapper .
 popd
 
 # Resetting private keys to not commit them to the repo
