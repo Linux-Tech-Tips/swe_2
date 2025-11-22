@@ -7,5 +7,10 @@ spring:
     username: guest
     password: guest
   jpa:
-    hibernate.ddl-auto: none
+    hibernate.ddl-auto: update
     show-sql: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://oauth2.unixusergroup.org/application/o/tutorial-time/

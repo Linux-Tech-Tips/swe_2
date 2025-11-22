@@ -1,26 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 
-// Import the page components
-import Auth from './pages/Auth.jsx';
+/* Import the page components */
+import { Login, CompleteLogin } from './pages/Login.jsx';
 import StudentTimetable from './pages/StudentTimetable.jsx';
 import LecturerTimetable from './pages/LecturerTimetable.jsx';
+import { AuthContext, AuthProvider } from './context/Contexts.jsx';
 
-// Simple placeholder for an authentication state
-const App = () => {
-    // State to simulate authentication status
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-    const handleLogin = () => {
-        setIsLoggedIn(true);
-        console.log("User logged in successfully.");
-    };
+/* Separated out BrowserRouter into a separate function with a given authContext */
+const AppRouter = () => {
+    /* Auth context */
+    const authContext = useContext(AuthContext);
 
-    const handleLogout = () => {
-        setIsLoggedIn(false);
-        console.log("User logged out.");
-    };
-
+    /* Returning router code */
     return (
         <BrowserRouter>
             <Routes>
@@ -29,9 +22,18 @@ const App = () => {
                 */}
                 <Route
                     path="/"
-                    element={isLoggedIn
-                        ? <Navigate to="/lecturer-timetable" replace /> // Changed redirection here
-                        : <Auth onLoginSuccess={handleLogin} />
+                    element={authContext.auth
+                        ? <Navigate to={authContext.auth.isLecturer ? "/lecturer-timetable" : "/timetable"} replace />
+                        : <Login handleLogin={authContext.login} />
+                    }
+                />
+
+                {/* Route for the 'signing in...' page, also processes the actual login */}
+                <Route
+                    path="/auth-callback"
+                    element={authContext.auth
+                        ? <Navigate to="/" replace />
+                        : <CompleteLogin handleLoginCallback={authContext.loginCallback} />
                     }
                 />
 
@@ -40,8 +42,8 @@ const App = () => {
                 */}
                 <Route
                     path="/timetable"
-                    element={isLoggedIn
-                        ? <StudentTimetable onLogout={handleLogout} />
+                    element={(authContext.auth && !authContext.auth.isLecturer)
+                        ? <StudentTimetable onLogout={authContext.logout} />
                         : <Navigate to="/" replace />
                     }
                 />
@@ -49,7 +51,7 @@ const App = () => {
                 {/* Route for the Lecturer Timetable Page */}
                 <Route
                     path="/lecturer-timetable"
-                    element={isLoggedIn
+                    element={(authContext.auth && authContext.auth.isLecturer)
                         ? <LecturerTimetable />
                         : <Navigate to="/" replace />
                     }
@@ -64,6 +66,15 @@ const App = () => {
                 } />
             </Routes>
         </BrowserRouter>
+    );
+};
+
+const App = () => {
+    /* Wrapper for the actual app taking care of the authentication context */
+    return (
+        <AuthProvider>
+            <AppRouter/>
+        </AuthProvider>
     );
 };
 

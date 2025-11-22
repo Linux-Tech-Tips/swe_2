@@ -1,7 +1,7 @@
 /** 
- * @author Martin
+ * @author Martin, Ethan
  */
-package org.unixusergroup.tutorial_time.application.users;
+package org.unixusergroup.tutorial_time.api.rest;
 
 import java.util.Arrays;
 
@@ -81,6 +81,31 @@ class LecturerControllerTest {
             }
         }
         assertEquals(expectedResult.toString(), response.getBody());
+    }
+
+    @Test
+    void addLecturerToRepository() {
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        LecturerController controller = new LecturerController(lecturerRepository);
+        Lecturer expectedLecturer = new Lecturer("Jonny test", "j.test@nuigalway.ie", 1002);
+        ResponseEntity<?> response = controller.addLecturer("Jonny test", "j.test@nuigalway.ie", 1002);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        Lecturer retrievedLecturer = lecturerRepository.getLecturerById(1002);
+        assertEquals(expectedLecturer, retrievedLecturer);
+    }
+
+    @Test
+    void retrieveLecturerFromRepository() {
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        LecturerController controller = new LecturerController(lecturerRepository);
+        Lecturer expectedLecturer = new Lecturer("Jonny test", "johnny.test@nuigalway.ie", 1002);
+        lecturerRepository.saveLecturer(expectedLecturer);
+
+        ResponseEntity<?> response = controller.getLecturer(1002);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        assertEquals(expectedLecturer, response.getBody());
     }
 }
 
