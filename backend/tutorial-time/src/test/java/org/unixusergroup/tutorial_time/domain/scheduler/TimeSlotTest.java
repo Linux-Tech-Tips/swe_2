@@ -8,6 +8,7 @@ package org.unixusergroup.tutorial_time.domain.scheduler;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import static org.junit.jupiter.api.Assertions.*;
@@ -43,7 +44,7 @@ public class TimeSlotTest {
     }
 
     /**
-     * test the equals method for two equal timeSets
+     * test the equals method for two equal timeSlots
      */
     @Test
     public void testSuccessfulEquals() {
@@ -51,7 +52,24 @@ public class TimeSlotTest {
     }
 
     /**
-     * test the equals method for two different timeSets
+     * test the equals method for the same object
+     */
+
+    @Test
+    public void testEqualsSameObject() {
+        assertEquals(testTimeSlot, testTimeSlot);
+    }
+
+    /**
+     * test equals with different class
+     */
+
+    @Test
+    public void testEqualsDifferentClasses() {
+        assertNotEquals(new ArrayList<String>(), testTimeSlot);
+    }
+    /**
+     * test the equals method for two different timeSlots
      */
     @Test
     public void testUnsuccessfulEquals() {
@@ -59,8 +77,8 @@ public class TimeSlotTest {
     }
 
     /**
-     * test the comparable method for TimeSets of different sizes
-     * we want the timeset with the smaller size to be first in the ordering
+     * test the comparable method for TimeSlots of different sizes
+     * we want the timeslot with the smaller size to be first in the ordering
      */
     @Test
     public void testComparableDifferentSizes() {
@@ -72,7 +90,7 @@ public class TimeSlotTest {
     }
 
     /**
-     * test the comparable method for TimeSets of equal sizes
+     * test the comparable method for TimeSlots of equal sizes
      * we want the timeslot with the larger degree to be first in the ordering
      */
     @Test

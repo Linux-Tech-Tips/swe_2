@@ -47,8 +47,6 @@ public class EditEnrollmentUseCase implements UseCase<EditEnrollmentResponse, Ed
                case STUDENT_ADDITION:
                    module.addStudent(request.id());
                    break;
-               default:
-                   throw new IllegalArgumentException("The given request type does not exist");
            }
            return new EditEnrollmentResponse();
        } catch (RuntimeException e) {

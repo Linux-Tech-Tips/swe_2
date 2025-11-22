@@ -44,6 +44,20 @@ public class ModuleControllerTest {
         assertEquals(expectedModule, moduleRepository.getModuleByCode("CT202"));
     }
 
+    /**
+     * test for failed create module call
+     */
+    @Test
+    void failedCreateModuleTest() {
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+        ResponseEntity<?> response = moduleController.createNewModule(10002, "CT202", new ArrayList<>(), new ArrayList<>());
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
 
     /** Test for getModule rest API function. */
     @Test
@@ -70,6 +84,17 @@ public class ModuleControllerTest {
     }
 
     @Test
+    void failedGetModuleTest() {
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+        ResponseEntity<?> response = moduleController.getModule("CT202", 1L);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
     void removeTATest() {
         /** setting up data */
         InMemoryModuleRepository moduleRepository = new InMemoryModuleRepository();
@@ -89,6 +114,18 @@ public class ModuleControllerTest {
         /** verify output */
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(new ArrayList<>(), module.getTAStudents());
+    }
+
+    @Test
+    void failedRemoveTATest() {
+        /** setting up data */
+        InMemoryModuleRepository moduleRepository = new InMemoryModuleRepository();
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+
+        ResponseEntity<?> response = moduleController.removeTA("fakeModule", 3L);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test
@@ -112,5 +149,17 @@ public class ModuleControllerTest {
         /** verify output */
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(tas, module.getTAStudents());
+    }
+
+    @Test
+    void failedAddTATest() {
+        /** setting up data */
+        InMemoryModuleRepository moduleRepository = new InMemoryModuleRepository();
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+
+        ResponseEntity<?> response = moduleController.addTA("fakeModule", 3L);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 }

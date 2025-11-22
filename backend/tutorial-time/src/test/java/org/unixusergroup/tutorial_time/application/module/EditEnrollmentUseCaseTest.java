@@ -15,6 +15,7 @@ import org.unixusergroup.tutorial_time.domain.module.Module;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 
 @SpringBootTest
@@ -49,6 +50,12 @@ public class EditEnrollmentUseCaseTest {
         editEnrollmentUseCase.execute(editEnrollmentRequest);
         tas.remove(3L);
         assertEquals(tas, module.getTAStudents());
+    }
+
+    @Test
+    public void testIllegalModuleCode(){
+        EditEnrollmentRequest editEnrollmentRequest = new EditEnrollmentRequest("fakeModule", 4L, EditRequestType.TA_ADDITION);
+        assertThrows(RuntimeException.class, () -> editEnrollmentUseCase.execute(editEnrollmentRequest));
     }
 
     @Test

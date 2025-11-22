@@ -310,4 +310,52 @@ public class SchedulerTest {
         assertEquals(correctTimes, testScheduler.schedule());
     }
 
+    /**
+     * test converting time ids to strings
+     */
+
+    @Test
+    public void testConvertDate() {
+        assertEquals("Monday, 9:00\n",  testScheduler.convertToDate(0));
+        assertEquals("Tuesday, 9:00\n",  testScheduler.convertToDate(1));
+        assertEquals("Wednesday, 9:00\n",  testScheduler.convertToDate(2));
+        assertEquals("Thursday, 9:00\n",  testScheduler.convertToDate(3));
+        assertEquals("Friday, 9:00\n",  testScheduler.convertToDate(4));
+        assertEquals("Monday, 10:00\n",  testScheduler.convertToDate(5));
+        assertEquals("Tuesday, 10:00\n",  testScheduler.convertToDate(6));
+        assertEquals("Wednesday, 10:00\n",  testScheduler.convertToDate(7));
+        assertEquals("Thursday, 10:00\n",  testScheduler.convertToDate(8));
+        assertEquals("Friday, 10:00\n",  testScheduler.convertToDate(9));
+        assertEquals("Monday, 11:00\n",  testScheduler.convertToDate(10));
+        assertEquals("Tuesday, 11:00\n",  testScheduler.convertToDate(11));
+        assertEquals("Wednesday, 11:00\n",  testScheduler.convertToDate(12));
+        assertEquals("Thursday, 11:00\n",  testScheduler.convertToDate(13));
+        assertEquals("Friday, 11:00\n",  testScheduler.convertToDate(14));
+        assertEquals("Monday, 12:00\n",  testScheduler.convertToDate(15));
+        assertEquals("Tuesday, 12:00\n",  testScheduler.convertToDate(16));
+        assertEquals("Wednesday, 12:00\n",  testScheduler.convertToDate(17));
+        assertEquals("Thursday, 12:00\n",  testScheduler.convertToDate(18));
+        assertEquals("Friday, 12:00\n",  testScheduler.convertToDate(19));
+        assertEquals("Monday, 13:00\n",  testScheduler.convertToDate(20));
+        assertEquals("Tuesday, 13:00\n",  testScheduler.convertToDate(21));
+        assertEquals("Wednesday, 13:00\n",  testScheduler.convertToDate(22));
+        assertEquals("Thursday, 13:00\n",  testScheduler.convertToDate(23));
+        assertEquals("Friday, 13:00\n",  testScheduler.convertToDate(24));
+        assertEquals("Monday, 14:00\n",  testScheduler.convertToDate(25));
+        assertEquals("Tuesday, 14:00\n",  testScheduler.convertToDate(26));
+        assertEquals("Wednesday, 14:00\n",  testScheduler.convertToDate(27));
+        assertEquals("Thursday, 14:00\n",  testScheduler.convertToDate(28));
+        assertEquals("Friday, 14:00\n",  testScheduler.convertToDate(29));
+        assertEquals("Monday, 15:00\n",  testScheduler.convertToDate(30));
+        assertEquals("Tuesday, 15:00\n",  testScheduler.convertToDate(31));
+        assertEquals("Wednesday, 15:00\n",  testScheduler.convertToDate(32));
+        assertEquals("Thursday, 15:00\n",  testScheduler.convertToDate(33));
+        assertEquals("Friday, 15:00\n",  testScheduler.convertToDate(34));
+        assertEquals("Monday, 16:00\n",  testScheduler.convertToDate(35));
+        assertEquals("Tuesday, 16:00\n",  testScheduler.convertToDate(36));
+        assertEquals("Wednesday, 16:00\n",  testScheduler.convertToDate(37));
+        assertEquals("Thursday, 16:00\n",  testScheduler.convertToDate(38));
+        assertEquals("Friday, 16:00\n",  testScheduler.convertToDate(39));
+    }
+
 }
