@@ -18,6 +18,7 @@ import org.unixusergroup.tutorial_time.application.common.exceptions.StudentNotF
 import org.unixusergroup.tutorial_time.application.module.UpdateEnrollmentStatusUseCase;
 import org.unixusergroup.tutorial_time.application.module.dto.ModuleResponse;
 import org.unixusergroup.tutorial_time.application.module.dto.UpdateEnrollmentStatusRequest;
+import org.unixusergroup.tutorial_time.application.module.dto.UpdateEnrollmentStatusRequest.EnrollmentAction;
 
 /**
  * REST Controller responsible for handling web requests regarding Module management.
@@ -25,11 +26,6 @@ import org.unixusergroup.tutorial_time.application.module.dto.UpdateEnrollmentSt
 @RestController
 @RequestMapping("/api/modules")
 public class ModuleController {
-
-    public enum EnrollmentAction {
-        ADD,
-        REMOVE
-    }
 
     private final UpdateEnrollmentStatusUseCase updateEnrollmentStatusUseCase;
 
