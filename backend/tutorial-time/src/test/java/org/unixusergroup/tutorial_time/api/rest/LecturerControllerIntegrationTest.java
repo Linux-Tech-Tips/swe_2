@@ -3,7 +3,6 @@
  */
 package org.unixusergroup.tutorial_time.api.rest;
 
-import org.unixusergroup.tutorial_time.api.rest.LecturerController;
 import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
 import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
