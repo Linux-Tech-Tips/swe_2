@@ -42,6 +42,15 @@ services:
     volumes:
       - ./jenkins_data:/var/jenkins_home
 
+  docs:
+    image: martin/docs
+    container_name: docs
+    restart: unless-stopped
+    expose:
+      - "8081"
+    ports:
+      - "8081:8081"
+
   cloudflared:
     image: cloudflare/cloudflared:latest
     container_name: cloudflared
