@@ -1,7 +1,6 @@
 package org.unixusergroup.tutorial_time.application.module;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.unixusergroup.tutorial_time.application.common.exceptions.ModuleNotFoundException;
@@ -46,9 +45,7 @@ public class UpdateEnrollmentStatusService implements UpdateEnrollmentStatusUseC
 
         moduleRepository.saveModule(module);
 
-        List<Long> studentIds = module.getStudents().stream()
-                .map(Student::getUniversityId)
-                .collect(Collectors.toList());
+        List<Long> studentIds = module.getStudents();
 
         return new ModuleResponse(module.getModuleCode(), studentIds);
     }

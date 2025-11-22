@@ -3,25 +3,28 @@
  */
 package org.unixusergroup.tutorial_time.api.rest;
 
+import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
+import static org.mockito.Mockito.mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.unixusergroup.tutorial_time.domain.module.Module;
-import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
+import org.unixusergroup.tutorial_time.application.module.UpdateEnrollmentStatusUseCase;
 import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
+import org.unixusergroup.tutorial_time.domain.module.Module;
+import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
 import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
 import org.unixusergroup.tutorial_time.infrastructure.InMemoryLecturerRepository;
 import org.unixusergroup.tutorial_time.infrastructure.InMemoryModuleRepository;
 import org.unixusergroup.tutorial_time.infrastructure.InMemoryStudentRepository;
 
-import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 @SpringBootTest
 public class ModuleControllerTest {
+
+    private final UpdateEnrollmentStatusUseCase updateEnrollmentStatusUseCase = mock(UpdateEnrollmentStatusUseCase.class);
 
     /** Test for createNewModule rest API function. */
     @Test
@@ -36,7 +39,7 @@ public class ModuleControllerTest {
 
         /** Calling the rest api function after creating the controller */
         Module expectedModule = new Module("CT202", 10002);
-        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository, updateEnrollmentStatusUseCase);
         ResponseEntity<?> response = moduleController.createNewModule(10002, "CT202", new ArrayList<>(), new ArrayList<>());
 
         /** Verifying that the useCase was successful and checking if the correct module was saved. */
@@ -61,7 +64,7 @@ public class ModuleControllerTest {
         moduleRepository.saveModule(expectedModule);
 
         /** Calling the rest api function after creating the controller */
-        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository, updateEnrollmentStatusUseCase);
         ResponseEntity<?> response = moduleController.getModule("CT202", lecturer.getUniversityId());
 
         /** Verifying that the useCase was successful and checking if the correct module was saved. */
@@ -83,7 +86,7 @@ public class ModuleControllerTest {
         moduleRepository.saveModule(module);
 
         /** create and call the modulecontroller */
-        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository, updateEnrollmentStatusUseCase);
         ResponseEntity<?> response = moduleController.removeTA(module.getModuleCode(), 3L);
 
         /** verify output */
@@ -105,7 +108,7 @@ public class ModuleControllerTest {
         moduleRepository.saveModule(module);
 
         /** create and call the modulecontroller */
-        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository, updateEnrollmentStatusUseCase);
         ResponseEntity<?> response = moduleController.addTA(module.getModuleCode(), 4L);
         tas.add(4L);
 
