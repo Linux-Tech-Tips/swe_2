@@ -63,5 +63,5 @@ Note that this may require extra steps if using a mac computer, as mac runs dock
 
 ## Usage
 
-- Go to `localhost:8080` to see a welcome message.
+- Go to `localhost:8080/hello` to see a welcome message.
 
