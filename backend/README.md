@@ -43,17 +43,25 @@ Have `gradle` installed:
 - for mac: `brew install gradle`
 - for fedora: `sudo dnf install gradle`
 
+Have `docker` and `docker compose` installed:
+- for mac: `brew install docker` and `brew install docker-compose`
+- UHH IDK LINUX COMMANDS
+
+START THE DAEMON? SMTH MAC EVIL
+
 ## How to run
 
 - Navigate towards `/tutorial-time`
-- Run `gradle bootRun` 
+- Run `docker-compose up --build`
+
+Note that this may require extra steps if using a mac computer, as mac runs docker in a virtual machine and doesn't necessarily expose the port to the actual machine.
 
 ## How to run test cases
 
 - Navigate towards `/tutorial-time`
-- Run `gradle test`
+- Run `gradle clean test`
 
 ## Usage
 
-- Go to `localhost:8080/hello` to see a welcome message.
+- Go to `localhost:8080` to see a welcome message.
 
