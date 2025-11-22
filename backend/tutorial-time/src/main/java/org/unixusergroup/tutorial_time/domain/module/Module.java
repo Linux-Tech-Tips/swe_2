@@ -76,7 +76,10 @@ public class Module {
         if(student < 1) {
             throw new IllegalArgumentException("The student ID must be positive");
         }
-        students.add(student);
+        
+        if (!students.contains(student)) {
+            students.add(student);
+        }
     }
 
     /**
@@ -112,20 +115,5 @@ public class Module {
         if(!taStudents.remove(student)) {
             throw new IllegalArgumentException("The given student is not a TA for this module");
         }
-    }
-    
-    /*Added this as I didn't want to modify others code in case it would break -Lilian */
-    /** Adds a Student's ID to the list of enrolled students from a Student object. */
-    public void addStudentToModule(Student student) {
-        long studentId = student.getUniversityId();
-        if (!this.students.contains(studentId)) { 
-            this.students.add(studentId);
-        }
-    }
-
-    /** Removes a Student's ID from the list of enrolled students using a Student object. */
-    public void removeStudentFromModule(Student student) {
-        long studentId = student.getUniversityId();
-        this.students.remove((Long)studentId);
     }
 }

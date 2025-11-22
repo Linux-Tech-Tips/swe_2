@@ -1,5 +1,5 @@
 /**
- * @author Ethan
+ * @author Ethan, Lilian
  */
 package org.unixusergroup.tutorial_time.api.rest;
 
@@ -7,11 +7,9 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
-import static org.mockito.Mockito.mock;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.unixusergroup.tutorial_time.application.module.UpdateEnrollmentStatusUseCase;
 import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
 import org.unixusergroup.tutorial_time.domain.module.Module;
@@ -23,8 +21,6 @@ import org.unixusergroup.tutorial_time.infrastructure.InMemoryStudentRepository;
 
 @SpringBootTest
 public class ModuleControllerTest {
-
-    private final UpdateEnrollmentStatusUseCase updateEnrollmentStatusUseCase = mock(UpdateEnrollmentStatusUseCase.class);
 
     /** Test for createNewModule rest API function. */
     @Test
@@ -39,7 +35,7 @@ public class ModuleControllerTest {
 
         /** Calling the rest api function after creating the controller */
         Module expectedModule = new Module("CT202", 10002);
-        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository, updateEnrollmentStatusUseCase);
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
         ResponseEntity<?> response = moduleController.createNewModule(10002, "CT202", new ArrayList<>(), new ArrayList<>());
 
         /** Verifying that the useCase was successful and checking if the correct module was saved. */
@@ -64,7 +60,7 @@ public class ModuleControllerTest {
         moduleRepository.saveModule(expectedModule);
 
         /** Calling the rest api function after creating the controller */
-        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository, updateEnrollmentStatusUseCase);
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
         ResponseEntity<?> response = moduleController.getModule("CT202", lecturer.getUniversityId());
 
         /** Verifying that the useCase was successful and checking if the correct module was saved. */
@@ -86,7 +82,7 @@ public class ModuleControllerTest {
         moduleRepository.saveModule(module);
 
         /** create and call the modulecontroller */
-        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository, updateEnrollmentStatusUseCase);
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
         ResponseEntity<?> response = moduleController.removeTA(module.getModuleCode(), 3L);
 
         /** verify output */
@@ -108,12 +104,59 @@ public class ModuleControllerTest {
         moduleRepository.saveModule(module);
 
         /** create and call the modulecontroller */
-        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository, updateEnrollmentStatusUseCase);
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
         ResponseEntity<?> response = moduleController.addTA(module.getModuleCode(), 4L);
         tas.add(4L);
 
         /** verify output */
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(tas, module.getTAStudents());
+    }
+
+    @Test
+    void addStudentTest() {
+        /** setting up data */
+        InMemoryModuleRepository moduleRepository = new InMemoryModuleRepository();
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        ArrayList<Long> students = new ArrayList<>();
+        ArrayList<Long> tas = new ArrayList<>();
+        students.add(1L);
+        tas.add(3L);
+        Module module = new Module("testModule", students, tas, 1000L);
+        moduleRepository.saveModule(module);
+
+        /** create and call the modulecontroller */
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+        ResponseEntity<?> response = moduleController.addStudent(module.getModuleCode(), 5L);
+        students.add(5L);
+
+        /** verify output */
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(students, module.getStudents());
+    }
+
+    @Test
+    void removeStudentTest() {
+        /** setting up data */
+        InMemoryModuleRepository moduleRepository = new InMemoryModuleRepository();
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        ArrayList<Long> students = new ArrayList<>();
+        ArrayList<Long> tas = new ArrayList<>();
+        students.add(1L);
+        students.add(2L);
+        tas.add(3L);
+        Module module = new Module("testModule", students, tas, 1000L);
+        moduleRepository.saveModule(module);
+
+        /** create and call the modulecontroller */
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+        ResponseEntity<?> response = moduleController.removeStudent(module.getModuleCode(), 2L);
+        students.remove(2L);
+
+        /** verify output */
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(students, module.getStudents());
     }
 }
