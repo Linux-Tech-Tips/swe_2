@@ -1,21 +1,6 @@
-/**
-    @author Ethan
- */
 
-/**
-    So what's needed in this file is the ability to have a form that takes in a
-    - module code
-    - lecturer staff id -> retrieved from api
-    - list of ids of students (optional) -> retrieved from api
-    - list of ids of ta's (optional) -> retrieved from api
-
-    so what need's to be sent back is a page with the required traits.
-
-    Oh and it returns the response from the backend api.
- */
 import {PostRequest} from "../services/Requests.jsx"
 import React, { useState, useContext } from 'react';
-import {ErrorMessage} from "../services/ErrorParsing.jsx"
 import styles from './LecturerCreateModule.module.css';
 import { AuthContext, AuthProvider } from '../context/Contexts.jsx';
 import { useNavigate } from "react-router-dom";
@@ -34,10 +19,16 @@ const LecturerCreateModule = () => {
             return;
         }
     }
+
+    function ErrorParsing(error) {
+        let errorArray = error.split(":");
+        return errorArray[errorArray.length-1].trim();
+    }
     
     const authContext = useContext(AuthContext);
     const navigate = useNavigate();
 
+    // As of now this ignores ill formatted student ids
     function parseStudentIds(ids) {
         return ids.split(",").map((id) => id.trim())
                             .filter((id) => { return (id !== "" && !isNaN(id)); })
@@ -68,7 +59,7 @@ const LecturerCreateModule = () => {
                     if (statusCode == 200) {
                         setModuleSuccess("The module has been added correctly");
                     } else {
-                        setModuleError("HTTP status " + statusCode + "\nError: " + response + " Module was not created.");
+                        setModuleError("HTTP status " + statusCode + "\nError: " + ErrorParsing(response));
                     }
                 });
             
@@ -104,13 +95,13 @@ const LecturerCreateModule = () => {
                </div>
            <div>
                <label htmlFor="studentIds">
-                   The ids of the students that will be enrolled. <br/>
+                   Enrolled student ids: <br/>
                     <input type="text" className={styles.moduleInput} id="studentIds" name="studentIds"/>
                </label>
                </div>
            <div>
                <label htmlFor="taStudentIds">
-                   The id's of the TA's of this module.<br/>
+                   Module TA ids: <br/>
                    <input type="text" id="taStudentIds" className={styles.moduleInput}  name="taStudentIds" />
                </label>
                </div>
