@@ -255,16 +255,14 @@ const LecturerTimetable = () => {
    return <div> {"Scheduling..."} </div>
   }
 
+  // I saw there were two refreshStudentList functions, Im not sure if that was intentional
+  // I merged then into one function - Lilian
   //call ChangeModule to fetch the new student/ta lists
   const refreshStudentList = () => {
-    ChangeModule(selectedModuleId);
-  };
-
-  
-
-  const refreshStudentList = () => {
     console.log(`[DATA REFRESH] Module ${selectedModuleId} students need to be re-fetched.`);
+     ChangeModule(selectedModuleId);
     setShowEditStudentsModal(false);
+    setShowEditTAsModal(false);
   };
 
   return (

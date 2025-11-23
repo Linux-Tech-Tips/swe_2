@@ -10,7 +10,11 @@ const EditStudentsModal = ({ isOpen, onClose, moduleCode, enrolledStudents, onUp
   const [status, setStatus] = useState({ loading: false, error: null, success: null });
   const modalRef = useRef(null);
   const authContext = useContext(AuthContext);
- 
+  
+  // Added this to 3nsure enrolledStudents is an array for mapping, which handles empty string case
+  // Pls lmk is this is unnecessary -Lilian
+  const displayStudents = Array.isArray(enrolledStudents) ? enrolledStudents : [];
+
   useEffect(() => {
     if (isOpen) {
       // Focus the input when the modal opens for better accessibility
@@ -30,7 +34,7 @@ const EditStudentsModal = ({ isOpen, onClose, moduleCode, enrolledStudents, onUp
     const parsedId = parseInt(id, 10);
     
     if (!id || isNaN(parsedId)) {
-        setStatus({ loading: false, error: "Please enter a valid numeric Student ID.", success: null });
+        setStatus({ loading: false, error: "Please enter a valid Student ID.", success: null });
         return false;
     }
     
@@ -44,13 +48,12 @@ const EditStudentsModal = ({ isOpen, onClose, moduleCode, enrolledStudents, onUp
         const [statusCode, result] = await PostRequest(path, requestBody, authContext);
 
         if (statusCode === 200) {
-            if(action === "remove") {
-              action = "remov";
-            }
+            // Adjust success message verb for "remove"
+            const verb = action === "remove" ? "remov" : action;
             setStatus({ 
                 loading: false, 
                 error: null, 
-                success: `Student ID ${id} was ${action}ed successfully.` 
+                success: `${type} ID ${id} was ${verb}ed successfully.` 
             });
             
             // Calls parent function refreshes list
@@ -96,11 +99,16 @@ const EditStudentsModal = ({ isOpen, onClose, moduleCode, enrolledStudents, onUp
       onClose();
     }
   };
+  
+  const modalTitleText = type === 'ta' ? 'Teaching Assistants' : 'Students';
 
   return (
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>
       <div className={styles.modalContent} ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="edit-students-title">
         <div className={styles.modalHeader}>
+          <h2 id="edit-students-title" className={styles.modalTitle}>
+            Edit {modalTitleText} for {moduleCode}
+          </h2>
           <button onClick={onClose} className={styles.closeButton} aria-label="Close modal">
             <X size={20} />
           </button>
@@ -113,12 +121,12 @@ const EditStudentsModal = ({ isOpen, onClose, moduleCode, enrolledStudents, onUp
         <div className={styles.inputSection}>
           <input
             type="text"
-            placeholder="Enter Student ID"
+            placeholder={`Enter ${type} ID`}
             value={newStudentId}
             onChange={(e) => setNewStudentId(e.target.value)}
             onKeyDown={handleKeyDown}
             className={styles.studentIdInput}
-            aria-label="Student ID"
+            aria-label={`${type} ID`}
           />
           <button onClick={handleAddClick} className={styles.addButton}>
             <Plus size={18} /> Add {type}
@@ -126,12 +134,12 @@ const EditStudentsModal = ({ isOpen, onClose, moduleCode, enrolledStudents, onUp
         </div>
 
         <div className={styles.studentListSection}>
-          <h3 className={styles.listTitle}> Registered {type}s ({enrolledStudents.length})</h3>
-          {enrolledStudents.length === 0 ? (
+          <h3 className={styles.listTitle}> Registered {type}s ({displayStudents.length})</h3>
+          {displayStudents.length === 0 ? (
             <p className={styles.emptyListMessage}>No {type}s registered yet.</p>
           ) : (
             <ul className={styles.studentList}>
-              {enrolledStudents.map((studentId) => (
+              {displayStudents.map((studentId) => (
                 <li key={studentId} className={styles.studentListItem}>
                   <span>{studentId}</span>
                   <button onClick={() => handleRemoveClick(studentId)} className={styles.removeButton} aria-label={`Remove ${type} ${studentId}`}>
