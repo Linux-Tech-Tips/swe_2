@@ -7,6 +7,8 @@ import org.unixusergroup.tutorial_time.application.exceptions.IllegalModuleSizeE
 import org.unixusergroup.tutorial_time.application.exceptions.IllegalStudentAdditionException;
 import org.unixusergroup.tutorial_time.application.exceptions.IllegalStudentRemovalException;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 
 public class TimeSlot implements Comparable<TimeSlot> {
@@ -64,6 +66,12 @@ public class TimeSlot implements Comparable<TimeSlot> {
         }
         students.remove(student);
         size--;
+    }
+
+    public void removeStudents(ArrayList<Integer> students) {
+        for(int i: students) {
+            this.removeStudent(i);
+        }
     }
 
     public int getSize() {
