@@ -56,5 +56,4 @@ public class EditEnrollmentUseCase implements UseCase<EditEnrollmentResponse, Ed
            throw new RuntimeException(e);
        }
     }
-
 }

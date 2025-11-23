@@ -4,18 +4,17 @@
 
 package org.unixusergroup.tutorial_time.application.module;
 
+import java.util.ArrayList;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.unixusergroup.tutorial_time.application.module.dto.EditEnrollmentRequest;
 import org.unixusergroup.tutorial_time.application.module.dto.EditRequestType;
-import org.unixusergroup.tutorial_time.infrastructure.InMemoryModuleRepository;
 import org.unixusergroup.tutorial_time.domain.module.Module;
-
-import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.unixusergroup.tutorial_time.infrastructure.InMemoryModuleRepository;
 
 
 @SpringBootTest
@@ -64,8 +63,8 @@ public class EditEnrollmentUseCaseTest {
     @Test
     public void testRemoveStudent() {
         EditEnrollmentRequest editEnrollmentRequest = new EditEnrollmentRequest(module.getModuleCode(), 1L, EditRequestType.STUDENT_REMOVAL);
-        students.remove(1L);
         editEnrollmentUseCase.execute(editEnrollmentRequest);
+        students.remove(1L);
         assertEquals(students, module.getStudents());
     }
     
