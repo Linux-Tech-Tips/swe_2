@@ -177,9 +177,12 @@ public class SchedulerControllerIntegrationTest {
                               .isOk())
                    .andExpect(content()
                               .json("{\"times\":" +
-                                    " \"The following two times cover all students:" + // TODO Not sure about the expected times here as multiple possible
-                                    "\n2 students are available at Thursday, 9:00" +   // but for now this returns 500 with a NullPointerException
-                                    "\n2 students are available at Wednesday, 10:00\n\"}"));
+                                    " \"The following two times cover all students:" +
+                                    "\n2 students are available at Thursday, 9:00" +
+                                    "\n2 students are available at Wednesday, 10:00\n" +
+                                    "The following two times cover all students:" +
+                                    "\n2 students are available at Thursday, 9:00" +
+                                    "\n2 students are available at Thursday, 10:00\n\"}"));
 
         } catch(Exception e) {
             System.out.println(e);

@@ -56,7 +56,7 @@ public class ModuleControllerTest {
         ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
         ResponseEntity<?> response = moduleController.createNewModule(10002, "CT202", new ArrayList<>(), new ArrayList<>());
 
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     /** Test for getModule rest API function. */
@@ -91,7 +91,7 @@ public class ModuleControllerTest {
 
         ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
         ResponseEntity<?> response = moduleController.getModule("CT202", 1L);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
@@ -125,7 +125,7 @@ public class ModuleControllerTest {
         ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
 
         ResponseEntity<?> response = moduleController.removeTA("fakeModule", 3L);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
@@ -160,6 +160,6 @@ public class ModuleControllerTest {
         ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
 
         ResponseEntity<?> response = moduleController.addTA("fakeModule", 3L);
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 }
