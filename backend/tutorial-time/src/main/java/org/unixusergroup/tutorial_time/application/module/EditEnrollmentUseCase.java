@@ -29,29 +29,34 @@ public class EditEnrollmentUseCase implements UseCase<EditEnrollmentResponse, Ed
      * @return an empty response item if successful
      */
     public EditEnrollmentResponse execute(EditEnrollmentRequest request) {
-       try {
-           Module module = moduleRepository.getModuleByCode(request.moduleCode());
-           if(module == null) {
-               throw new IllegalArgumentException("The given module does not exist");
+        /* Get the module from the repository */
+        Module module = moduleRepository.getModuleByCode(request.moduleCode());
+        if(module == null) {
+            throw new IllegalArgumentException("The given module does not exist");
+        }
+
+        /* Perform the required action */
+        try {
+            switch(request.requestType()) {
+                case TA_REMOVAL:
+                    module.removeTAStudent(request.id());
+                    break;
+                case TA_ADDITION:
+                    module.addTAStudent(request.id());
+                    break;
+                case STUDENT_REMOVAL:
+                    module.removeStudent(request.id());
+                    break;
+                case STUDENT_ADDITION:
+                    module.addStudent(request.id());
+                    break;
            }
-           switch(request.requestType()) {
-               case TA_REMOVAL:
-                   module.removeTAStudent(request.id());
-                   break;
-               case TA_ADDITION:
-                   module.addTAStudent(request.id());
-                   break;
-               case STUDENT_REMOVAL:
-                   module.removeStudent(request.id());
-                   break;
-               case STUDENT_ADDITION:
-                   module.addStudent(request.id());
-                   break;
-           }
-           // Should there be a line here saving to the database? Does it need to be explicity called?
-           return new EditEnrollmentResponse();
-       } catch (RuntimeException e) {
-           throw new RuntimeException(e);
-       }
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
+
+        /* If action performed successfully (no throw) save module back into the repository */
+        moduleRepository.saveModule(module);
+        return new EditEnrollmentResponse();
     }
 }

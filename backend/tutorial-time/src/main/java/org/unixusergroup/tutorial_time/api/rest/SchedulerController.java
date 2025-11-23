@@ -37,8 +37,8 @@ public class SchedulerController {
      * The post API for scheduling tutorials, finds optimal tutorial times based on the provided module data and constraints.
      * The constraints need to be populated for the API call, but can be set to defaults on the frontend side.
      * @param moduleCode the Module Code of the module to be scheduled
-     * @param studentLimit the maximum number of students per tutorial
-     * @param minTAs the minimum number of TAs per tutorial
+     * @param studentLimit the maximum number of students per tutorial, 0 means no limit
+     * @param minTAs the minimum number of TAs per tutorial, 0 means no minimum
      * @param blockedTimes a list of times that should not be considered, specified as indices in the 40-element Availability array format
      * @return HTTP status 200 and a string in the format of "DAY,TIME\n(DAY2,TIME2\n...)" representing the ideal time(s),
      *         HTTP status of 400 and an error message when an error occurs due to incorrect user input,
