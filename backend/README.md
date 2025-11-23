@@ -45,9 +45,11 @@ Have `gradle` installed:
 
 Have `docker` and `docker compose` installed:
 - for mac: `brew install docker` and `brew install docker-compose`
-- UHH IDK LINUX COMMANDS
+- for fedora: `sudo dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
+- note that on fedora, you must first have the docker repository installed, read https://docs.docker.com/engine/install/fedora/ for more information on fedora 
 
-START THE DAEMON? SMTH MAC EVIL
+Starting the docker daemon:
+- for mac: install colima, `brew install colima` and then `colima start`. This must be run every time you want to build a docker image
 
 ## How to run
 

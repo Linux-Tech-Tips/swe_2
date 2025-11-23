@@ -25,7 +25,7 @@ If you want to run the app locally, you must have the following dependencies ins
 - docker
 - docker-compose (or docker compose)
 
-If you are using a mac, you must also install UHHHH to configure a daemon and ensure that your docker instance is epxosing its ports to your machine.
+If you are using a mac, you must also install colima to configure a daemon and ensure that your docker instance is exposing its ports to your machine.
 
 You must also edit the local configuration files. 
 In `/backend/tutorial-time/src/main/java/org/unixusergroup/tutorial_time/infrastructure/ProjectConfiguration.java` edit the variable `FRONTEND_DOMAIN_NAME` to be `http://localhost:5173/`.
