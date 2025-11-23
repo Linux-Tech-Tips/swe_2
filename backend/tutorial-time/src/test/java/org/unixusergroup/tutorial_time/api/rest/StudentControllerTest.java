@@ -12,14 +12,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import org.unixusergroup.tutorial_time.api.rest.StudentController;
-import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
-import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
 import org.unixusergroup.tutorial_time.domain.student.Student;
 import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 import org.unixusergroup.tutorial_time.domain.timetable.Availability;
 import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
-import org.unixusergroup.tutorial_time.infrastructure.InMemoryLecturerRepository;
 import org.unixusergroup.tutorial_time.infrastructure.InMemoryStudentRepository;
 
 @SpringBootTest
@@ -45,8 +41,27 @@ class StudentControllerTest {
         ResponseEntity<?> response = controller.createStudentTimetable(123456, availability);
 
         /* Verifying that status is OK and that the saved array is the same as the given array */
-        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(Arrays.equals(availability, studentRepository.getStudentById(123456).getTimetable().getArray()));
+    }
+
+    @Test
+    void failedCreateStudentTimetableTest() {
+        /* Setting up in-memory repository with demo student */
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+
+        /* Creating timetable */
+        StudentController controller = new StudentController(studentRepository);
+        int[] availability = new int[] { 1, 1, 0, 1, 1,
+                0, 1, 1, 0, 1,
+                0, 0, 1, 0, 1,
+                0, 1, 0, 0, 0,
+                1, 1, 0, 1, 0,
+                1, 1, 1, 1, 0,
+                1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1 };
+        ResponseEntity<?> response = controller.createStudentTimetable(0L, availability);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
     /** Test for the getStudentTimetable REST API function */
@@ -75,7 +90,7 @@ class StudentControllerTest {
         ResponseEntity<?> response = controller.getStudentTimetable(123456);
 
         /* Verifying that status is OK and that the returned array is the same as the saved array */
-        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         StringBuilder expectedResult = new StringBuilder();
         for(int i = 0; i < availability.length; ++i) {
             expectedResult.append("availability=").append(availability[i]);
@@ -86,6 +101,15 @@ class StudentControllerTest {
         assertEquals(expectedResult.toString(), response.getBody());
     }
 
+    @Test
+    void failedGetStudentTimetableTest() {
+        /* Setting up in-memory repository */
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+
+        StudentController controller = new StudentController(studentRepository);
+        ResponseEntity<?> response = controller.getStudentTimetable(0L);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
 
     @Test
     void addStudentToRepository() {
@@ -104,6 +128,14 @@ class StudentControllerTest {
     }
 
     @Test
+    void failedAddStudentToRepository() {
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        StudentController controller = new StudentController(studentRepository);
+        ResponseEntity<?> response = controller.addStudent("Lance test", "L.test@nuigalway.ie", 0);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    @Test
     void retrieveStudentFromRepository() {
         StudentRepository studentRepository = new InMemoryStudentRepository();
         StudentController controller = new StudentController(studentRepository);
@@ -115,6 +147,14 @@ class StudentControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         assertEquals(expectedStudent, response.getBody());
+    }
+
+    @Test
+    void failedRetrieveStudentFromRepository() {
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        StudentController controller = new StudentController(studentRepository);
+        ResponseEntity<?> response = controller.getStudent(1002);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 }
 

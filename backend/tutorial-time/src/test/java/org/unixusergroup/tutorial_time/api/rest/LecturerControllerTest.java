@@ -42,8 +42,28 @@ class LecturerControllerTest {
         ResponseEntity<?> response = controller.createLecturerTimetable(654321, availability);
 
         /* Verifying that status is OK and that the saved array is the same as the given array */
-        assertEquals(response.getStatusCode(), HttpStatus.OK);
-        assertTrue(Arrays.equals(availability, lecturerRepository.getLecturerById(654321).getTimetable().getArray()));
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertArrayEquals(availability, lecturerRepository.getLecturerById(654321).getTimetable().getArray());
+    }
+
+    /** Test for createLecturerTimetable REST API catching an exception */
+    @Test
+    void failedCreateLecturerTimetableTest() {
+        /* Setting up in-memory repository with demo lecturer */
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+
+        /* Creating timetable */
+        LecturerController controller = new LecturerController(lecturerRepository);
+        int[] availability = new int[] { 1, 1, 0, 1, 1,
+                0, 1, 1, 0, 1,
+                0, 0, 1, 0, 1,
+                0, 1, 0, 0, 0,
+                1, 1, 0, 1, 0,
+                1, 1, 1, 1, 0,
+                1, 1, 1, 1, 1,
+                1, 1, 1, 1, 1 };
+        ResponseEntity<?> response = controller.createLecturerTimetable(0L, availability);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     /** Test for the getLecturerTimetable REST API function */
@@ -72,7 +92,7 @@ class LecturerControllerTest {
         ResponseEntity<?> response = controller.getLecturerTimetable(654321);
 
         /* Verifying that status is OK and that the returned array is the same as the saved array */
-        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
         StringBuilder expectedResult = new StringBuilder();
         for(int i = 0; i < availability.length; ++i) {
             expectedResult.append("availability=").append(availability[i]);
@@ -83,6 +103,18 @@ class LecturerControllerTest {
         assertEquals(expectedResult.toString(), response.getBody());
     }
 
+    /** Test for getLecturerTimetable REST API catching an exception */
+    @Test
+    void failedGetLecturerTimetableTest() {
+        /* Setting up in-memory repository */
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+
+        LecturerController controller = new LecturerController(lecturerRepository);
+        ResponseEntity<?> response = controller.getLecturerTimetable(0L);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    /** Test for getLecturerTimetable REST API catching an exception */
     @Test
     void addLecturerToRepository() {
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
@@ -96,6 +128,14 @@ class LecturerControllerTest {
     }
 
     @Test
+    void failedAddLecturerToRepository() {
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        LecturerController controller = new LecturerController(lecturerRepository);
+        ResponseEntity<?> response = controller.addLecturer("Johnny Test", "j.test@nuigalway.ie", 0L);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    @Test
     void retrieveLecturerFromRepository() {
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
         LecturerController controller = new LecturerController(lecturerRepository);
@@ -106,6 +146,14 @@ class LecturerControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         assertEquals(expectedLecturer, response.getBody());
+    }
+
+    @Test
+    void failedRetrieveLecturerFromRepository() {
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        LecturerController controller = new LecturerController(lecturerRepository);
+        ResponseEntity<?> response = controller.getLecturer(1002);
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 }
 
