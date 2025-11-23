@@ -1,16 +1,14 @@
 /** 
- * @author Ethan, Martin
+ * @author Ethan, Martin, Lilian
  */
 package org.unixusergroup.tutorial_time.domain.module;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
-import org.unixusergroup.tutorial_time.domain.student.Student;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 
 @Entity
 /** Class representing a university Module entity */
@@ -75,7 +73,10 @@ public class Module {
         if(student < 1) {
             throw new IllegalArgumentException("The student ID must be positive");
         }
-        students.add(student);
+        
+        if (!students.contains(student)) {
+            students.add(student);
+        }
     }
 
     /**
@@ -97,13 +98,15 @@ public class Module {
         if(student < 1) {
             throw new IllegalArgumentException("The student ID must be positive");
         }
-        taStudents.add(student);
+        if (!taStudents.contains(student)) {
+            taStudents.add(student);
+        }
     }
 
     /**
      * removes a given Student ID from the list of TAs
      */
-
+    
     public void removeTAStudent(long student) throws IllegalArgumentException {
         if(student < 1) {
             throw new IllegalArgumentException("The student ID must be positive");
