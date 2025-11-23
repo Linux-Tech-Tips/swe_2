@@ -4,15 +4,11 @@
 package org.unixusergroup.tutorial_time.application.users;
 
 import org.unixusergroup.tutorial_time.application.common.UseCase;
+import org.unixusergroup.tutorial_time.application.exceptions.IncorrectUserTypeException;
 import org.unixusergroup.tutorial_time.application.users.dto.*;
-
 import org.unixusergroup.tutorial_time.domain.User;
-import org.unixusergroup.tutorial_time.domain.student.Student;
 import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
-import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
-import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
-import org.unixusergroup.tutorial_time.domain.timetable.Availability;
 
 /** Use case to get the saved timetable of a user with a given ID */
 public class GetTimetableUseCase implements UseCase<GetTimetableResponse, GetTimetableRequest> {
@@ -41,12 +37,12 @@ public class GetTimetableUseCase implements UseCase<GetTimetableResponse, GetTim
         } else if(request.userType() == User.UserType.LECTURER && lecturerRepository != null) {
             user = (User)(lecturerRepository.getLecturerById(request.userId()));
         } else {
-            return new GetTimetableResponse("Error: Incorrect user type in GetTimetableUseCase");
+            throw new IncorrectUserTypeException("Error: Incorrect user type in GetTimetableUseCase");
         }
  
         /* Check that obtained user is valid */
         if(user == null) {
-            return new GetTimetableResponse("Error: User not found in GetTimetableUseCase");
+            throw new IllegalArgumentException("Error: User not found in GetTimetableUseCase");
         }
 
         /* Get timetable of given user loaded from database */
@@ -54,7 +50,7 @@ public class GetTimetableUseCase implements UseCase<GetTimetableResponse, GetTim
 
         /* Check that availability valid and return */
         if(availability.length != 40) {
-            return new GetTimetableResponse("Error: Malformed availability array in database in GetTimetableUseCase");
+            throw new RuntimeException("Error: Malformed availability array in database in GetTimetableUseCase");
         }
         return new GetTimetableResponse(availability);
     }

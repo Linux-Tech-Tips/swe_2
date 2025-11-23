@@ -1,13 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import styles from './EditStudentsModal.module.css';
 import { X, Plus, Trash2 } from 'lucide-react';
-import PatchRequest from '../services/PatchRequest.jsx';
+import {PostRequest} from '../services/Requests.jsx';
+import { AuthContext } from '../context/Contexts.jsx';
+import {ErrorMessage} from "../services/ErrorParsing.jsx"
 
-const EditStudentsModal = ({ isOpen, onClose, moduleCode, moduleTitle, enrolledStudents, onUpdateSuccess}) => {
+const EditStudentsModal = ({ isOpen, onClose, moduleCode, enrolledStudents, onUpdateSuccess, type}) => {
   const [newStudentId, setNewStudentId] = useState('');
   const [status, setStatus] = useState({ loading: false, error: null, success: null });
   const modalRef = useRef(null);
-
+  const authContext = useContext(AuthContext);
+ 
   useEffect(() => {
     if (isOpen) {
       // Focus the input when the modal opens for better accessibility
@@ -32,40 +35,44 @@ const EditStudentsModal = ({ isOpen, onClose, moduleCode, moduleTitle, enrolledS
     }
     
     try {
-        const path = `api/modules/${moduleCode}/enrollment`;
+        const path = `api/module/${action}${type}`;
         const requestBody = { 
-            studentId: parsedId,
-            action: action
+          moduleCode: moduleCode,  
+          id: parsedId
         };
 
-        const [statusCode, result] = await PatchRequest(path, requestBody);
+        const [statusCode, result] = await PostRequest(path, requestBody, authContext);
 
         if (statusCode === 200) {
+            if(action === "remove") {
+              action = "remov";
+            }
             setStatus({ 
                 loading: false, 
                 error: null, 
-                success: `Student ID ${id} was ${action.toLowerCase()}ed successfully.` 
+                success: `Student ID ${id} was ${action}ed successfully.` 
             });
             
-            // Calls parent function refrehs list
+            // Calls parent function refreshes list
             onUpdateSuccess && onUpdateSuccess(); 
             
             return true;
 
         } else {
-            const errorMsg = result || `Server returned status code ${statusCode}.`;
+            const errorMsg = ErrorMessage(result) || `Server returned status code ${statusCode}.`;
             setStatus({ loading: false, error: errorMsg, success: null });
             return false;
         }
 
     } catch (error) {
         setStatus({ loading: false, error: 'Network error or connection failed.', success: null });
+        console.log(error);
         return false;
     }
   };
 
   const handleAddClick = async () => {
-    const success = await callEnrollmentAPI(newStudentId, 'ADD');
+    const success = await callEnrollmentAPI(newStudentId, 'add');
     if (success) {
         setNewStudentId(''); // Clear input
     }
@@ -73,7 +80,7 @@ const EditStudentsModal = ({ isOpen, onClose, moduleCode, moduleTitle, enrolledS
 
   const handleRemoveClick = async (studentId) => {
     // ID is passed directly from list item
-    await callEnrollmentAPI(studentId, 'REMOVE');
+    await callEnrollmentAPI(studentId, 'remove');
   };
 
   const handleKeyDown = (e) => {
@@ -94,7 +101,6 @@ const EditStudentsModal = ({ isOpen, onClose, moduleCode, moduleTitle, enrolledS
     <div className={styles.modalOverlay} onClick={handleOverlayClick}>
       <div className={styles.modalContent} ref={modalRef} role="dialog" aria-modal="true" aria-labelledby="edit-students-title">
         <div className={styles.modalHeader}>
-          <h2 id="edit-students-title" className={styles.modalTitle}>Edit Students for {moduleTitle}</h2>
           <button onClick={onClose} className={styles.closeButton} aria-label="Close modal">
             <X size={20} />
           </button>
@@ -115,20 +121,20 @@ const EditStudentsModal = ({ isOpen, onClose, moduleCode, moduleTitle, enrolledS
             aria-label="Student ID"
           />
           <button onClick={handleAddClick} className={styles.addButton}>
-            <Plus size={18} /> Add Student
+            <Plus size={18} /> Add {type}
           </button>
         </div>
 
         <div className={styles.studentListSection}>
-          <h3 className={styles.listTitle}>Enrolled Students ({enrolledStudents.length})</h3>
+          <h3 className={styles.listTitle}> Registered {type}s ({enrolledStudents.length})</h3>
           {enrolledStudents.length === 0 ? (
-            <p className={styles.emptyListMessage}>No students enrolled yet.</p>
+            <p className={styles.emptyListMessage}>No {type}s registered yet.</p>
           ) : (
             <ul className={styles.studentList}>
               {enrolledStudents.map((studentId) => (
                 <li key={studentId} className={styles.studentListItem}>
                   <span>{studentId}</span>
-                  <button onClick={() => handleRemoveClick(studentId)} className={styles.removeButton} aria-label={`Remove student ${studentId}`}>
+                  <button onClick={() => handleRemoveClick(studentId)} className={styles.removeButton} aria-label={`Remove ${type} ${studentId}`}>
                     <Trash2 size={16} />
                   </button>
                 </li>
