@@ -13,6 +13,7 @@ import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.module.Module;
 
 import org.unixusergroup.tutorial_time.domain.student.Student;
+import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
 import org.unixusergroup.tutorial_time.domain.timetable.Availability;
 import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 import org.unixusergroup.tutorial_time.infrastructure.InMemoryLecturerRepository;
@@ -63,12 +64,33 @@ public class CreateModuleUseCaseTest {
         assertEquals(module, generatedModule);
     }
 
+    /**
+     * test creating modules with lists of students and tas
+     */
+    @Test
+    void testValidModuleCreationWithStudentLists() {
+        ArrayList<Long> students = new ArrayList<>();
+        Student student = new Student("John", "j@nuigalway.ie", 1L);
+        students.add(1L);
+        testStudentRepository.saveStudent(student);
+        ArrayList<Long> tas = new ArrayList<>();
+        tas.add(2L);
+        Student ta = new Student("John", "j@nuigalway.ie", 2L);
+        testStudentRepository.saveStudent(ta);
+        Module module = new Module("CT2021", 20000);
+        testLecturerRepository.saveLecturer(lecturer);
+        createModuleRequest = new CreateModuleRequest("CT2021", students, tas, 20000);
+        testCreateModuleUseCase.execute(createModuleRequest);
+        Module generatedModule = testModuleRepository.getModuleByCode("CT2021");
+        assertEquals(module, generatedModule);
+    }
+
     /** This is testing creating a module with an invalid student ID */
     @Test
     void testModuleCreationWithInvalidStudent() {
         ArrayList<Long> studentIDs = new ArrayList<>();
         studentIDs.add(000L);
-        createModuleRequest = new CreateModuleRequest("", studentIDs, new ArrayList<>(), 20000);
+        createModuleRequest = new CreateModuleRequest("testModule", studentIDs, new ArrayList<>(), 20000);
         assertThrows(RuntimeException.class, () -> testCreateModuleUseCase.execute(createModuleRequest));
     }
 

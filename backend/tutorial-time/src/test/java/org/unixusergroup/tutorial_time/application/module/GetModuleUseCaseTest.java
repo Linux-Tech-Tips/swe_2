@@ -44,6 +44,12 @@ public class GetModuleUseCaseTest {
     }
 
     @Test
+    void testRetrievingModuleWithNullModuleCode() {
+        GetModuleRequest request = new GetModuleRequest("", lecturer.getUniversityId());
+        assertThrows(RuntimeException.class, () -> getModuleUseCaseTest.execute(request));
+    }
+
+    @Test
     void testRetrievingModuleWithIncorrectLecturerId() {
         GetModuleRequest request = new GetModuleRequest("CT402", 1111L);
         assertThrows(RuntimeException.class, () -> getModuleUseCaseTest.execute(request));

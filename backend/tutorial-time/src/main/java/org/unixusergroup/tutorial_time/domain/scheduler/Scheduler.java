@@ -6,6 +6,7 @@
 package org.unixusergroup.tutorial_time.domain.scheduler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import jakarta.persistence.ElementCollection;
@@ -130,7 +131,6 @@ public class Scheduler {
                     //TODO: make this exception better (i.e. say which time/students it is
                     throw new IllegalTimeDeletionException("There are students who are only available at " + convertToDate(id));
                 }
-
                 timeSlots.remove(i);
                 numberOfTimeSlots--;
                 //check if the adjacency matrix exists yet (this method will be called before it's created if times are blocked off)
@@ -193,25 +193,26 @@ public class Scheduler {
             }
             //set of all elements represented in other timeslots
             HashSet<Integer> unionOfOthers = unionOfTimes(timeSlots.get(i));
+            ArrayList<Integer> studentsToBeRemoved = new ArrayList<>();
             for(int a : timeSlots.get(i).getStudents()) {
                 //remove elements that are represented in other timeslots
                 if(unionOfOthers.contains(a)) {
                     try {
-                        timeSlots.get(i).removeStudent(a);
+                        studentsToBeRemoved.add(a);
                     } catch (IllegalStudentRemovalException e) {
                         throw new RuntimeException(e);
                     }
                 }
                 //once it fits into the limit --> stop
-                if(timeSlots.get(i).getSize()==limit) {
+                if((timeSlots.get(i).getSize()-studentsToBeRemoved.size())==limit) {
                     break;
                 }
             }
+            timeSlots.get(i).removeStudents(studentsToBeRemoved);
             if(timeSlots.get(i).getSize()>limit) {
                 //TODO should it throw a warning instead of an exception? maybe lecturers want to force it??
                 throw new IllegalConstraintsException( "This class size limit is not possible");
             }
-
         }
         /*
         sort the array of timeslots
@@ -284,12 +285,12 @@ public class Scheduler {
      */
     public void createAdjacencyMatrix() {
         adjacencyMatrix = new ArrayList<>();
-        for(int i = 0; i< numberOfTimeSlots; i++) {
-            adjacencyMatrix.add(new int[numberOfTimeSlots]);
+        for(int i = 0; i< timeSlots.size(); i++) {
+            adjacencyMatrix.add(new int[timeSlots.size()]);
         }
 
-        for(int i = 0; i< numberOfTimeSlots; i++) {
-            for(int j = 0; j< numberOfTimeSlots; j++) {
+        for(int i = 0; i< timeSlots.size(); i++) {
+            for(int j = 0; j< timeSlots.size(); j++) {
                 //don't compare nodes to themselves, just put in -1
                 if(j==i) {
                     adjacencyMatrix.get(j)[i] = -1;
@@ -315,20 +316,13 @@ public class Scheduler {
     public String checkBaseCaseTwo() {
         createAdjacencyMatrix();
         ArrayList<String> times = new ArrayList<>();
-        ArrayList<Integer> timesAdded = new ArrayList<>();
 
         for(int i = 0; i< numberOfTimeSlots; i++) {
             for (int j = 0; j < numberOfTimeSlots; j++) {
                 if(adjacencyMatrix.get(i)[j]==0) {
-                    if(!timesAdded.contains(i)) {
-                        times.add("The following two times cover all students:\n");
-                        timesAdded.add(i);
-                        times.add(timeSlots.get(i).getSize() + " students are available at " + convertToDate(i));
-                    }
-                    if(!timesAdded.contains(j)) {
-                        timesAdded.add(j);
-                        times.add(timeSlots.get(j).getSize() + " students are available at " + convertToDate(j));
-                    }
+                    times.add("The following two times cover all students:\n");
+                    times.add(timeSlots.get(i).getSize() + " students are available at " + convertToDate(timeSlots.get(i).getId()));
+                    times.add(timeSlots.get(j).getSize() + " students are available at " + convertToDate(timeSlots.get(j).getId()));
                 }
             }
         }
@@ -338,7 +332,7 @@ public class Scheduler {
         e.g. if adjacencyMatrix [a][b] = 0 --> add a, b
         (0 means no ppl busy at both times)
          */
-        return String.join("", times);
+        return String.join("", times.subList(0, times.size()/2));
     }
 
     /**
@@ -348,14 +342,13 @@ public class Scheduler {
     public String schedule() {
         String times = "";
         HashSet<Integer> unionOfOthers;
-        for(int i = 0; i< numberOfTimeSlots; i++) {
-            Collections.sort(timeSlots);
-            TimeSlot temp = timeSlots.get(i);
+        Collections.sort(timeSlots);
+        for (TimeSlot temp : timeSlots) {
             unionOfOthers = unionOfTimes(temp);
 
             //if not all students in a given timeslot are represented in other timeslots --> add it to the returned times
-            if(!(unionOfOthers.containsAll(temp.getStudents()))) {
-                times+=timeSlots.get(i).getSize() + " students are available at " + convertToDate(temp.getId());
+            if (!(unionOfOthers.containsAll(temp.getStudents()))) {
+                times += temp.getSize() + " students are available at " + convertToDate(temp.getId());
             }
         }
         return times;
