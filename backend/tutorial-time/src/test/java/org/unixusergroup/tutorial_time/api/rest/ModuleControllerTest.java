@@ -151,7 +151,6 @@ public class ModuleControllerTest {
     }
 
     @Test
-    @Test
     void addStudentTest() {
         /** setting up data */
         InMemoryModuleRepository moduleRepository = new InMemoryModuleRepository();
