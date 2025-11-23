@@ -7,8 +7,8 @@ package org.unixusergroup.tutorial_time.application.module;
 import org.unixusergroup.tutorial_time.application.common.UseCase;
 import org.unixusergroup.tutorial_time.application.module.dto.EditEnrollmentRequest;
 import org.unixusergroup.tutorial_time.application.module.dto.EditEnrollmentResponse;
-import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
 import org.unixusergroup.tutorial_time.domain.module.Module;
+import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
 
 public class EditEnrollmentUseCase implements UseCase<EditEnrollmentResponse, EditEnrollmentRequest> {
 
@@ -50,6 +50,7 @@ public class EditEnrollmentUseCase implements UseCase<EditEnrollmentResponse, Ed
                default:
                    throw new IllegalArgumentException("The given request type does not exist");
            }
+           // Should there be a line here saving to the database? Does it need to be explicity called?
            return new EditEnrollmentResponse();
        } catch (RuntimeException e) {
            throw new RuntimeException(e);
