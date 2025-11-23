@@ -1,6 +1,7 @@
 /* Library imports */
 import React, { useState, useContext } from 'react';
 import { Cog } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 /* Import local page components */
 import styles from './LecturerTimetable.module.css';
@@ -39,6 +40,7 @@ const LecturerTimetable = () => {
   const [showEditStudentsModal, setShowEditStudentsModal] = useState(false);
   const [showEditTAsModal, setShowEditTAsModal] = useState(false);
   const authContext = useContext(AuthContext);
+  const navigate = useNavigate();
 
   // Function to make clicking the 'Algorithm Settings' button pop up a settings menu
   function OpenAlgorithmSettings() {
@@ -187,7 +189,7 @@ const LecturerTimetable = () => {
     try {
       //get current user id: authContext.auth.id
       const path = "api/module/getmodule";
-      const params = {moduleCode: moduleId, lecturerID: authContext.auth.id};
+      const params = {moduleCode: moduleId, lecturerId: authContext.auth.id};
       const [statusCode, result] = await GetRequest(path, params, authContext);
       if(statusCode===200) {
         setSelectedModuleId(moduleId);
@@ -268,7 +270,7 @@ const LecturerTimetable = () => {
       <header className={styles.header}>
         <h1 className={styles.title}>Tutorial Time - Lecturer</h1>
         <nav className={styles.navbarNav}>
-          <button className={styles.navButton}>
+          <button onClick={() => navigate("/create-module")} className={styles.navButton}>
             <PlusIcon className={styles.navIcon} />
             Create New Module
           </button>

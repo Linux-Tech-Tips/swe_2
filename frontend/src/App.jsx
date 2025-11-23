@@ -6,7 +6,7 @@ import { Login, CompleteLogin } from './pages/Login.jsx';
 import StudentTimetable from './pages/StudentTimetable.jsx';
 import LecturerTimetable from './pages/LecturerTimetable.jsx';
 import { AuthContext, AuthProvider } from './context/Contexts.jsx';
-
+import LecturerCreateModule from './pages/LecturerCreateModule.jsx';
 
 /* Separated out BrowserRouter into a separate function with a given authContext */
 const AppRouter = () => {
@@ -52,11 +52,19 @@ const AppRouter = () => {
                 <Route
                     path="/lecturer-timetable"
                     element={(authContext.auth && authContext.auth.isLecturer)
-                        ? <LecturerTimetable />
-                        : <Navigate to="/" replace />
+                    ? <LecturerTimetable />
+                    : <Navigate to="/" replace />
                     }
                 />
 
+                <Route
+                    path="/create-module"
+                    element=<LecturerCreateModule />
+                    //element={(authContext.auth && authContext.auth.isLecturer)
+                      //  ? <LecturerCreateModule />
+                        //: <Navigate to="/" replace />
+                        //}
+                />
                 {/* Catch-all route for 404 pages */}
                 <Route path="*" element={
                     <div style={{ padding: '20px', textAlign: 'center' }}>
