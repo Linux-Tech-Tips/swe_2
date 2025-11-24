@@ -4,6 +4,7 @@ import React, { useState, useContext } from 'react';
 import styles from './LecturerCreateModule.module.css';
 import { AuthContext, AuthProvider } from '../context/Contexts.jsx';
 import { useNavigate } from "react-router-dom";
+import HomeIcon from "../components/HomeIcon.jsx";
 
 const LecturerCreateModule = () => {
 
@@ -96,7 +97,8 @@ const LecturerCreateModule = () => {
     <header className={styles.header}>
         <h1 className={styles.title}>Tutorial Time - Lecturer</h1>
         <nav className={styles.navbarNav}>
-         <button onClick={() => navigate("/lecturer-timetable")} className={styles.navButton}> Home </button>
+         <button onClick={() => navigate("/lecturer-timetable")} className={styles.navButton}> 
+            <HomeIcon className={styles.actionIcon}/> Home </button>
         </nav>
       </header>
 
