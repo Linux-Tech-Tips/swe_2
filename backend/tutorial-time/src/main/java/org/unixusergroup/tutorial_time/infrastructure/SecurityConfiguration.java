@@ -1,6 +1,3 @@
-/** 
- * @author Martin
- */
 package org.unixusergroup.tutorial_time.infrastructure;
 
 import org.springframework.core.convert.converter.Converter;
@@ -15,6 +12,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoders;
+<<<<<<< Updated upstream
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 
@@ -22,6 +20,19 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ArrayList;
 
+=======
+/**
+ * Configures application-wide Spring Security settings.
+ * <p>
+ * This configuration enables Web Security and defines the security
+ * filter chain for the application. All HTTP requests require authentication,
+ * and JWT-based OAuth2 resource server support is enabled by default.
+ * <p>
+ * CORS is also enabled using Spring Security's default configuration.
+ *
+ * @author Martin
+ */
+>>>>>>> Stashed changes
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
