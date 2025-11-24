@@ -258,9 +258,8 @@ const LecturerTimetable = () => {
   //call ChangeModule to fetch the new student/ta lists
   const refreshStudentList = () => {
     ChangeModule(selectedModuleId);
+    console.log(`[DATA REFRESH] Module ${selectedModuleId} students need to be re-fetched.`);
   };
-
-  
 
   return (
     <div className={styles.container}>
