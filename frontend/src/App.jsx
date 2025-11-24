@@ -57,13 +57,13 @@ const AppRouter = () => {
                     }
                 />
 
+                { /* Route for the Lecturer Create Module Page */}
                 <Route
                     path="/create-module"
-                    element=<LecturerCreateModule />
-                    //element={(authContext.auth && authContext.auth.isLecturer)
-                      //  ? <LecturerCreateModule />
-                        //: <Navigate to="/" replace />
-                        //}
+                    element={(authContext.auth && authContext.auth.isLecturer)
+                    ? <LecturerCreateModule />
+                    : <Navigate to="/" replace />
+                    }
                 />
                 {/* Catch-all route for 404 pages */}
                 <Route path="*" element={

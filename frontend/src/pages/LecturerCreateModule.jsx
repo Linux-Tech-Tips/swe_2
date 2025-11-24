@@ -28,22 +28,41 @@ const LecturerCreateModule = () => {
     const authContext = useContext(AuthContext);
     const navigate = useNavigate();
 
-    // As of now this ignores ill formatted student ids
     function parseStudentIds(ids) {
-        return ids.split(",").map((id) => id.trim())
-                            .filter((id) => { return (id !== "" && !isNaN(id)); })
-                            .map((id) => BigInt(id));
+        var ids = ids.split(",").map((id) => id.trim());
+        var result = ids.filter((id) => { return (id !== "" && !isNaN(id)); });
+        
+        // to compute the ids that aren't valid.
+        var nullIds = new Set(ids).difference(new Set(result));
+
+        // convert the remaining valid ids into longs so that the backend can handle them correctly.
+        result = result.map((id) => BigInt(id));
+        return [result, Array.from(nullIds)];
     }
 
     async function UploadModule(formData) {
+         // resetting the error and success messages before request has been attempted.
+        setModuleError("");
+        setModuleSuccess("");
+
         const obtainedModuleCode = formData.get("moduleCode");
         if (obtainedModuleCode.trim() === "") {
-
-            setModuleError("The provided module code was empty");
+            setModuleError("Error: The provided module code was empty");
+            return;
         }
-        const enrolledStudentIds = parseStudentIds(formData.get("studentIds"));
-        const taStudentIds = parseStudentIds(formData.get("taStudentIds"));
+        
+        const [enrolledStudentIds, invalidStudentIds] = parseStudentIds(formData.get("studentIds"));
+        if (invalidStudentIds.length != 0) {
+            setModuleError("Error: The provided student ids are invalid: " + invalidStudentIds.toString());
+            return;
+        }
 
+        const [taStudentIds, invalidTaStudentIds] = parseStudentIds(formData.get("taStudentIds"));
+        if (invalidTaStudentIds.length != 0) {
+            setModuleError("Error: The provided ta ids are invalid: " + invalidTaStudentIds.toString());
+            return;
+        }
+    
         try{
                 const params = {
                     lecturerId: authContext.auth.id,
@@ -55,6 +74,7 @@ const LecturerCreateModule = () => {
                 const path = "api/module/createmodule";
 
                 PostRequest(path, params, authContext).then((result) => {
+
                     const [statusCode, response] = result;
                     if (statusCode == 200) {
                         setModuleSuccess("The module has been added correctly");
@@ -82,7 +102,7 @@ const LecturerCreateModule = () => {
 
     <div className={styles.card}>
         <h2 className={styles.cardTitle}>Module Creation</h2>
-        <p className={styles.cardDescription}>Enter a module code to associate with the new course. Note that the student & ta ids fields can be empty.<br/> Press Enter to confirm any inputs </p>
+        <p className={styles.cardDescription}>Enter a module code to associate with the new course. Note that the student & ta ids fields can be empty.<br/></p>
        
        <div> <DisplayModuleStatus /> </div>
     
