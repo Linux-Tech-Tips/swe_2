@@ -6,9 +6,13 @@ package org.unixusergroup.tutorial_time.api.rest;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.unixusergroup.tutorial_time.application.scheduler.ScheduleTutorialsUseCase;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
+
+import org.unixusergroup.tutorial_time.application.scheduler.ScheduleTutorialsUseCase;
 import org.unixusergroup.tutorial_time.application.scheduler.dto.ScheduleRequest;
+import org.unixusergroup.tutorial_time.domain.module.Module;
 import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
 import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
 
@@ -24,10 +28,12 @@ import static org.unixusergroup.tutorial_time.infrastructure.ProjectConfiguratio
 @CrossOrigin(origins=FRONTEND_DOMAIN_NAME)
 public class SchedulerController {
 
+    private final ModuleRepository moduleRepository;
     private final ScheduleTutorialsUseCase scheduleTutorialsUseCase;
 
     /** Constructor, requires a ModuleRepository and StudentRepository instance to get relevant data from the database */
     public SchedulerController(ModuleRepository moduleRepository, StudentRepository studentRepository) {
+        this.moduleRepository = moduleRepository;
         this.scheduleTutorialsUseCase = new ScheduleTutorialsUseCase(moduleRepository, studentRepository);
     }
 
@@ -45,8 +51,28 @@ public class SchedulerController {
      *         HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/schedule")
-    public ResponseEntity<?> schedule(@RequestParam String moduleCode, @RequestParam int studentLimit, @RequestParam int minTAs, @RequestParam int[] blockedTimes) {
+    public ResponseEntity<?> schedule(Authentication authentication, 
+                                      @RequestParam String moduleCode, 
+                                      @RequestParam int studentLimit, 
+                                      @RequestParam int minTAs, 
+                                      @RequestParam int[] blockedTimes) {
         try {
+            /* Ensure that only an authorized lecturer can use the scheduler on their modules */
+            Jwt authPrincipal = (Jwt)(authentication.getPrincipal());
+            if(!authPrincipal.hasClaim("uni_id")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: Lecturer has no ID");
+            }
+            long authenticatedId = Long.parseLong(authPrincipal.getClaimAsString("uni_id"));
+            Module module = moduleRepository.getModuleByCode(moduleCode);
+            if(module == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Module not found!");
+            }
+            long lecturerId = module.getLecturer();
+            if(authenticatedId != lecturerId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: Lecturer ID does not match");
+            }
+
+            /* If authorized, execute the actual API call */
             ScheduleRequest request = new ScheduleRequest(moduleCode, studentLimit, minTAs, blockedTimes);
             return ResponseEntity.status(HttpStatus.OK).body(scheduleTutorialsUseCase.execute(request));
         }
