@@ -25,6 +25,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -143,6 +144,46 @@ public class SchedulerControllerIntegrationTest {
     }
 
     @Test
+    public void scheduleAccessIntegrationTest() {
+        try {
+            /* Check that a Lecturer-authenticated user can use the scheduler API */
+            mockMvc.perform(post("/api/scheduler/schedule")
+                            .param("moduleCode", "TS222")
+                            .param("studentLimit", "0")
+                            .param("minTAs", "0")
+                            .param("blockedTimes", "")
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
+                   .andExpect(status().isOk());
+            /* Check that a Student-authenticated user can't use the scheduler API */
+            mockMvc.perform(post("/api/scheduler/schedule")
+                            .param("moduleCode", "TS222")
+                            .param("studentLimit", "0")
+                            .param("minTAs", "0")
+                            .param("blockedTimes", "")
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Student"))))
+                   .andExpect(status().is(403));
+            /* Check that a JWT authenticated user without a role can't use the scheduler API */
+            mockMvc.perform(post("/api/scheduler/schedule")
+                            .param("moduleCode", "TS222")
+                            .param("studentLimit", "0")
+                            .param("minTAs", "0")
+                            .param("blockedTimes", "")
+                            .with(jwt()))
+                   .andExpect(status().is(403));
+            /* Check that a user without authentication can't use the scheduler API */
+            mockMvc.perform(post("/api/scheduler/schedule")
+                            .param("moduleCode", "TS222")
+                            .param("studentLimit", "0")
+                            .param("minTAs", "0")
+                            .param("blockedTimes", ""))
+                   .andExpect(status().is(403));
+
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    @Test
     public void scheduleBaseIntegrationTest() {
         try {
             /* Check that scheduling a tutorial with no constraints runs correctly */
@@ -151,7 +192,7 @@ public class SchedulerControllerIntegrationTest {
                             .param("studentLimit", "0")
                             .param("minTAs", "0")
                             .param("blockedTimes", "")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status()
                               .isOk())
                    .andExpect(content()
@@ -172,7 +213,7 @@ public class SchedulerControllerIntegrationTest {
                             .param("studentLimit", "2")
                             .param("minTAs", "0")
                             .param("blockedTimes", "")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status()
                               .isOk())
                    .andExpect(content()
@@ -198,7 +239,7 @@ public class SchedulerControllerIntegrationTest {
                             .param("studentLimit", "0")
                             .param("minTAs", "2")
                             .param("blockedTimes", "")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status()
                               .isOk())
                    .andExpect(content()
@@ -221,7 +262,7 @@ public class SchedulerControllerIntegrationTest {
                             .param("studentLimit", "0")
                             .param("minTAs", "0")
                             .param("blockedTimes", "8")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status()
                               .isOk())
                    .andExpect(content()
@@ -244,7 +285,7 @@ public class SchedulerControllerIntegrationTest {
                             .param("studentLimit", "0")
                             .param("minTAs", "0")
                             .param("blockedTimes", "")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status().is(400));
 
             /* Check that scheduling tutorials for a module with a non-existent student fails */
@@ -256,7 +297,7 @@ public class SchedulerControllerIntegrationTest {
                             .param("studentLimit", "0")
                             .param("minTAs", "0")
                             .param("blockedTimes", "")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status().is(500));
 
             /* Check that scheduling tutorials with a negative student limit fails */
@@ -265,7 +306,7 @@ public class SchedulerControllerIntegrationTest {
                             .param("studentLimit", "-2")
                             .param("minTAs", "0")
                             .param("blockedTimes", "")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status().is(400));
 
             /* Check that scheduling tutorials with a negative TA minimum fails */
@@ -274,7 +315,7 @@ public class SchedulerControllerIntegrationTest {
                             .param("studentLimit", "0")
                             .param("minTAs", "-1")
                             .param("blockedTimes", "")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status().is(400));
 
             /* Check that scheduling tutorials with a mimimum TA higher than the total number of TAs fails */
@@ -283,7 +324,7 @@ public class SchedulerControllerIntegrationTest {
                             .param("studentLimit", "0")
                             .param("minTAs", "3")
                             .param("blockedTimes", "")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status().is(400));
 
             /* Check that providing incorrect params to the API call fails */
@@ -291,7 +332,7 @@ public class SchedulerControllerIntegrationTest {
                             .param("moduleCode", "TS222")
                             .param("minTAs", "0")
                             .param("blockedTimes", "")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status().is(400));
 
         } catch(Exception e) {
