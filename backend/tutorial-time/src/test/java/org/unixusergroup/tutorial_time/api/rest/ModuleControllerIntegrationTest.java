@@ -23,6 +23,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -67,6 +68,38 @@ public class ModuleControllerIntegrationTest {
     }
 
     @Test
+    public void getModuleAccessIntegrationTest() {
+        try {
+            /* Check that a Lecturer-authenticated user can access the module API */
+            mockMvc.perform(get("/api/module/getmodule")
+                            .param("moduleCode", "TS101")
+                            .param("lecturerId", "123456")
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
+                   .andExpect(status().isOk());
+            /* Check that a Student-authenticated user can't access the module API */
+            mockMvc.perform(get("/api/module/getmodule")
+                            .param("moduleCode", "TS101")
+                            .param("lecturerId", "123456")
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Student"))))
+                   .andExpect(status().is(403));
+            /* Check that a JWT authenticated user without a role can't access the module API */
+            mockMvc.perform(get("/api/module/getmodule")
+                            .param("moduleCode", "TS101")
+                            .param("lecturerId", "123456")
+                            .with(jwt()))
+                   .andExpect(status().is(403));
+            /* Check that a user without authentication can't access the module API */
+            mockMvc.perform(get("/api/module/getmodule")
+                            .param("moduleCode", "TS101")
+                            .param("lecturerId", "123456"))
+                   .andExpect(status().is(401));
+
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    @Test
     public void createModuleValidIntegrationTest() {
         try {
             /* Checking that creating a valid module works */
@@ -75,7 +108,7 @@ public class ModuleControllerIntegrationTest {
                             .param("moduleCode", "TS102")
                             .param("studentIds", "111111,222222")
                             .param("taStudentIds", "333333,444444")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status().is(200));
 
             Module createdModule = mockModuleRepository.getModuleByCode("TS102");
@@ -98,7 +131,7 @@ public class ModuleControllerIntegrationTest {
                             .param("moduleCode", "")
                             .param("studentIds", "111111,222222")
                             .param("taStudentIds", "333333,444444")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status().is(400));
 
             /* Checking that creating a module with a non-existent lecturer returns an error */
@@ -107,7 +140,7 @@ public class ModuleControllerIntegrationTest {
                             .param("moduleCode", "TS103")
                             .param("studentIds", "111111,222222")
                             .param("taStudentIds", "333333,444444")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status().is(400));
 
             /* Checking that creating a module with a non-existent student returns an error */
@@ -116,7 +149,7 @@ public class ModuleControllerIntegrationTest {
                             .param("moduleCode", "TS103")
                             .param("studentIds", "111111,555555")
                             .param("taStudentIds", "333333,444444")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status().is(400));
 
             /* Checking that creating a module with a non-existent TA student returns an error */
@@ -125,7 +158,7 @@ public class ModuleControllerIntegrationTest {
                             .param("moduleCode", "TS103")
                             .param("studentIds", "111111,222222")
                             .param("taStudentIds", "555555,444444")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status().is(400));
 
             /* Checking that trying to create a module without proper parameters fails */
@@ -133,7 +166,7 @@ public class ModuleControllerIntegrationTest {
                             .param("lecturerId", "123456")
                             .param("moduleCode", "TS103")
                             .param("taStudentIds", "333333,444444")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status().is(400));
 
             /* Verifying that no such module was created */
@@ -151,7 +184,7 @@ public class ModuleControllerIntegrationTest {
             mockMvc.perform(get("/api/module/getmodule")
                             .param("moduleCode", "TS101")
                             .param("lecturerId", "123456")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status()
                               .isOk())
                    .andExpect(content()
@@ -172,21 +205,21 @@ public class ModuleControllerIntegrationTest {
             mockMvc.perform(get("/api/module/getmodule")
                             .param("moduleCode", "")
                             .param("lecturerId", "123456")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status().is(400));
 
             /* Checking that getting a non-existent module fails */
             mockMvc.perform(get("/api/module/getmodule")
                             .param("moduleCode", "TS111")
                             .param("lecturerId", "123456")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status().is(400));
 
             /* Checking that getting a module without providing the appropriate lecturer ID fails */
             mockMvc.perform(get("/api/module/getmodule")
                             .param("moduleCode", "TS101")
                             .param("lecturerId", "754321")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status().is(400));
 
         } catch(Exception e) {
@@ -206,7 +239,7 @@ public class ModuleControllerIntegrationTest {
             mockMvc.perform(post("/api/module/addta")
                             .param("moduleCode", "TS104")
                             .param("id", "555555")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status()
                               .isOk());
 
@@ -228,20 +261,20 @@ public class ModuleControllerIntegrationTest {
             mockMvc.perform(post("/api/module/addta")
                             .param("moduleCode", "TS111")
                             .param("id", "333333")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status().is(400));
 
             /* Checking that adding a TA with a negative ID doesn't work */
             mockMvc.perform(post("/api/module/addta")
                             .param("moduleCode", "TS101")
                             .param("id", "-33")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status().is(500));
 
             /* Checking that adding a TA without proper arguments fails */
             mockMvc.perform(post("/api/module/addta")
                             .param("moduleCode", "TS101")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status().is(400));
 
             /* Check that module was not changed */
@@ -269,7 +302,7 @@ public class ModuleControllerIntegrationTest {
             mockMvc.perform(post("/api/module/removeta")
                             .param("moduleCode", "TS104")
                             .param("id", "555555")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status()
                               .isOk());
             /* Check that TA removed */
@@ -291,27 +324,27 @@ public class ModuleControllerIntegrationTest {
             mockMvc.perform(post("/api/module/removeta")
                             .param("moduleCode", "TS111")
                             .param("id", "333333")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status().is(400));
 
             /* Checking that removing a TA with a negative ID doesn't work */
             mockMvc.perform(post("/api/module/removeta")
                             .param("moduleCode", "TS101")
                             .param("id", "-33")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status().is(500));
 
             /* Checking that removing a student that's not a TA for the module doesn't work */
             mockMvc.perform(post("/api/module/removeta")
                             .param("moduleCode", "TS101")
                             .param("id", "111111")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status().is(500));
 
             /* Checking that removing a TA without proper arguments fails */
             mockMvc.perform(post("/api/module/removeta")
                             .param("moduleCode", "TS101")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
                    .andExpect(status().is(400));
 
             /* Check that module was not changed */

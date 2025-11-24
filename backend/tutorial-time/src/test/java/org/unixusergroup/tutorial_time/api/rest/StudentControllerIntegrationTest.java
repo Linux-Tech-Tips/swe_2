@@ -21,6 +21,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -45,12 +46,41 @@ public class StudentControllerIntegrationTest {
     }
 
     @Test
+    public void getStudentAccessIntegrationTest() {
+        try {
+            /* Check that a Student-authenticated user can access the student API */
+            mockMvc.perform(get("/api/student/getstudent")
+                            .param("studentId", "123456")
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Student"))))
+                   .andExpect(status().isOk());
+            /* Check that a Lecturer-authenticated user can't access the student API */
+            mockMvc.perform(get("/api/student/getstudent")
+                            .param("studentId", "123456")
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Lecturer"))))
+                   .andExpect(status().is(403));
+            /* Check that a JWT-authenticated user without a role can't access the student API */
+            mockMvc.perform(get("/api/student/getstudent")
+                            .param("studentId", "123456")
+                            .with(jwt()))
+                   .andExpect(status().is(403));
+            /* Check that a user without JWT authentication can't access the student API */
+            mockMvc.perform(get("/api/student/getstudent")
+                            .param("studentId", "123456"))
+                   .andExpect(status().is(401));
+
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+
+
+    @Test
     public void getStudentValidIntegrationTest() {
         try {
             /* Check that the getstudent API call works as expected with JWT auth and an MVC */
             mockMvc.perform(get("/api/student/getstudent")
                             .param("studentId", "123456")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Student"))))
                    .andExpect(status()
                               .isOk())
                    .andExpect(content()
@@ -68,13 +98,13 @@ public class StudentControllerIntegrationTest {
             /* Testing that getting a student with a non-existent ID doesn't work */
             mockMvc.perform(get("/api/student/getstudent")
                             .param("studentId", "00000")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Student"))))
                    .andExpect(status()
                               .is(500));
 
             /* Testing that getting a student without supplying and ID doesn't work */
             mockMvc.perform(get("/api/student/getstudent")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Student"))))
                    .andExpect(status()
                               .is(400));
 
@@ -91,7 +121,7 @@ public class StudentControllerIntegrationTest {
                             .param("name", "John Doe")
                             .param("email", "john.doe@universityofgalway.ie")
                             .param("studentId", "654321")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Student"))))
                    .andExpect(status().is(200));
             /* Verify that the student was added */
             Student savedStudent = mockStudentRepository.getStudentById(654321);
@@ -109,27 +139,27 @@ public class StudentControllerIntegrationTest {
                             .param("name", "")
                             .param("email", "john.doe@universityofgalway.ie")
                             .param("studentId", "754321")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Student"))))
                    .andExpect(status().is(500));
             /* Testing that creating a student with an empty email doesn't work */
             mockMvc.perform(post("/api/student/createstudent")
                             .param("name", "Jane Doe")
                             .param("email", "")
                             .param("studentId", "754321")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Student"))))
                    .andExpect(status().is(500));
             /* Testing that creating a student with an invalid email doesn't work */
             mockMvc.perform(post("/api/student/createstudent")
                             .param("name", "Jane Doe")
                             .param("email", "jane.doe@mail.com") // must be an NUI address
                             .param("studentId", "754321")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Student"))))
                    .andExpect(status().is(500));
             /* Testing that creating a student without proper params doesn't work */
             mockMvc.perform(post("/api/student/createstudent")
                             .param("name", "Jane Doe")
                             .param("email", "jane.doe@universityofgalway.ie")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Student"))))
                    .andExpect(status().is(400));
             /* Check that no student of the given ID was added */
             assertNull(mockStudentRepository.getStudentById(754321));
@@ -146,7 +176,7 @@ public class StudentControllerIntegrationTest {
             mockMvc.perform(post("/api/student/createtimetable")
                             .param("studentId", "123456")
                             .param("availability", "0,0,0,0,0,1,0,0,0,1,1,1,1,1,1,1,1,0,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Student"))))
                    .andExpect(status().is(200));
             /* Check that the student timetable was saved successfully */
             Student student = mockStudentRepository.getStudentById(123456);
@@ -176,24 +206,24 @@ public class StudentControllerIntegrationTest {
             mockMvc.perform(post("/api/student/createtimetable")
                                  .param("studentId", "123456")
                                  .param("availability", "0,0,0,0,0,1,1,1,1,1,0,1,1,1,0")
-                                 .with(jwt()))
+                                 .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Student"))))
                    .andExpect(status().is(500));
             /* Testing that creating a timetable for a non-existent student fails */
             mockMvc.perform(post("/api/student/createtimetable")
                             .param("studentId", "754321")
                             .param("availability", "1,1,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,0,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Student"))))
                    .andExpect(status().is(500));
             /* Testing that creating a timetable with an invalid value fails */
             mockMvc.perform(post("/api/student/createtimetable")
                             .param("studentId", "123456")
                             .param("availability", "1,2,1,1,1,1,0,0,0,1,1,1,1,1,1,1,1,0,1,1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Student"))))
                    .andExpect(status().is(500));
             /* Testing that creating a timetable with invalid params fails */
             mockMvc.perform(post("/api/student/createtimetable")
                             .param("studentId", "123456")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Student"))))
                    .andExpect(status().is(400));
 
             /* Obtaining student of ID tested here after the test cases */
@@ -220,7 +250,7 @@ public class StudentControllerIntegrationTest {
             /* Executing request */
             mockMvc.perform(post("/api/student/gettimetable")
                             .param("studentId", "123456")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Student"))))
                    .andExpect(status().is(200))
                    .andExpect(content()
                               .string(expectedResult));
@@ -236,11 +266,11 @@ public class StudentControllerIntegrationTest {
             /* Testing that getting a timetable of a non-existent student doesn't work */
             mockMvc.perform(post("/api/student/gettimetable")
                             .param("studentId", "00000")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Student"))))
                    .andExpect(status().is(500));
             /* Testing that getting a timetable without specifying student ID doesn't work */
             mockMvc.perform(post("/api/student/gettimetable")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Student"))))
                    .andExpect(status().is(400));
             /* Testing that if malformed student created in database, obtaining their timetable fails */
             Timetable invalidTimetable = new Timetable(5, 5, Availability.AVAILABLE);
@@ -248,7 +278,7 @@ public class StudentControllerIntegrationTest {
             mockStudentRepository.saveStudent(invalidStudent);
             mockMvc.perform(post("/api/student/gettimetable")
                             .param("studentId", "11111")
-                            .with(jwt()))
+                            .with(jwt().authorities(new SimpleGrantedAuthority("ROLE_Student"))))
                    .andExpect(status().is(500));
 
         } catch(Exception e) {
