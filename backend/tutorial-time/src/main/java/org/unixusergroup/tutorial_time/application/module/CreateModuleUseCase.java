@@ -30,38 +30,39 @@ public class CreateModuleUseCase implements UseCase<CreateModuleResponse, Create
      * while providing an appropriate response.*/
     @Override
     public CreateModuleResponse execute(CreateModuleRequest moduleRequest) {
+
+        /* Verifying that the module code is not empty */
+        if (moduleRequest.moduleCode().isEmpty()) {
+            throw new IllegalArgumentException("The provided module code is empty.");
+        }
+
+        /* If lecturer doesn't exist in the database, the use case will throw an error which will lead to the response */
+        Lecturer lecturer = lecturerRepository.getLecturerById(moduleRequest.lecturerId());
+
+        if (lecturer == null) {
+            throw new IllegalArgumentException("The provided lecturer id is not present in the repo.");
+        }
+
+        /* This is using the student ids from the module request (if it's not empty) to retrieve the students from the repository */
+        if(!moduleRequest.studentIds().isEmpty()) {
+            for(long studentId: moduleRequest.studentIds()) {
+                if(this.studentRepository.getStudentById(studentId)==null) {
+                    throw new IllegalStudentAdditionException("The given student ID " + studentId + " is not a registered student");
+                }
+            }
+        }
+
+        /* This is using the ta student ids from the module request (if it's not empty) to retrieve the ta's from the repository */
+        if(!moduleRequest.taStudentIds().isEmpty()) {
+            for(long taStudentId: moduleRequest.taStudentIds()) {
+                if(this.studentRepository.getStudentById(taStudentId)==null) {
+                    throw new IllegalStudentAdditionException("The given student ID " + taStudentId + " is not a registered student");
+                }
+            }
+        }
+
+        /* Executing the actual module creation */
         try {
-
-            /** Verifying that the module code is not empty */
-            if (moduleRequest.moduleCode().isEmpty()) {
-                throw new IllegalArgumentException("The provided module code is empty.");
-            }
-
-            /** If lecturer doesn't exist in the database, the use case will throw an error which will lead to the response */
-            Lecturer lecturer = lecturerRepository.getLecturerById(moduleRequest.lecturerId());
-
-            if (lecturer == null) {
-                throw new IllegalArgumentException("The provided lecturer id is not present in the repo.");
-            }
-
-            /** This is using the student ids from the module request (if it's not empty) to retrieve the students from the repository */
-            if(!moduleRequest.studentIds().isEmpty()) {
-                for(long studentId: moduleRequest.studentIds()) {
-                    if(this.studentRepository.getStudentById(studentId)==null) {
-                        throw new IllegalStudentAdditionException("The given student ID " + studentId + " is not a registered student");
-                    }
-                }
-            }
-
-            /** This is using the ta student ids from the module request (if it's not empty) to retrieve the ta's from the repository */
-            if(!moduleRequest.taStudentIds().isEmpty()) {
-                for(long taStudentId: moduleRequest.taStudentIds()) {
-                    if(this.studentRepository.getStudentById(taStudentId)==null) {
-                        throw new IllegalStudentAdditionException("The given student ID " + taStudentId + " is not a registered student");
-                    }
-                }
-            }
-
             Module newModule = new Module(moduleRequest.moduleCode(), moduleRequest.studentIds(), moduleRequest.taStudentIds(), moduleRequest.lecturerId());
 
             this.moduleRepository.saveModule(newModule);

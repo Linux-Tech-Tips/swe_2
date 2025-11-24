@@ -18,21 +18,16 @@ public class GetModuleUseCase implements UseCase<GetModuleResponse, GetModuleReq
 
     @Override
     public GetModuleResponse execute(GetModuleRequest getModuleRequest) {
-        try {
-            if (getModuleRequest.moduleCode().isEmpty()) {
-                throw new IllegalArgumentException("No module code provided");
-            }
-            Module module = this.moduleRepository.getModuleByCode(getModuleRequest.moduleCode());
-            if (module==null) {
-                throw new IllegalArgumentException("Module not found");
-            }
-            if(module.getLecturer()!=getModuleRequest.lecturerID()) {
-                throw new IllegalArgumentException("You are not the lecturer registered for the module " + module.getModuleCode());
-            }
-            return new GetModuleResponse(module);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if (getModuleRequest.moduleCode().isEmpty()) {
+            throw new IllegalArgumentException("No module code provided");
         }
+        Module module = this.moduleRepository.getModuleByCode(getModuleRequest.moduleCode());
+        if (module==null) {
+            throw new IllegalArgumentException("Module not found");
+        }
+        if(module.getLecturer()!=getModuleRequest.lecturerID()) {
+            throw new IllegalArgumentException("You are not the lecturer registered for the module " + module.getModuleCode());
+        }
+        return new GetModuleResponse(module);
     }
 }

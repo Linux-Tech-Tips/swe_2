@@ -1,24 +1,23 @@
 /**
- * @author Ethan
+ * @author Ethan, Lilian
  */
 package org.unixusergroup.tutorial_time.api.rest;
-
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.unixusergroup.tutorial_time.domain.module.Module;
-import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
-import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
-import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
-import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
-import org.unixusergroup.tutorial_time.infrastructure.InMemoryLecturerRepository;
-import org.unixusergroup.tutorial_time.infrastructure.InMemoryModuleRepository;
-import org.unixusergroup.tutorial_time.infrastructure.InMemoryStudentRepository;
 
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
+import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
+import org.unixusergroup.tutorial_time.domain.module.Module;
+import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
+import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
+import org.unixusergroup.tutorial_time.infrastructure.InMemoryLecturerRepository;
+import org.unixusergroup.tutorial_time.infrastructure.InMemoryModuleRepository;
+import org.unixusergroup.tutorial_time.infrastructure.InMemoryStudentRepository;
 
 @SpringBootTest
 public class ModuleControllerTest {
@@ -44,6 +43,20 @@ public class ModuleControllerTest {
         assertEquals(expectedModule, moduleRepository.getModuleByCode("CT202"));
     }
 
+    /**
+     * test for failed create module call
+     */
+    @Test
+    void failedCreateModuleTest() {
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+        ResponseEntity<?> response = moduleController.createNewModule(10002, "CT202", new ArrayList<>(), new ArrayList<>());
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
 
     /** Test for getModule rest API function. */
     @Test
@@ -70,6 +83,17 @@ public class ModuleControllerTest {
     }
 
     @Test
+    void failedGetModuleTest() {
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+        ResponseEntity<?> response = moduleController.getModule("CT202", 1L);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
     void removeTATest() {
         /** setting up data */
         InMemoryModuleRepository moduleRepository = new InMemoryModuleRepository();
@@ -89,6 +113,18 @@ public class ModuleControllerTest {
         /** verify output */
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(new ArrayList<>(), module.getTAStudents());
+    }
+
+    @Test
+    void failedRemoveTATest() {
+        /** setting up data */
+        InMemoryModuleRepository moduleRepository = new InMemoryModuleRepository();
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+
+        ResponseEntity<?> response = moduleController.removeTA("fakeModule", 3L);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 
     @Test
@@ -112,5 +148,64 @@ public class ModuleControllerTest {
         /** verify output */
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(tas, module.getTAStudents());
+    }
+
+    @Test
+    void addStudentTest() {
+        /** setting up data */
+        InMemoryModuleRepository moduleRepository = new InMemoryModuleRepository();
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        ArrayList<Long> students = new ArrayList<>();
+        ArrayList<Long> tas = new ArrayList<>();
+        students.add(1L);
+        tas.add(3L);
+        Module module = new Module("testModule", students, tas, 1000L);
+        moduleRepository.saveModule(module);
+
+        /** create and call the modulecontroller */
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+        ResponseEntity<?> response = moduleController.addStudent(module.getModuleCode(), 5L);
+        students.add(5L);
+
+        /** verify output */
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(students, module.getStudents());
+    }
+
+    @Test
+    void removeStudentTest() {
+        /** setting up data */
+        InMemoryModuleRepository moduleRepository = new InMemoryModuleRepository();
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        ArrayList<Long> students = new ArrayList<>();
+        ArrayList<Long> tas = new ArrayList<>();
+        students.add(1L);
+        students.add(2L);
+        tas.add(3L);
+        Module module = new Module("testModule", students, tas, 1000L);
+        moduleRepository.saveModule(module);
+
+        /** create and call the modulecontroller */
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+        ResponseEntity<?> response = moduleController.removeStudent(module.getModuleCode(), 2L);
+        students.remove(2L);
+
+        /** verify output */
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(students, module.getStudents());
+    }
+
+    @Test
+    void failedAddTATest() {
+        /** setting up data */
+        InMemoryModuleRepository moduleRepository = new InMemoryModuleRepository();
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+
+        ResponseEntity<?> response = moduleController.addTA("fakeModule", 3L);
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
 }
