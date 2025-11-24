@@ -263,6 +263,11 @@ const LecturerTimetable = () => {
     console.log(`[DATA REFRESH] Module ${selectedModuleId} students need to be re-fetched.`);
   };
 
+  const handleLogout = async () => {
+    authContext.logout();
+    navigate('/');
+  }
+
   return (
     <div className={styles.container}>
       {/* Top Header */}
@@ -273,9 +278,8 @@ const LecturerTimetable = () => {
             <PlusIcon className={styles.navIcon} />
             Create New Module
           </button>
-          <button className={styles.navButton}>
-            <UserIcon className={styles.navIcon} />
-            Preferences
+          <button onClick={handleLogout} className={styles.navButton}>
+            Logout
           </button>
         </nav>
       </header>
