@@ -30,7 +30,7 @@ const getInitialAvailability = () => days.reduce((acc, day) => {
 }, {});
 
 const LecturerTimetable = () => {
-  const [selectedModuleId, setSelectedModuleId] = useState('Enter a module code here');
+  const [selectedModuleId, setSelectedModuleId] = useState('NO MODULE SELECTED');
 
   const [currentStudentLimit, setCurrentStudentLimit] = useState(0);
   const [currentMinTAs, setCurrentMinTAs] = useState(0);
@@ -285,7 +285,7 @@ const LecturerTimetable = () => {
         <p className={styles.cardDescription}>Choose a module to schedule tutorials. Note that switching modules will erase any inputted algorithm settings data <br/> Press Enter to confirm any inputs </p>
         <div> <DisplayModuleError/> </div>
         <div>
-          <input className={styles.moduleInput} defaultValue={selectedModuleId} onKeyDown={(e) => {if (e.key === "Enter") {ChangeModule(e.target.value)}}}/>
+          <input className={styles.moduleInput} placeholder='Enter module code here' onKeyDown={(e) => {if (e.key === "Enter") {ChangeModule(e.target.value)}}}/>
         <span className={styles.studentCount}>{currentStudents.length} Students</span>
         </div>
         <div>
