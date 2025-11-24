@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
+
 import org.unixusergroup.tutorial_time.application.common.exceptions.ModuleNotFoundException;
 import org.unixusergroup.tutorial_time.application.common.exceptions.StudentNotFoundException;
 import org.unixusergroup.tutorial_time.application.module.CreateModuleUseCase;
@@ -25,6 +28,7 @@ import org.unixusergroup.tutorial_time.application.module.dto.EditRequestType;
 import org.unixusergroup.tutorial_time.application.module.dto.GetModuleRequest;
 import org.unixusergroup.tutorial_time.application.module.dto.GetModuleResponse;
 import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
+import org.unixusergroup.tutorial_time.domain.module.Module;
 import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
 import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
 import static org.unixusergroup.tutorial_time.infrastructure.ProjectConfiguration.FRONTEND_DOMAIN_NAME;
@@ -63,9 +67,20 @@ public class ModuleController {
      *         HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/createmodule")
-    public ResponseEntity<?> createNewModule(@RequestParam long lecturerId, @RequestParam String moduleCode,
+    public ResponseEntity<?> createNewModule(Authentication authentication, @RequestParam long lecturerId, @RequestParam String moduleCode,
                                              @RequestParam List<Long> studentIds, @RequestParam List<Long> taStudentIds) {
         try {
+            /* Ensure that only an authorized lecturer can update their module */
+            Jwt authPrincipal = (Jwt)(authentication.getPrincipal());
+            if(!authPrincipal.hasClaim("uni_id")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User has no ID");
+            }
+            long authenticatedId = Long.parseLong(authPrincipal.getClaimAsString("uni_id"));
+            if(authenticatedId != lecturerId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User ID does not match");
+            }
+
+            /* If authorized, execute the actual API call */
             CreateModuleUseCase createModuleUseCase = new CreateModuleUseCase(this.moduleRepository, this.studentRepository, this.lecturerRepository);
             CreateModuleRequest createModuleRequest = new CreateModuleRequest(moduleCode, studentIds, taStudentIds, lecturerId);
             createModuleUseCase.execute(createModuleRequest);
@@ -90,8 +105,19 @@ public class ModuleController {
      *         HTTP status of 500 and the error message when any other error occurs
      */
     @GetMapping(path="/getmodule")
-    public ResponseEntity<?> getModule(@RequestParam String moduleCode, @RequestParam long lecturerId) {
+    public ResponseEntity<?> getModule(Authentication authentication, @RequestParam String moduleCode, @RequestParam long lecturerId) {
         try {
+            /* Ensure that only an authorized lecturer can view their module */
+            Jwt authPrincipal = (Jwt)(authentication.getPrincipal());
+            if(!authPrincipal.hasClaim("uni_id")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User has no ID");
+            }
+            long authenticatedId = Long.parseLong(authPrincipal.getClaimAsString("uni_id"));
+            if(authenticatedId != lecturerId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User ID does not match");
+            }
+
+            /* If authorized, execute the actual API call */
             GetModuleUseCase getModuleUseCase = new GetModuleUseCase(this.moduleRepository);
             GetModuleRequest getModuleRequest = new GetModuleRequest(moduleCode, lecturerId);
             GetModuleResponse response = getModuleUseCase.execute(getModuleRequest);
@@ -116,8 +142,24 @@ public class ModuleController {
      * HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/addstudent")
-    public ResponseEntity<?> addStudent(@RequestParam String moduleCode, @RequestParam long id) {
+    public ResponseEntity<?> addStudent(Authentication authentication, @RequestParam String moduleCode, @RequestParam long id) {
         try {
+            /* Ensure that only an authorized lecturer can add students to their module */
+            Jwt authPrincipal = (Jwt)(authentication.getPrincipal());
+            if(!authPrincipal.hasClaim("uni_id")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User has no ID");
+            }
+            Module module = moduleRepository.getModuleByCode(moduleCode);
+            if(module == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Module not found.");
+            }
+            long lecturerId = module.getLecturer();
+            long authenticatedId = Long.parseLong(authPrincipal.getClaimAsString("uni_id"));
+            if(authenticatedId != lecturerId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User ID does not match");
+            }
+
+            /* If authorized, execute the actual API call */
             EditEnrollmentUseCase editEnrollmentUseCase = new EditEnrollmentUseCase(this.moduleRepository);
             EditEnrollmentRequest editEnrollmentRequest = new EditEnrollmentRequest(moduleCode, id, EditRequestType.STUDENT_ADDITION);
             editEnrollmentUseCase.execute(editEnrollmentRequest);
@@ -141,8 +183,24 @@ public class ModuleController {
      * HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/removestudent")
-    public ResponseEntity<?> removeStudent(@RequestParam String moduleCode, @RequestParam long id) {
+    public ResponseEntity<?> removeStudent(Authentication authentication, @RequestParam String moduleCode, @RequestParam long id) {
         try {
+            /* Ensure that only an authorized lecturer can remove students from their module */
+            Jwt authPrincipal = (Jwt)(authentication.getPrincipal());
+            if(!authPrincipal.hasClaim("uni_id")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User has no ID");
+            }
+            Module module = moduleRepository.getModuleByCode(moduleCode);
+            if(module == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Module not found.");
+            }
+            long lecturerId = module.getLecturer();
+            long authenticatedId = Long.parseLong(authPrincipal.getClaimAsString("uni_id"));
+            if(authenticatedId != lecturerId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User ID does not match");
+            }
+
+            /* If authorized, execute the actual API call */
             EditEnrollmentUseCase editEnrollmentUseCase = new EditEnrollmentUseCase(this.moduleRepository);
             EditEnrollmentRequest editEnrollmentRequest = new EditEnrollmentRequest(moduleCode, id, EditRequestType.STUDENT_REMOVAL);
             editEnrollmentUseCase.execute(editEnrollmentRequest);
@@ -166,8 +224,24 @@ public class ModuleController {
      *         HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/removeta")
-    public ResponseEntity<?> removeTA(@RequestParam String moduleCode, @RequestParam long id) {
+    public ResponseEntity<?> removeTA(Authentication authentication, @RequestParam String moduleCode, @RequestParam long id) {
         try {
+            /* Ensure that only an authorized lecturer can remove TA students from their module */
+            Jwt authPrincipal = (Jwt)(authentication.getPrincipal());
+            if(!authPrincipal.hasClaim("uni_id")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User has no ID");
+            }
+            Module module = moduleRepository.getModuleByCode(moduleCode);
+            if(module == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Module not found.");
+            }
+            long lecturerId = module.getLecturer();
+            long authenticatedId = Long.parseLong(authPrincipal.getClaimAsString("uni_id"));
+            if(authenticatedId != lecturerId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User ID does not match");
+            }
+
+            /* If authorized, execute the actual API call */
             EditEnrollmentUseCase editEnrollmentUseCase = new EditEnrollmentUseCase(this.moduleRepository);
             EditEnrollmentRequest editEnrollmentRequest = new EditEnrollmentRequest(moduleCode, id, EditRequestType.TA_REMOVAL);
             editEnrollmentUseCase.execute(editEnrollmentRequest);
@@ -191,8 +265,24 @@ public class ModuleController {
      *         HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/addta")
-    public ResponseEntity<?> addTA(@RequestParam String moduleCode, @RequestParam long id) {
+    public ResponseEntity<?> addTA(Authentication authentication, @RequestParam String moduleCode, @RequestParam long id) {
         try {
+            /* Ensure that only an authorized lecturer can remove TA students from their module */
+            Jwt authPrincipal = (Jwt)(authentication.getPrincipal());
+            if(!authPrincipal.hasClaim("uni_id")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User has no ID");
+            }
+            Module module = moduleRepository.getModuleByCode(moduleCode);
+            if(module == null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Module not found.");
+            }
+            long lecturerId = module.getLecturer();
+            long authenticatedId = Long.parseLong(authPrincipal.getClaimAsString("uni_id"));
+            if(authenticatedId != lecturerId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User ID does not match");
+            }
+
+            /* If authorized, execute the actual API call */
             EditEnrollmentUseCase editEnrollmentUseCase = new EditEnrollmentUseCase(this.moduleRepository);
             EditEnrollmentRequest editEnrollmentRequest = new EditEnrollmentRequest(moduleCode, id, EditRequestType.TA_ADDITION);
             editEnrollmentUseCase.execute(editEnrollmentRequest);

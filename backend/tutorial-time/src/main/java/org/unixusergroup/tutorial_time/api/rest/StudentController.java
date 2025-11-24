@@ -6,6 +6,8 @@ package org.unixusergroup.tutorial_time.api.rest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import org.unixusergroup.tutorial_time.application.users.AddStudentUseCase;
 import org.unixusergroup.tutorial_time.application.users.GetStudentUseCase;
@@ -45,8 +47,19 @@ public class StudentController {
      *         HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/createstudent")
-    public ResponseEntity<?> addStudent(@RequestParam String name, @RequestParam String email, @RequestParam long studentId) {
+    public ResponseEntity<?> addStudent(Authentication authentication, @RequestParam String name, @RequestParam String email, @RequestParam long studentId) {
         try {
+            /* Ensure that only an authorized student can update their records */
+            Jwt authPrincipal = (Jwt)(authentication.getPrincipal());
+            if(!authPrincipal.hasClaim("uni_id")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User has no ID");
+            }
+            long authenticatedId = Long.parseLong(authPrincipal.getClaimAsString("uni_id"));
+            if(authenticatedId != studentId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User ID does not match");
+            }
+
+            /* If authorized, execute the actual API call */
             AddStudentRequest addStudentRequest = new AddStudentRequest(name, email, studentId);
             AddStudentUseCase addStudentUseCase = new AddStudentUseCase(this.studentRepository);
             AddStudentResponse response = addStudentUseCase.execute(addStudentRequest);
@@ -70,8 +83,19 @@ public class StudentController {
      *         HTTP status of 500 and the error message when any other error occurs
      */
     @GetMapping(path="/getstudent")
-    public ResponseEntity<?> getStudent(@RequestParam long studentId) {
+    public ResponseEntity<?> getStudent(Authentication authentication, @RequestParam long studentId) {
         try {
+            /* Ensure that only an authorized student can view their records */
+            Jwt authPrincipal = (Jwt)(authentication.getPrincipal());
+            if(!authPrincipal.hasClaim("uni_id")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User has no ID");
+            }
+            long authenticatedId = Long.parseLong(authPrincipal.getClaimAsString("uni_id"));
+            if(authenticatedId != studentId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User ID does not match");
+            }
+
+            /* If authorized, execute the actual API call */
             GetStudentRequest getStudentRequest = new GetStudentRequest(studentId);
             GetStudentUseCase getStudentUseCase = new GetStudentUseCase(this.studentRepository);
             GetStudentResponse response = getStudentUseCase.execute(getStudentRequest);
@@ -98,8 +122,19 @@ public class StudentController {
      *         HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/createtimetable")
-    public ResponseEntity<?> createStudentTimetable(@RequestParam long studentId, @RequestParam int[] availability) {
+    public ResponseEntity<?> createStudentTimetable(Authentication authentication, @RequestParam long studentId, @RequestParam int[] availability) {
         try {
+            /* Ensure that only an authorized student can edit their timetable */
+            Jwt authPrincipal = (Jwt)(authentication.getPrincipal());
+            if(!authPrincipal.hasClaim("uni_id")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User has no ID");
+            }
+            long authenticatedId = Long.parseLong(authPrincipal.getClaimAsString("uni_id"));
+            if(authenticatedId != studentId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User ID does not match");
+            }
+
+            /* If authorized, execute the actual API call */
             UseCase<CreateTimetableResponse, CreateTimetableRequest> createTimetable = new CreateTimetableUseCase(studentRepository);
             CreateTimetableRequest request = new CreateTimetableRequest(availability, studentId, User.UserType.STUDENT);
             createTimetable.execute(request);
@@ -118,8 +153,19 @@ public class StudentController {
      *         HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/gettimetable")
-    public ResponseEntity<?> getStudentTimetable(@RequestParam long studentId) {
+    public ResponseEntity<?> getStudentTimetable(Authentication authentication, @RequestParam long studentId) {
         try {
+            /* Ensure that only an authorized student can view their timetable */
+            Jwt authPrincipal = (Jwt)(authentication.getPrincipal());
+            if(!authPrincipal.hasClaim("uni_id")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User has no ID");
+            }
+            long authenticatedId = Long.parseLong(authPrincipal.getClaimAsString("uni_id"));
+            if(authenticatedId != studentId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User ID does not match");
+            }
+
+            /* If authorized, execute the actual API call */
             UseCase<GetTimetableResponse, GetTimetableRequest> getTimetable = new GetTimetableUseCase(studentRepository);
             GetTimetableRequest request = new GetTimetableRequest(studentId, User.UserType.STUDENT);
             GetTimetableResponse response = getTimetable.execute(request);

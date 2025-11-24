@@ -17,6 +17,7 @@ import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 import org.unixusergroup.tutorial_time.domain.timetable.Availability;
 import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
 import org.unixusergroup.tutorial_time.infrastructure.InMemoryStudentRepository;
+import static org.unixusergroup.tutorial_time.api.rest.MockAuthUtil.createMockJwtToken;
 
 @SpringBootTest
 class StudentControllerTest {
@@ -38,11 +39,26 @@ class StudentControllerTest {
                                          1, 1, 1, 1, 0,
                                          1, 1, 1, 1, 1,
                                          1, 1, 1, 1, 1 };
-        ResponseEntity<?> response = controller.createStudentTimetable(123456, availability);
+        ResponseEntity<?> response = controller.createStudentTimetable(createMockJwtToken("123456", "Student"), 123456, availability);
 
         /* Verifying that status is OK and that the saved array is the same as the given array */
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertTrue(Arrays.equals(availability, studentRepository.getStudentById(123456).getTimetable().getArray()));
+    }
+
+    @Test
+    void createStudentTimetableAccessTest() {
+        /* Set up repository and controller */        
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        StudentController controller = new StudentController(studentRepository);
+
+        /* Test unauthorized with no ID */
+        ResponseEntity<?> response1 = controller.createStudentTimetable(createMockJwtToken("", "Student"), 123456, new int[] {});
+        assertEquals(HttpStatus.FORBIDDEN, response1.getStatusCode());
+
+        /* Test unauthorized with incorrect ID */
+        ResponseEntity<?> response2 = controller.createStudentTimetable(createMockJwtToken("123", "Student"), 123456, new int[] {});
+        assertEquals(HttpStatus.FORBIDDEN, response2.getStatusCode());
     }
 
     @Test
@@ -60,7 +76,7 @@ class StudentControllerTest {
                 1, 1, 1, 1, 0,
                 1, 1, 1, 1, 1,
                 1, 1, 1, 1, 1 };
-        ResponseEntity<?> response = controller.createStudentTimetable(0L, availability);
+        ResponseEntity<?> response = controller.createStudentTimetable(createMockJwtToken("0", "Student"), 0L, availability);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
@@ -87,7 +103,7 @@ class StudentControllerTest {
 
         /* Getting timetable */
         StudentController controller = new StudentController(studentRepository);
-        ResponseEntity<?> response = controller.getStudentTimetable(123456);
+        ResponseEntity<?> response = controller.getStudentTimetable(createMockJwtToken("123456", "Student"), 123456);
 
         /* Verifying that status is OK and that the returned array is the same as the saved array */
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -102,12 +118,27 @@ class StudentControllerTest {
     }
 
     @Test
+    void getStudentTimetableAccessTest() {
+        /* Set up repository and controller */        
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        StudentController controller = new StudentController(studentRepository);
+
+        /* Test unauthorized with no ID */
+        ResponseEntity<?> response1 = controller.getStudentTimetable(createMockJwtToken("", "Student"), 123456);
+        assertEquals(HttpStatus.FORBIDDEN, response1.getStatusCode());
+
+        /* Test unauthorized with incorrect ID */
+        ResponseEntity<?> response2 = controller.getStudentTimetable(createMockJwtToken("123", "Student"), 123456);
+        assertEquals(HttpStatus.FORBIDDEN, response2.getStatusCode());
+    }
+
+    @Test
     void failedGetStudentTimetableTest() {
         /* Setting up in-memory repository */
         StudentRepository studentRepository = new InMemoryStudentRepository();
 
         StudentController controller = new StudentController(studentRepository);
-        ResponseEntity<?> response = controller.getStudentTimetable(0L);
+        ResponseEntity<?> response = controller.getStudentTimetable(createMockJwtToken("0", "Student"), 0L);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
@@ -120,7 +151,7 @@ class StudentControllerTest {
         studentRepository.saveStudent(expectedStudent);
 
 
-        ResponseEntity<?> response = controller.addStudent("Lance test", "L.test@nuigalway.ie", 20003);
+        ResponseEntity<?> response = controller.addStudent(createMockJwtToken("20003", "Student"), "Lance test", "L.test@nuigalway.ie", 20003);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         Student retrievedStudent = studentRepository.getStudentById(20003);
@@ -128,10 +159,25 @@ class StudentControllerTest {
     }
 
     @Test
+    void addStudentToRepositoryAccessTest() {
+        /* Set up repository and controller */        
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        StudentController controller = new StudentController(studentRepository);
+
+        /* Test unauthorized with no ID */
+        ResponseEntity<?> response1 = controller.addStudent(createMockJwtToken("", "Student"), "Lance test", "L.test@nuigalway.ie", 20003);
+        assertEquals(HttpStatus.FORBIDDEN, response1.getStatusCode());
+
+        /* Test unauthorized with incorrect ID */
+        ResponseEntity<?> response2 = controller.addStudent(createMockJwtToken("5768", "Student"), "Lance test", "L.test@nuigalway.ie", 20003);
+        assertEquals(HttpStatus.FORBIDDEN, response2.getStatusCode());
+    }
+
+    @Test
     void failedAddStudentToRepository() {
         StudentRepository studentRepository = new InMemoryStudentRepository();
         StudentController controller = new StudentController(studentRepository);
-        ResponseEntity<?> response = controller.addStudent("Lance test", "L.test@nuigalway.ie", 0);
+        ResponseEntity<?> response = controller.addStudent(createMockJwtToken("0", "Student"), "Lance test", "L.test@nuigalway.ie", 0);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
@@ -143,17 +189,32 @@ class StudentControllerTest {
         Student expectedStudent = new Student("Lance test", "L.test@nuigalway.ie", 20003);
         studentRepository.saveStudent(expectedStudent);
 
-        ResponseEntity<?> response = controller.getStudent(20003);
+        ResponseEntity<?> response = controller.getStudent(createMockJwtToken("20003", "Student"), 20003);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         assertEquals(expectedStudent, response.getBody());
     }
 
     @Test
+    void retrieveStudentFromRepositoryAccessTest() {
+        /* Set up repository and controller */        
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        StudentController controller = new StudentController(studentRepository);
+
+        /* Test unauthorized with no ID */
+        ResponseEntity<?> response1 = controller.getStudent(createMockJwtToken("", "Student"), 20003);
+        assertEquals(HttpStatus.FORBIDDEN, response1.getStatusCode());
+
+        /* Test unauthorized with incorrect ID */
+        ResponseEntity<?> response2 = controller.getStudent(createMockJwtToken("203", "Student"), 20003);
+        assertEquals(HttpStatus.FORBIDDEN, response2.getStatusCode());
+    }
+
+    @Test
     void failedRetrieveStudentFromRepository() {
         StudentRepository studentRepository = new InMemoryStudentRepository();
         StudentController controller = new StudentController(studentRepository);
-        ResponseEntity<?> response = controller.getStudent(1002);
+        ResponseEntity<?> response = controller.getStudent(createMockJwtToken("1002", "Student"), 1002);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 }

@@ -16,6 +16,7 @@ import org.unixusergroup.tutorial_time.domain.timetable.Availability;
 import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 import org.unixusergroup.tutorial_time.infrastructure.InMemoryModuleRepository;
 import org.unixusergroup.tutorial_time.infrastructure.InMemoryStudentRepository;
+import static org.unixusergroup.tutorial_time.api.rest.MockAuthUtil.createMockJwtToken;
 
 import java.util.ArrayList;
 
@@ -64,7 +65,15 @@ public class SchedulerControllerTest {
     public void testSchedulerController() {
         String correctTimes = "1 students are available at Wednesday, 9:00\n1 students are available at Thursday, 9:00\n2 students are available at Monday, 9:00\n";
         ScheduleResponse correctResponse = new ScheduleResponse(correctTimes);
-        assertEquals(correctResponse, schedulerController.schedule("testModule", 0,0,blockedTimes).getBody());
+        assertEquals(correctResponse, schedulerController.schedule(createMockJwtToken("10000", "Lecturer"), "testModule", 0,0,blockedTimes).getBody());
+    }
+
+    @Test
+    public void testSchedulerControllerAccess() {
+        /* Test unauthorized with no ID */
+        assertEquals(HttpStatusCode.valueOf(403), schedulerController.schedule(createMockJwtToken("", "Student"), "testModule", 1,1,blockedTimes).getStatusCode());
+        /* Test unauthorized with invalid ID */
+        assertEquals(HttpStatusCode.valueOf(403), schedulerController.schedule(createMockJwtToken("20000", "Student"), "testModule", 1,1,blockedTimes).getStatusCode());
     }
 
     /**
@@ -72,6 +81,6 @@ public class SchedulerControllerTest {
      */
     @Test
     public void testSchedulerControllerException() {
-        assertEquals(HttpStatusCode.valueOf(400), schedulerController.schedule("testModule", 1,1,blockedTimes).getStatusCode());
+        assertEquals(HttpStatusCode.valueOf(400), schedulerController.schedule(createMockJwtToken("10000", "Lecturer"), "testModule", 1,1,blockedTimes).getStatusCode());
     }
 }

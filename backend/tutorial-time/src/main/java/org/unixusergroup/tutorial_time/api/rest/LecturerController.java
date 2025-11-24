@@ -6,6 +6,8 @@ package org.unixusergroup.tutorial_time.api.rest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.jwt.Jwt;
 
 import org.unixusergroup.tutorial_time.application.users.AddLecturerUseCase;
 import org.unixusergroup.tutorial_time.application.users.GetLecturerUseCase;
@@ -45,8 +47,19 @@ public class LecturerController {
      *         HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/createlecturer")
-    public ResponseEntity<?> addLecturer(@RequestParam String name, @RequestParam String email, @RequestParam long staffId) {
+    public ResponseEntity<?> addLecturer(Authentication authentication, @RequestParam String name, @RequestParam String email, @RequestParam long staffId) {
         try {
+            /* Ensure that a lecturer can only modify their own details */
+            Jwt authPrincipal = (Jwt)(authentication.getPrincipal());
+            if(!authPrincipal.hasClaim("uni_id")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User has no ID");
+            }
+            long authenticatedId = Long.parseLong(authPrincipal.getClaimAsString("uni_id"));
+            if(authenticatedId != staffId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User ID does not match");
+            }
+
+            /* If allowed, execute actual API call */
             AddLecturerUseCase addLecturerUseCase = new AddLecturerUseCase(this.lecturerRepository);
             AddLecturerRequest addLecturerRequest = new AddLecturerRequest(name, email, staffId);
             AddLecturerResponse response = addLecturerUseCase.execute(addLecturerRequest);
@@ -70,8 +83,19 @@ public class LecturerController {
      *         HTTP status of 500 and the error message when any other error occurs
      */
     @GetMapping(path="/getlecturer")
-    public ResponseEntity<?> getLecturer(@RequestParam long staffId) {
+    public ResponseEntity<?> getLecturer(Authentication authentication, @RequestParam long staffId) {
         try {
+            /* Ensure that a lecturer can only get info about themselves */
+            Jwt authPrincipal = (Jwt)(authentication.getPrincipal());
+            if(!authPrincipal.hasClaim("uni_id")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User has no ID");
+            }
+            long authenticatedId = Long.parseLong(authPrincipal.getClaimAsString("uni_id"));
+            if(authenticatedId != staffId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User ID does not match");
+            }
+
+            /* If allowed, execute actual API call */
             GetLecturerRequest getLecturerRequest = new GetLecturerRequest(staffId);
             GetLecturerUseCase getLecturerUseCase = new GetLecturerUseCase(this.lecturerRepository);
             GetLecturerResponse response = getLecturerUseCase.execute(getLecturerRequest);
@@ -99,8 +123,19 @@ public class LecturerController {
      *         HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/createtimetable")
-    public ResponseEntity<?> createLecturerTimetable(@RequestParam long staffId, @RequestParam int[] availability) {
+    public ResponseEntity<?> createLecturerTimetable(Authentication authentication, @RequestParam long staffId, @RequestParam int[] availability) {
         try {
+            /* Ensure that a lecturer can only create their own timetable */
+            Jwt authPrincipal = (Jwt)(authentication.getPrincipal());
+            if(!authPrincipal.hasClaim("uni_id")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User has no ID");
+            }
+            long authenticatedId = Long.parseLong(authPrincipal.getClaimAsString("uni_id"));
+            if(authenticatedId != staffId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User ID does not match");
+            }
+
+            /* If allowed, execute actual API call */
             UseCase<CreateTimetableResponse, CreateTimetableRequest> createTimetable = new CreateTimetableUseCase(lecturerRepository);
             CreateTimetableRequest request = new CreateTimetableRequest(availability, staffId, User.UserType.LECTURER);
             createTimetable.execute(request);
@@ -124,8 +159,19 @@ public class LecturerController {
      *         HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/gettimetable")
-    public ResponseEntity<?> getLecturerTimetable(@RequestParam long staffId) {
+    public ResponseEntity<?> getLecturerTimetable(Authentication authentication, @RequestParam long staffId) {
         try {
+            /* Ensure that a lecturer can only get their own timetable */
+            Jwt authPrincipal = (Jwt)(authentication.getPrincipal());
+            if(!authPrincipal.hasClaim("uni_id")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User has no ID");
+            }
+            long authenticatedId = Long.parseLong(authPrincipal.getClaimAsString("uni_id"));
+            if(authenticatedId != staffId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User ID does not match");
+            }
+
+            /* If allowed, execute actual API call */
             UseCase<GetTimetableResponse, GetTimetableRequest> getTimetable = new GetTimetableUseCase(lecturerRepository);
             GetTimetableRequest request = new GetTimetableRequest(staffId, User.UserType.LECTURER);
             GetTimetableResponse response = getTimetable.execute(request);
