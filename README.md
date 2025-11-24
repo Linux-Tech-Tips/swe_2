@@ -41,7 +41,7 @@ Our documentation is hosted at https://docs.unixusergroup.org.
 The repository is divided into the following directories: 
 - frontend: all frontend code for the project, the structure of this directory is described in its README.md
 - backend: all backend code for the project, the structure of this directory is described in its README.md and it follows clean architecture principles
-- infra: the infrastructure set up for hosting
+- infra: the infrastructure set up for hosting, the structure of this directory is described in its README.md
 - doc: documentation, this includes an explanation of our Clean Architecture structure, our ubiquitous language, the tech stack, and a mathematical description of the Scheduling Algorithm
 - org: organisation, this includes assignments, meeting notes, and agendas
 
