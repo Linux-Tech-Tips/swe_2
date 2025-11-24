@@ -29,8 +29,8 @@ const LecturerCreateModule = () => {
     const navigate = useNavigate();
 
     function parseStudentIds(ids) {
-        var ids = ids.split(",").map((id) => id.trim());
-        var result = ids.filter((id) => { return (id !== "" && !isNaN(id)); });
+        var ids = ids.split(",").map((id) => id.trim()).filter((id) => {return (id !== "");});
+        var result = ids.filter((id) => { return (!isNaN(id)); });
         
         // to compute the ids that aren't valid.
         var nullIds = new Set(ids).difference(new Set(result));
