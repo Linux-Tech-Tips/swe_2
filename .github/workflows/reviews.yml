@@ -17,11 +17,12 @@ jobs:
         user: "github"
         token: ${{ secrets.JENKINS_TOKEN }}
         job: "review_patch"
+        wait: true
         parameters: BRANCH=${{ github.head_ref }}
         
     - name: check if Jenkins failed
       run: |
-        if [[ "${{ steps.review.outputs.result }}" != "SUCCESS" ]]; then
+        if [[ "${{ steps.review.outputs.result }}" != "success" ]]; then
           echo "Review Build Failed!"
           exit 1
         fi
