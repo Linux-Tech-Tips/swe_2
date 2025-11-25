@@ -4,17 +4,7 @@ import { X, Plus, Trash2 } from 'lucide-react';
 import {PostRequest} from '../services/Requests.jsx';
 import { AuthContext } from '../context/Contexts.jsx';
 import {ErrorMessage} from "../services/ErrorParsing.jsx"
-/**
- * Modal component for adding/removing students (or TAs) from a module.
- *
- * @param {Object}   props
- * @param {boolean}  props.isOpen          Whether the modal is visible.
- * @param {Function} props.onClose         Callback to close the modal.
- * @param {string}   props.moduleCode      The module code being edited.
- * @param {number[]} props.enrolledStudents A list of currently enrolled student IDs.
- * @param {Function} [props.onUpdateSuccess] Optional callback invoked after a successful update.
- * @param {string}   props.type            Entity type label (e.g. "student", "TA").
- */
+
 const EditStudentsModal = ({ isOpen, onClose, moduleCode, enrolledStudents, onUpdateSuccess, type}) => {
   const [newStudentId, setNewStudentId] = useState('');
   const [status, setStatus] = useState({ loading: false, error: null, success: null });
@@ -83,20 +73,14 @@ const EditStudentsModal = ({ isOpen, onClose, moduleCode, enrolledStudents, onUp
         return false;
     }
   };
-  /**
-   * Handles clicking the “Add” button for the new ID.
-   */
+
   const handleAddClick = async () => {
     const success = await callEnrollmentAPI(newStudentId, 'add');
     if (success) {
         setNewStudentId(''); // Clear input
     }
   };
-  /**
-   * Handles clicking the remove button on a specific student in the list.
-   *
-   * @param {number|string} studentId ID of the student to remove.
-   */
+
   const handleRemoveClick = async (studentId) => {
     // ID is passed directly from list item
     await callEnrollmentAPI(studentId, 'remove');
