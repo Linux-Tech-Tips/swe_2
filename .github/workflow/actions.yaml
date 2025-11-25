@@ -1,0 +1,39 @@
+# needs to run tests, run integration tests, builds the project and run packages.
+name: swe_2
+
+# to run this action on pull requests that are derived from main
+on:
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  # to be used for setting up the following jobs.
+  setup:
+    name: Setting up java and gradle for build / testing.
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'oracle'
+          java-version: 21
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+  build:
+    name: Building the project.
+    needs: [ setup ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build the project with Gradle
+        run: ./gradlew build
+
+  # the job that runs the tests.
+  test:
+    name: Running all test for the project.
+    needs: [ setup ]
+    runs-on: ubuntu-latest
+    steps:
+        - name: Running tests.
+          run: ./gradlew bootTest
