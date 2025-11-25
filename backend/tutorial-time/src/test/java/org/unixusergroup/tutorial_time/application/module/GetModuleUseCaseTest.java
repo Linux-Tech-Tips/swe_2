@@ -1,6 +1,3 @@
-/**
- * @author Ethan.
- */
 package org.unixusergroup.tutorial_time.application.module;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +12,18 @@ import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 import org.unixusergroup.tutorial_time.infrastructure.InMemoryModuleRepository;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+/**
+ * Unit tests for the {@link GetModuleUseCase}.
+ * <p>
+ * These tests verify correct module retrieval behavior, including:
+ * <ul>
+ *     <li>successful lookup of an existing module</li>
+ *     <li>error handling when the module does not exist</li>
+ *     <li>error handling when an incorrect lecturer ID is provided</li>
+ * </ul>
+ *
+ * @author Ethan
+ */
 @SpringBootTest
 public class GetModuleUseCaseTest {
     private final InMemoryModuleRepository testModuleRepository = new InMemoryModuleRepository();
