@@ -1,3 +1,6 @@
+/** 
+ * @author Ethan
+ */
 package org.unixusergroup.tutorial_time;
 
 import org.springframework.boot.SpringApplication;
@@ -9,23 +12,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 
-/**
- * Entry point for the Tutorial Time Spring Boot application.
- * <p>
- * This class also provides a simple controller endpoint used for testing
- * and verifying that the application is running.
- *
- * @author Ethan
- */
 @SpringBootApplication
 @RequestMapping(path="/")
 @Controller
 public class TutorialTimeApplication {
-    /**
-     * Launches the Spring Boot application.
-     *
-     * @param args standard application arguments
-     */
+
 	public static void main(String[] args) {
 		SpringApplication.run(TutorialTimeApplication.class, args);
 	}
