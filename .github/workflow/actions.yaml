@@ -18,6 +18,7 @@ jobs:
         with:
           distribution: 'oracle'
           java-version: 21
+        working-directory: backend/tutorial-time
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
 
@@ -27,6 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Build the project with Gradle
+        working-directory: backend/tutorial-time
         run: ./gradlew build
 
   # the job that runs the tests.
@@ -36,4 +38,5 @@ jobs:
     runs-on: ubuntu-latest
     steps:
         - name: Running tests.
+          working-directory: backend/tutorial-time
           run: ./gradlew bootTest
