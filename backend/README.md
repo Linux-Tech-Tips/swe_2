@@ -43,15 +43,25 @@ Have `gradle` installed:
 - for mac: `brew install gradle`
 - for fedora: `sudo dnf install gradle`
 
+Have `docker` and `docker compose` installed:
+- for mac: `brew install docker` and `brew install docker-compose`
+- for fedora: `sudo dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin`
+- note that on fedora, you must first have the docker repository installed, read https://docs.docker.com/engine/install/fedora/ for more information on fedora 
+
+Starting the docker daemon:
+- for mac: install colima, `brew install colima` and then `colima start`. This must be run every time you want to build a docker image
+
 ## How to run
 
 - Navigate towards `/tutorial-time`
-- Run `gradle bootRun` 
+- Run `docker-compose up --build`
+
+Note that this may require extra steps if using a mac computer, as mac runs docker in a virtual machine and doesn't necessarily expose the port to the actual machine.
 
 ## How to run test cases
 
 - Navigate towards `/tutorial-time`
-- Run `gradle test`
+- Run `gradle clean test`
 
 ## Usage
 

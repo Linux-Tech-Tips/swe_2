@@ -107,11 +107,17 @@ const AuthProvider = ({children}) => {
 
     /* Logs out user */
     const logout = () => {
-        userManager.removeUser().then(() => {
-            setAuth(null);
-            setLoginError(null);
-        });
-        console.log("Logged out user");
+        try {
+            userManager.signoutRedirect().then(() => {
+                console.log("Logged out");
+                setAuth(null);
+                setLoginError(null);
+            });
+            userManager.clearStaleState();
+        } catch(err) {
+            console.log("Error signing out");
+            console.log(err);
+        }
     };
 
     /* Wraps any given child elements in an AuthContext, any of auth, login and logout can be accessed */

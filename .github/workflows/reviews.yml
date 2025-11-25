@@ -1,0 +1,20 @@
+# Runs Jenkins review job on every PR update and merge to ensure everything stays running green
+name: jenkins_reviews
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  run-jenkins:
+    runs-on: ubuntu-latest
+    steps:
+    - name: trigger Jenkins review
+      id: review
+      uses: appleboy/jenkins-action@master
+      with:
+        url: "https://ci.unixusergroup.org"
+        user: "github"
+        token: ${{ secrets.JENKINS_TOKEN }}
+        job: "review_patch"
+        parameters: BRANCH=${{ github.head_ref }}

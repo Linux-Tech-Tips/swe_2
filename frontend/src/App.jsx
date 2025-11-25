@@ -52,7 +52,7 @@ const AppRouter = () => {
                 <Route
                     path="/lecturer-timetable"
                     element={(authContext.auth && authContext.auth.isLecturer)
-                    ? <LecturerTimetable />
+                    ? <LecturerTimetable onLogout={authContext.logout} />
                     : <Navigate to="/" replace />
                     }
                 />
