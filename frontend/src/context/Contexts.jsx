@@ -78,9 +78,15 @@ const AuthProvider = ({children}) => {
 
     /* Logs out user */
     const logout = () => {
-        userManager.removeUser().then(() => {
-            setAuth(null);
-        });
+        try {
+            userManager.signoutRedirect().then(() => {
+                console.log("Logged out");
+            });
+            userManager.clearStaleState();
+        } catch(err) {
+            console.log("Error signing out");
+            console.log(err);
+        }
         console.log("Logged out user");
     };
 

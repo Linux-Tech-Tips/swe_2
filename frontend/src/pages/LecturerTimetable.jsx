@@ -30,7 +30,7 @@ const getInitialAvailability = () => days.reduce((acc, day) => {
   return acc;
 }, {});
 
-const LecturerTimetable = () => {
+const LecturerTimetable = ({ onLogout }) => {
   const [selectedModuleId, setSelectedModuleId] = useState('NO MODULE SELECTED');
 
   const [currentStudentLimit, setCurrentStudentLimit] = useState(0);
@@ -273,9 +273,9 @@ const LecturerTimetable = () => {
             <PlusIcon className={styles.navIcon} />
             Create New Module
           </button>
-          <button className={styles.navButton}>
+          <button onClick={onLogout} className={styles.navButton}>
             <UserIcon className={styles.navIcon} />
-            Preferences
+            Sign Out
           </button>
         </nav>
       </header>
