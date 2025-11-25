@@ -6,6 +6,7 @@ import { Cog } from 'lucide-react';
 import GridCell from "../components/GridCell.jsx";
 import gridStyles from '../components/GridCell.module.css';
 import styles from './StudentTimetable.module.css';
+import UserIcon from '../components/UserIcon.jsx';
 
 import { PostRequest } from '../services/Requests.jsx';
 import { AuthContext } from '../context/Contexts.jsx';
@@ -98,11 +99,11 @@ const StudentTimetable = ({ onLogout }) => {
                 <button
                     onClick={onLogout}
                     className={styles.settingsButton}
-                    title="Settings/Logout"
+                    title="Logout"
                 >
 
-                    <Cog className={styles.actionIcon} />
-                    <span className={styles.settingsText}>Settings</span>
+                    <UserIcon className={styles.navIcon} />
+                    <span className={styles.settingsText}>Sign Out</span>
                 </button>
             </header>
 
