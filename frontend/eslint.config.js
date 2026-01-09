@@ -34,6 +34,16 @@ export default defineConfig([
     rules: {
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
 
+      /* General React rulesd */
+      'react/jsx-no-duplicate-props': 'error',
+      'react/self-closing-comp': 'warn',
+      'react/no-array-index-key': 'warn',
+      'react/jsx-curly-brace-presence': 'warn',
+
+      /* React hooks rules */
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+
       /* security rules with eslint-plugin-security */
       'security/detect-eval-with-expression': 'error',
       'security/detect-unsafe-regex': 'error',
