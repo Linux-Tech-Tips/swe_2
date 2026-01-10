@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { ThreeDots } from 'react-loader-spinner';
 
 import styles from './Login.module.css';
+import Footer from '../components/Footer.jsx';
 
 const Login = ({ handleLogin }) => {
     /* Access the error state directly from context */
@@ -49,6 +50,7 @@ const Login = ({ handleLogin }) => {
                     <span>Sign in with Microsoft</span>
                 </button>
             </div>
+            <Footer/>
         </div>
     );
 };
@@ -103,6 +105,7 @@ const CompleteLogin = ({ handleLoginCallback }) => {
                         </>
                     )}
             </div>
+            <Footer/>
         </div>
     )
 }
