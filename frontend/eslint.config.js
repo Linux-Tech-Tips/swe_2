@@ -34,7 +34,7 @@ export default defineConfig([
     rules: {
       'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
 
-      /* General React rulesd */
+      /* General React rules */
       'react/jsx-no-duplicate-props': 'error',
       'react/self-closing-comp': 'warn',
       'react/no-array-index-key': 'warn',
