@@ -13,6 +13,7 @@ const Login = ({ handleLogin }) => {
 
     /* Return the app login page */
     return (
+      <div>
         <div className={styles.loginContainer}>
             <div className={styles.loginCard}>
 
@@ -50,8 +51,9 @@ const Login = ({ handleLogin }) => {
                     <span>Sign in with Microsoft</span>
                 </button>
             </div>
-            <Footer/>
         </div>
+        <Footer/>
+      </div>
     );
 };
 
@@ -67,6 +69,7 @@ const CompleteLogin = ({ handleLoginCallback }) => {
     }, []);
 
     return (
+      <div>
         <div className={styles.loginContainer}>
             <div className={styles.loginCard}>
 
@@ -105,7 +108,8 @@ const CompleteLogin = ({ handleLoginCallback }) => {
                         </>
                     )}
             </div>
-            <Footer/>
+          </div>
+          <Footer/>
         </div>
     )
 }

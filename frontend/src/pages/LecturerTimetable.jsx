@@ -12,6 +12,7 @@ import UsersIcon from '../components/UsersIcon.jsx';
 import UserCogIcon from '../components/UserCogIcon.jsx';
 import GridCell from "../components/GridCell.jsx";
 import EditStudentsModal from '../components/EditStudentsModal.jsx';
+import Footer from '../components/Footer.jsx';
 import {GetRequest} from "../services/Requests.jsx"
 import {PostRequest} from "../services/Requests.jsx"
 import {ErrorMessage} from "../services/ErrorParsing.jsx"
@@ -336,7 +337,8 @@ const LecturerTimetable = ({ onLogout }) => {
         enrolledStudents={currentTAs}
         onUpdateSuccess={refreshStudentList}
         type={'ta'}
-      />       
+      />
+    <Footer/>
   </div>
   );
 };
