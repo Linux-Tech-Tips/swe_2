@@ -5,6 +5,7 @@ package org.unixusergroup.tutorial_time.infrastructure;
 
 import java.util.Map;
 import java.util.HashMap;
+import java.util.Collection;
 
 /** Basic in-memory repository class */
 public abstract class InMemoryRepository<K, V> {
@@ -23,4 +24,7 @@ public abstract class InMemoryRepository<K, V> {
         return data.get(key);
     }
 
+    public Collection<V> retrieveAll() {
+        return data.values();
+    }
 }

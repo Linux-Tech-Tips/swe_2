@@ -22,11 +22,14 @@ import org.unixusergroup.tutorial_time.application.common.exceptions.StudentNotF
 import org.unixusergroup.tutorial_time.application.module.CreateModuleUseCase;
 import org.unixusergroup.tutorial_time.application.module.EditEnrollmentUseCase;
 import org.unixusergroup.tutorial_time.application.module.GetModuleUseCase;
+import org.unixusergroup.tutorial_time.application.module.GetModulesUseCase;
 import org.unixusergroup.tutorial_time.application.module.dto.CreateModuleRequest;
 import org.unixusergroup.tutorial_time.application.module.dto.EditEnrollmentRequest;
 import org.unixusergroup.tutorial_time.application.module.dto.EditRequestType;
 import org.unixusergroup.tutorial_time.application.module.dto.GetModuleRequest;
 import org.unixusergroup.tutorial_time.application.module.dto.GetModuleResponse;
+import org.unixusergroup.tutorial_time.application.module.dto.GetModulesRequest;
+import org.unixusergroup.tutorial_time.application.module.dto.GetModulesResponse;
 import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
 import org.unixusergroup.tutorial_time.domain.module.Module;
 import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
@@ -127,6 +130,39 @@ public class ModuleController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
         catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    /**
+     * Get Modules API mapping (/api/module/getmodules).
+     *
+     * This API call retrieves all module codes taught by a given lecturer, provided the lecturer is authorized to access it.
+     * @param lecturerId the University Staff ID of the lecturer with whom the modules are associated
+     * @return HTTP status of 200 and a list of Modules in string JSON format on success,
+     *         HTTP status of 400 and an error message when an error occurs due to incorrect user input,
+     *         HTTP status of 500 and the error message when any other error occurs
+     */
+    @GetMapping(path="/getmodules")
+    public ResponseEntity<?> getModules(Authentication authentication, @RequestParam long lecturerId) {
+        try {
+            /* Ensure that only an authorized lecturer can get their modules */
+            Jwt authPrincipal = (Jwt)(authentication.getPrincipal());
+            if(!authPrincipal.hasClaim("uni_id")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User has no ID");
+            }
+            long authenticatedId = Long.parseLong(authPrincipal.getClaimAsString("uni_id"));
+            if(authenticatedId != lecturerId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: Lecturer ID does not match authenticated ID");
+            }
+
+            /* If authorized, execute the actual API call */
+            GetModulesUseCase getModulesUseCase = new GetModulesUseCase(this.moduleRepository);
+            GetModulesResponse response = getModulesUseCase.execute(new GetModulesRequest(lecturerId));
+            return ResponseEntity.status(HttpStatus.OK).body(response.modules());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
