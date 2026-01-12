@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { ThreeDots } from 'react-loader-spinner';
 
 import styles from './Login.module.css';
+import Footer from '../components/Footer.jsx';
 
 const Login = ({ handleLogin }) => {
     /* Access the error state directly from context */
@@ -12,6 +13,7 @@ const Login = ({ handleLogin }) => {
 
     /* Return the app login page */
     return (
+      <div>
         <div className={styles.loginContainer}>
             <div className={styles.loginCard}>
 
@@ -50,6 +52,8 @@ const Login = ({ handleLogin }) => {
                 </button>
             </div>
         </div>
+        <Footer/>
+      </div>
     );
 };
 
@@ -65,6 +69,7 @@ const CompleteLogin = ({ handleLoginCallback }) => {
     }, []);
 
     return (
+      <div>
         <div className={styles.loginContainer}>
             <div className={styles.loginCard}>
 
@@ -103,6 +108,8 @@ const CompleteLogin = ({ handleLoginCallback }) => {
                         </>
                     )}
             </div>
+          </div>
+          <Footer/>
         </div>
     )
 }
