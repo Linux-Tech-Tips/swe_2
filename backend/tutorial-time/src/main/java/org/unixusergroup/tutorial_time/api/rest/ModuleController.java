@@ -157,7 +157,7 @@ public class ModuleController {
             }
 
             /* If authorized, execute the actual API call */
-            GetModulesUseCase getModulesUseCase = new GetModulesUseCase(this.moduleRepository);
+            GetModulesUseCase getModulesUseCase = new GetModulesUseCase(this.moduleRepository, this.lecturerRepository);
             GetModulesResponse response = getModulesUseCase.execute(new GetModulesRequest(lecturerId));
             return ResponseEntity.status(HttpStatus.OK).body(response.modules());
         } catch (IllegalArgumentException e) {
