@@ -33,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 @AutoConfigureMockMvc
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
@@ -119,8 +120,8 @@ public class ModuleControllerIntegrationTest {
             assertNotNull(createdModule);
             assertEquals(createdModule.getModuleCode(), "TS102");
             assertEquals(createdModule.getLecturer(), 123456);
-            assertEquals(createdModule.getStudents(), Arrays.asList(new Long[] {111111L, 222222L}));
-            assertEquals(createdModule.getTAStudents(), Arrays.asList(new Long[] {333333L, 444444L}));
+            assertIterableEquals((Collection)createdModule.getStudents(), (Collection)Arrays.asList(new Long[] {111111L, 222222L}));
+            assertIterableEquals((Collection)createdModule.getTAStudents(), (Collection)Arrays.asList(new Long[] {333333L, 444444L}));
         } catch(Exception e) {
             System.out.println(e);
         }
@@ -254,7 +255,7 @@ public class ModuleControllerIntegrationTest {
                               .isOk());
 
             Module modifiedModule = mockModuleRepository.getModuleByCode("TS104");
-            assertEquals(modifiedModule.getTAStudents(), Arrays.asList(new Long[] {555555L}));
+            assertIterableEquals((Collection)modifiedModule.getTAStudents(), (Collection)Arrays.asList(new Long[] {555555L}));
 
         } catch(Exception e) {
             System.out.println(e);
@@ -294,8 +295,8 @@ public class ModuleControllerIntegrationTest {
             Module moduleAfterTest = mockModuleRepository.getModuleByCode("TS101");
             assertEquals(moduleBeforeTest.getModuleCode(), moduleAfterTest.getModuleCode());
             assertEquals(moduleBeforeTest.getLecturer(), moduleAfterTest.getLecturer());
-            assertEquals(moduleBeforeTest.getStudents(), moduleAfterTest.getStudents());
-            assertEquals(moduleBeforeTest.getTAStudents(), moduleAfterTest.getTAStudents());
+            assertIterableEquals((Collection)moduleBeforeTest.getStudents(), (Collection)moduleAfterTest.getStudents());
+            assertIterableEquals((Collection)moduleBeforeTest.getTAStudents(), (Collection)moduleAfterTest.getTAStudents());
 
         } catch(Exception e) {
             System.out.println(e);
@@ -369,8 +370,8 @@ public class ModuleControllerIntegrationTest {
             Module moduleAfterTest = mockModuleRepository.getModuleByCode("TS101");
             assertEquals(moduleBeforeTest.getModuleCode(), moduleAfterTest.getModuleCode());
             assertEquals(moduleBeforeTest.getLecturer(), moduleAfterTest.getLecturer());
-            assertEquals(moduleBeforeTest.getStudents(), moduleAfterTest.getStudents());
-            assertEquals(moduleBeforeTest.getTAStudents(), moduleAfterTest.getTAStudents());
+            assertIterableEquals((Collection)moduleBeforeTest.getStudents(), (Collection)moduleAfterTest.getStudents());
+            assertIterableEquals((Collection)moduleBeforeTest.getTAStudents(), (Collection)moduleAfterTest.getTAStudents());
 
         } catch(Exception e) {
             System.out.println(e);

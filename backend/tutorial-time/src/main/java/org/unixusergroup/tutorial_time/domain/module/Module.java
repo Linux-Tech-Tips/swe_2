@@ -9,6 +9,7 @@ import java.util.List;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.ElementCollection;
 
 @Entity
 /** Class representing a university Module entity */
@@ -18,8 +19,10 @@ public class Module {
     @Id
     private String moduleCode;
     /** ids of students enrolled in the module */
+    @ElementCollection
     private List<Long> students;
     /** ids of students working as teaching assistants (TA) for this module */
+    @ElementCollection
     private List<Long> taStudents;
     /** The lecturer in charge of this module */
     private long lecturer;
