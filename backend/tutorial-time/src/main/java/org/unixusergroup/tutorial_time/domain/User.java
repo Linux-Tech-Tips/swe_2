@@ -44,7 +44,7 @@ public abstract class User {
         if(name.isEmpty()) {
             throw new IllegalArgumentException("A name must be inputted");
         }
-        if(!(Pattern.matches(universityEmailRegex, universityEmail)) && !(Pattern.matches(oldUniversityEmailRegex, universityEmail))) {
+        if(!(Pattern.matches(universityEmailRegex, universityEmail.toLowerCase())) && !(Pattern.matches(oldUniversityEmailRegex, universityEmail.toLowerCase()))) {
             throw new IllegalArgumentException("You must input a university of galway email address");
         }
         if(universityId<1) {
