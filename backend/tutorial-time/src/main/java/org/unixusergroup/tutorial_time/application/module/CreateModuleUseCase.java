@@ -43,24 +43,6 @@ public class CreateModuleUseCase implements UseCase<CreateModuleResponse, Create
             throw new IllegalArgumentException("The provided lecturer id is not present in the repo.");
         }
 
-        /* This is using the student ids from the module request (if it's not empty) to retrieve the students from the repository */
-        if(!moduleRequest.studentIds().isEmpty()) {
-            for(long studentId: moduleRequest.studentIds()) {
-                if(this.studentRepository.getStudentById(studentId)==null) {
-                    throw new IllegalStudentAdditionException("The given student ID " + studentId + " is not a registered student");
-                }
-            }
-        }
-
-        /* This is using the ta student ids from the module request (if it's not empty) to retrieve the ta's from the repository */
-        if(!moduleRequest.taStudentIds().isEmpty()) {
-            for(long taStudentId: moduleRequest.taStudentIds()) {
-                if(this.studentRepository.getStudentById(taStudentId)==null) {
-                    throw new IllegalStudentAdditionException("The given student ID " + taStudentId + " is not a registered student");
-                }
-            }
-        }
-
         /* Executing the actual module creation */
         try {
             Module newModule = new Module(moduleRequest.moduleCode(), moduleRequest.studentIds(), moduleRequest.taStudentIds(), moduleRequest.lecturerId());

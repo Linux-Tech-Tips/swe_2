@@ -150,26 +150,6 @@ public class ModuleControllerIntegrationTest {
                             .with(csrf()))
                    .andExpect(status().is(400));
 
-            /* Checking that creating a module with a non-existent student returns an error */
-            mockMvc.perform(post("/api/module/createmodule")
-                            .param("lecturerId", "123456")
-                            .param("moduleCode", "TS103")
-                            .param("studentIds", "111111,555555")
-                            .param("taStudentIds", "333333,444444")
-                            .with(authentication(createMockJwtToken("123456", "Lecturer")))
-                            .with(csrf()))
-                   .andExpect(status().is(400));
-
-            /* Checking that creating a module with a non-existent TA student returns an error */
-            mockMvc.perform(post("/api/module/createmodule")
-                            .param("lecturerId", "123456")
-                            .param("moduleCode", "TS103")
-                            .param("studentIds", "111111,222222")
-                            .param("taStudentIds", "555555,444444")
-                            .with(authentication(createMockJwtToken("123456", "Lecturer")))
-                            .with(csrf()))
-                   .andExpect(status().is(400));
-
             /* Checking that trying to create a module without proper parameters fails */
             mockMvc.perform(post("/api/module/createmodule")
                             .param("lecturerId", "123456")

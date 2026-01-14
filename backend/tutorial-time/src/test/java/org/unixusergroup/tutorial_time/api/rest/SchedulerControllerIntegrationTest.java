@@ -16,6 +16,7 @@ import static org.unixusergroup.tutorial_time.api.rest.MockAuthUtil.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.hamcrest.Matchers.containsString;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -299,8 +300,8 @@ public class SchedulerControllerIntegrationTest {
                             .with(csrf()))
                    .andExpect(status().is(400));
 
-            /* Check that scheduling tutorials for a module with a non-existent student fails */
-            Module demoModule = new Module("TS999", Arrays.asList(new Long[] {000000L}), 
+            /* Check that scheduling tutorials for a module with a non-existent student prints a warning */
+            Module demoModule = new Module("TS999", Arrays.asList(new Long[] {000000L, 111111L}), 
                                                     Arrays.asList(new Long[] {888888L}), 123456);
             mockModuleRepository.saveModule(demoModule);
             mockMvc.perform(post("/api/scheduler/schedule")
@@ -310,7 +311,10 @@ public class SchedulerControllerIntegrationTest {
                             .param("blockedTimes", "")
                             .with(authentication(createMockJwtToken("123456", "Lecturer")))
                             .with(csrf()))
-                   .andExpect(status().is(500));
+                   .andExpect(status().is(200))
+                   .andExpect(content()
+                              .string(containsString("WARNING: There are (1) students not registered in the app " +
+                                      "(as they didn't provide a timetable, the scheduling may be affected).")));
 
             /* Check that scheduling tutorials with a negative student limit fails */
             mockMvc.perform(post("/api/scheduler/schedule")
