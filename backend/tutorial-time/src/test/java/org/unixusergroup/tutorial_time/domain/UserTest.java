@@ -7,6 +7,7 @@ package org.unixusergroup.tutorial_time.domain;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.unixusergroup.tutorial_time.domain.student.Student;
+import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.timetable.Availability;
 import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 
@@ -36,6 +37,17 @@ public class UserTest {
     @Test
     public void testInvalidEmail() {
         assertThrows(IllegalArgumentException.class, () -> new Student(name, "johnTest@gmail.com", id, timetable));
+    }
+
+    /** 
+     * test capitalising the uni email in various ways
+     */
+    @Test
+    public void testUppercaseEmail() {
+        assertDoesNotThrow(() -> new Student(name, "j.test1@UniversityOfGalway.ie", id, timetable));
+        assertDoesNotThrow(() -> new Lecturer(name, "j.test1@UniversityOfGalway.ie", id, timetable));
+        assertDoesNotThrow(() -> new Student(name, "j.test1@UNIVERSITYOFGALWAY.IE", id, timetable));
+        assertDoesNotThrow(() -> new Student(name, "j.test1@universityOfGalway.ie", id, timetable));
     }
 
     /**
