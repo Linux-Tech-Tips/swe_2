@@ -1,5 +1,5 @@
 /* Library imports */
-import React, { useState, useContext } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Cog } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -32,6 +32,8 @@ const getInitialAvailability = () => days.reduce((acc, day) => {
 
 const LecturerTimetable = ({ onLogout }) => {
   const [selectedModuleId, setSelectedModuleId] = useState('NO MODULE SELECTED');
+  const [modulesList, setModulesList] = useState([]);
+  const [modulesListLoaded, setModulesListLoaded] = useState(false);
 
   const [currentStudentLimit, setCurrentStudentLimit] = useState(0);
   const [currentMinTAs, setCurrentMinTAs] = useState(0);
@@ -41,6 +43,16 @@ const LecturerTimetable = ({ onLogout }) => {
   const [showEditTAsModal, setShowEditTAsModal] = useState(false);
   const authContext = useContext(AuthContext);
   const navigate = useNavigate();
+
+  /* Loading all modules registered under the currently logged in lecturer */
+  useEffect(() => {
+    async function fetchModulesList() {
+      const result = await GetRequest("api/module/getmodules", {lecturerId: authContext.auth.id}, authContext);
+      setModulesList(JSON.parse(result[1]));
+      setModulesListLoaded(true);
+    }
+    fetchModulesList();
+  }, []);
 
   // Function to make clicking the 'Algorithm Settings' button pop up a settings menu
   function OpenAlgorithmSettings() {
@@ -186,6 +198,19 @@ const LecturerTimetable = ({ onLogout }) => {
 
   //call the getModule api to load module data
   async function ChangeModule(moduleId) {
+    if(moduleId == "NO MODULE SELECTED") {
+        setSelectedModuleId("NO MODULE SELECTED");
+        setBlockingTimes(false);
+        setOpenAlgorithmSettings(false);
+        setScheduled(0);
+        setCurrentStudentLimit(0);
+        setCurrentMinTAs(0);
+        setCurrentAvailability(getInitialAvailability);
+        setCurrentStudents("");
+        setCurrentTAs("");
+        return;
+    }
+    /* Try to get the actual module if a real module selected */
     try {
       //get current user id: authContext.auth.id
       const path = "api/module/getmodule";
@@ -286,7 +311,21 @@ const LecturerTimetable = ({ onLogout }) => {
         <p className={styles.cardDescription}>Choose a module to schedule tutorials. Note that switching modules will erase any inputted algorithm settings data <br/> Press Enter to confirm any inputs </p>
         <div> <DisplayModuleError/> </div>
         <div>
-          <input className={styles.moduleInput} placeholder='Enter module code here' onKeyDown={(e) => {if (e.key === "Enter") {ChangeModule(e.target.value)}}}/>
+          {modulesListLoaded ? (
+            <select className={styles.moduleInputDropdown} value={selectedModuleId} onChange={(e) => {ChangeModule(e.target.value)}}>
+              <option value="NO MODULE SELECTED">SELECT MODULE</option>
+
+              {modulesList.map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          ) : (
+            <select className={styles.moduleInputDropdown} value="LOADING" disabled>
+              <option value="LOADING">Loading Modules...</option>
+            </select>
+          )}
         <span className={styles.studentCount}>{currentStudents.length} Students</span>
         </div>
         <div>
