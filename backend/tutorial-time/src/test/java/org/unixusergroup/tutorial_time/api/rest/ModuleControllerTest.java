@@ -4,8 +4,13 @@
 package org.unixusergroup.tutorial_time.api.rest;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Collection;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -118,7 +123,6 @@ public class ModuleControllerTest {
         assertEquals(HttpStatus.FORBIDDEN, response2.getStatusCode());
     }
 
-
     @Test
     void failedGetModuleTest() {
         ModuleRepository moduleRepository = new InMemoryModuleRepository();
@@ -128,6 +132,58 @@ public class ModuleControllerTest {
         ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
         ResponseEntity<?> response = moduleController.getModule(createMockJwtToken("1", "Lecturer"), "CT202", 1L);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    /** Test for getModules rest API function. */
+    @Test
+    void getModulesTest() {
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+
+        /** Creating a lecturer and adding it to the test lecturer repo. */
+        Lecturer lecturer = new Lecturer("Johnny test", "j.test@nuigalway.ie", 10002);
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        lecturerRepository.saveLecturer(lecturer);
+
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+
+        /** Creating modules and saving to the module repo. */
+        Module module1 = new Module("CT202", lecturer.getUniversityId());
+        Module module2 = new Module("CT203", lecturer.getUniversityId());
+        Module module3 = new Module("CT204", lecturer.getUniversityId());
+        moduleRepository.saveModule(module1);
+        moduleRepository.saveModule(module2);
+        moduleRepository.saveModule(module3);
+        /* Expected list of modules */
+        Set<String> expectedCodes = new HashSet<>();
+        expectedCodes.add("CT202");
+        expectedCodes.add("CT203");
+        expectedCodes.add("CT204");
+
+        /** Calling the rest api function after creating the controller */
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+        ResponseEntity<?> response = moduleController.getModules(createMockJwtToken("10002", "Lecturer"), lecturer.getUniversityId());
+
+        /** Verifying that the useCase was successful and checking if the correct module was saved. */
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertIterableEquals((Collection)(expectedCodes), (Collection)(response.getBody()));
+    }
+
+    @Test
+    void getModulesAccessTest() {
+        /* Set up repository and controller */        
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+        Lecturer lecturer = new Lecturer("Johnny test", "j.test@nuigalway.ie", 10002);
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+
+        /* Test unauthorized with no ID */
+        ResponseEntity<?> response1 = moduleController.getModules(createMockJwtToken("", "Lecturer"), lecturer.getUniversityId());
+        assertEquals(HttpStatus.FORBIDDEN, response1.getStatusCode());
+
+        /* Test unauthorized with incorrect ID */
+        ResponseEntity<?> response2 = moduleController.getModules(createMockJwtToken("10001", "Lecturer"), lecturer.getUniversityId());
+        assertEquals(HttpStatus.FORBIDDEN, response2.getStatusCode());
     }
 
     @Test

@@ -33,6 +33,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
 
 import java.util.Arrays;
+import java.util.List;
+import org.json.JSONArray;
 import java.util.Collection;
 
 @AutoConfigureMockMvc
@@ -69,38 +71,8 @@ public class ModuleControllerIntegrationTest {
         module.addTAStudent(333333);
         module.addTAStudent(444444);
         mockModuleRepository.saveModule(module);
-    }
-
-    @Test
-    public void getModuleAccessIntegrationTest() {
-        try {
-            /* Check that a Lecturer-authenticated user can access the module API */
-            mockMvc.perform(get("/api/module/getmodule")
-                            .param("moduleCode", "TS101")
-                            .param("lecturerId", "123456")
-                            .with(authentication(createMockJwtToken("123456", "Lecturer"))))
-                   .andExpect(status().isOk());
-            /* Check that a Student-authenticated user can't access the module API */
-            mockMvc.perform(get("/api/module/getmodule")
-                            .param("moduleCode", "TS101")
-                            .param("lecturerId", "123456")
-                            .with(authentication(createMockJwtToken("123456", "Student"))))
-                   .andExpect(status().is(403));
-            /* Check that a JWT authenticated user without a role can't access the module API */
-            mockMvc.perform(get("/api/module/getmodule")
-                            .param("moduleCode", "TS101")
-                            .param("lecturerId", "123456")
-                            .with(jwt()))
-                   .andExpect(status().is(403));
-            /* Check that a user without authentication can't access the module API */
-            mockMvc.perform(get("/api/module/getmodule")
-                            .param("moduleCode", "TS101")
-                            .param("lecturerId", "123456"))
-                   .andExpect(status().is(401));
-
-        } catch(Exception e) {
-            System.out.println(e);
-        }
+        Module module2 = new Module("TS201", 123456);
+        mockModuleRepository.saveModule(module);
     }
 
     @Test
@@ -211,6 +183,100 @@ public class ModuleControllerIntegrationTest {
                             .param("lecturerId", "754321")
                             .with(authentication(createMockJwtToken("754321", "Lecturer"))))
                    .andExpect(status().is(400));
+
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    @Test
+    public void getModuleAccessIntegrationTest() {
+        try {
+            /* Check that a Lecturer-authenticated user can access the module API */
+            mockMvc.perform(get("/api/module/getmodule")
+                            .param("moduleCode", "TS101")
+                            .param("lecturerId", "123456")
+                            .with(authentication(createMockJwtToken("123456", "Lecturer"))))
+                   .andExpect(status().isOk());
+            /* Check that a Student-authenticated user can't access the module API */
+            mockMvc.perform(get("/api/module/getmodule")
+                            .param("moduleCode", "TS101")
+                            .param("lecturerId", "123456")
+                            .with(authentication(createMockJwtToken("123456", "Student"))))
+                   .andExpect(status().is(403));
+            /* Check that a JWT authenticated user without a role can't access the module API */
+            mockMvc.perform(get("/api/module/getmodule")
+                            .param("moduleCode", "TS101")
+                            .param("lecturerId", "123456")
+                            .with(jwt()))
+                   .andExpect(status().is(403));
+            /* Check that a user without authentication can't access the module API */
+            mockMvc.perform(get("/api/module/getmodule")
+                            .param("moduleCode", "TS101")
+                            .param("lecturerId", "123456"))
+                   .andExpect(status().is(401));
+
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    @Test
+    public void getModulesValidIntegrationTest() {
+        try {
+            /* Getting expected modules */
+            List<String> expectedCodes = mockModuleRepository.getModuleCodesByLecturer(123456);
+            JSONArray expectedJson = new JSONArray(expectedCodes);
+            /* Testing that getmodule returns the appropriate module */
+            mockMvc.perform(get("/api/module/getmodules")
+                            .param("lecturerId", "123456")
+                            .with(authentication(createMockJwtToken("123456", "Lecturer"))))
+                   .andExpect(status()
+                              .isOk())
+                   .andExpect(content()
+                              .json(expectedJson.toString()));
+
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    @Test
+    public void getModulesInvalidIntegrationTest() {
+        try {
+            /* Checking that getting a module without providing a valid lecturer ID fails */
+            mockMvc.perform(get("/api/module/getmodules")
+                            .param("lecturerId", "754321")
+                            .with(authentication(createMockJwtToken("754321", "Lecturer"))))
+                   .andExpect(status().is(400));
+
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    @Test
+    public void getModulesAccessIntegrationTest() {
+        try {
+            /* Check that a Lecturer-authenticated user can access the module API */
+            mockMvc.perform(get("/api/module/getmodules")
+                            .param("lecturerId", "123456")
+                            .with(authentication(createMockJwtToken("123456", "Lecturer"))))
+                   .andExpect(status().isOk());
+            /* Check that a Student-authenticated user can't access the module API */
+            mockMvc.perform(get("/api/module/getmodules")
+                            .param("lecturerId", "123456")
+                            .with(authentication(createMockJwtToken("123456", "Student"))))
+                   .andExpect(status().is(403));
+            /* Check that a JWT authenticated user without a role can't access the module API */
+            mockMvc.perform(get("/api/module/getmodules")
+                            .param("lecturerId", "123456")
+                            .with(jwt()))
+                   .andExpect(status().is(403));
+            /* Check that a user without authentication can't access the module API */
+            mockMvc.perform(get("/api/module/getmodules")
+                            .param("lecturerId", "123456"))
+                   .andExpect(status().is(401));
 
         } catch(Exception e) {
             System.out.println(e);
