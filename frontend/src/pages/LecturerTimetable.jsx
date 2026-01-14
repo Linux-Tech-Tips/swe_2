@@ -48,10 +48,10 @@ const LecturerTimetable = ({ onLogout }) => {
     return (
       <div className={styles.algorithmSettings}>
         {"Maximum number of students per session:  "}
-        <input className={styles.constraintsInput} defaultValue={currentStudentLimit} onKeyDown={(e) => {if (e.key === "Enter") {ValidateConstraintsInput(e.target.value, "students")}}} />
+        <input className={styles.constraintsInput} defaultValue={currentStudentLimit} onBlur={(e) => {ValidateConstraintsInput(e.target.value, "students")}} />
         <br />
         {"Minimum number of TAs per session:  "}
-        <input className={styles.constraintsInput} defaultValue={currentMinTAs} onKeyDown={(e) => {if (e.key === "Enter") {ValidateConstraintsInput(e.target.value, "tas")}}} />
+        <input className={styles.constraintsInput} defaultValue={currentMinTAs} onBlur={(e) => {ValidateConstraintsInput(e.target.value, "tas")}} />
       </div>
     );
   }
