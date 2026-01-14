@@ -5,6 +5,7 @@ import { useEffect } from 'react';
 import { ThreeDots } from 'react-loader-spinner';
 
 import styles from './Login.module.css';
+import Footer from '../components/Footer.jsx';
 
 const Login = ({ handleLogin }) => {
     /* Access the error state directly from context */
@@ -12,13 +13,15 @@ const Login = ({ handleLogin }) => {
 
     /* Return the app login page */
     return (
+      <div>
         <div className={styles.loginContainer}>
             <div className={styles.loginCard}>
 
                 {/* Heading and description */}
                 <h1 className={styles.heading}>Tutorial Time</h1>
                 <p className={styles.description}>
-                    Sign in with your university Microsoft account
+                    {/*Sign in with your university Microsoft account <- FIXME once MS gives us access*/}
+                    Sign in with your account
                 </p>
 
                 {/* Error Display - Only shows if loginError exists */}
@@ -40,6 +43,7 @@ const Login = ({ handleLogin }) => {
                 <button
                     onClick={handleLogin}
                     className={styles.microsoftButton}>
+                    {/* FIXME once MS gives us access
                     <div className={styles.microsoftLogo}>
                         <div className={styles.redSquare}></div>
                         <div className={styles.blueSquare}></div>
@@ -47,9 +51,13 @@ const Login = ({ handleLogin }) => {
                         <div className={styles.yellowSquare}></div>
                     </div>
                     <span>Sign in with Microsoft</span>
+                    */}
+                    <span>Sign in</span>
                 </button>
             </div>
         </div>
+        <Footer/>
+      </div>
     );
 };
 
@@ -65,6 +73,7 @@ const CompleteLogin = ({ handleLoginCallback }) => {
     }, []);
 
     return (
+      <div>
         <div className={styles.loginContainer}>
             <div className={styles.loginCard}>
 
@@ -103,6 +112,8 @@ const CompleteLogin = ({ handleLoginCallback }) => {
                         </>
                     )}
             </div>
+          </div>
+          <Footer/>
         </div>
     )
 }

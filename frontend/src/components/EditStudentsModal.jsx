@@ -75,8 +75,13 @@ const EditStudentsModal = ({ isOpen, onClose, moduleCode, enrolledStudents, onUp
   };
 
   const handleAddClick = async () => {
-    const success = await callEnrollmentAPI(newStudentId, 'add');
-    if (success) {
+    const enteredIds = newStudentId.split(" ");
+    let results = [];
+    for(const id of enteredIds) {
+        const result = await callEnrollmentAPI(id, 'add');
+        results.push(result);
+    };
+    if (results.every((val) => { val === true; })) {
         setNewStudentId(''); // Clear input
     }
   };

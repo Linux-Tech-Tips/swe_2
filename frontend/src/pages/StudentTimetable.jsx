@@ -7,7 +7,7 @@ import GridCell from "../components/GridCell.jsx";
 import gridStyles from '../components/GridCell.module.css';
 import styles from './StudentTimetable.module.css';
 import UserIcon from '../components/UserIcon.jsx';
-
+import Footer from '../components/Footer.jsx';
 import { PostRequest } from '../services/Requests.jsx';
 import { AuthContext } from '../context/Contexts.jsx';
 
@@ -181,6 +181,7 @@ const StudentTimetable = ({ onLogout }) => {
                 </div>
 
             </div>
+            <Footer/>
         </div>
     );
 };

@@ -12,6 +12,7 @@ import UsersIcon from '../components/UsersIcon.jsx';
 import UserCogIcon from '../components/UserCogIcon.jsx';
 import GridCell from "../components/GridCell.jsx";
 import EditStudentsModal from '../components/EditStudentsModal.jsx';
+import Footer from '../components/Footer.jsx';
 import {GetRequest} from "../services/Requests.jsx"
 import {PostRequest} from "../services/Requests.jsx"
 import {ErrorMessage} from "../services/ErrorParsing.jsx"
@@ -59,10 +60,10 @@ const LecturerTimetable = ({ onLogout }) => {
     return (
       <div className={styles.algorithmSettings}>
         {"Maximum number of students per session:  "}
-        <input className={styles.constraintsInput} defaultValue={currentStudentLimit} onKeyDown={(e) => {if (e.key === "Enter") {ValidateConstraintsInput(e.target.value, "students")}}} />
+        <input className={styles.constraintsInput} defaultValue={currentStudentLimit} onBlur={(e) => {ValidateConstraintsInput(e.target.value, "students")}} />
         <br />
         {"Minimum number of TAs per session:  "}
-        <input className={styles.constraintsInput} defaultValue={currentMinTAs} onKeyDown={(e) => {if (e.key === "Enter") {ValidateConstraintsInput(e.target.value, "tas")}}} />
+        <input className={styles.constraintsInput} defaultValue={currentMinTAs} onBlur={(e) => {ValidateConstraintsInput(e.target.value, "tas")}} />
       </div>
     );
   }
@@ -375,7 +376,8 @@ const LecturerTimetable = ({ onLogout }) => {
         enrolledStudents={currentTAs}
         onUpdateSuccess={refreshStudentList}
         type={'ta'}
-      />       
+      />
+    <Footer/>
   </div>
   );
 };
