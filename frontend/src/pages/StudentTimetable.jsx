@@ -1,12 +1,14 @@
 /* Library imports */
 import React, { useState, useEffect, useContext } from 'react';
 import { Cog } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 /* Import local page components */
 import GridCell from "../components/GridCell.jsx";
 import gridStyles from '../components/GridCell.module.css';
 import styles from './StudentTimetable.module.css';
 import UserIcon from '../components/UserIcon.jsx';
+import UserCogIcon from '../components/UserCogIcon.jsx';
 import Footer from '../components/Footer.jsx';
 import { PostRequest } from '../services/Requests.jsx';
 import { AuthContext } from '../context/Contexts.jsx';
@@ -35,6 +37,7 @@ const StudentTimetable = ({ onLogout }) => {
     const [saveMessage, setSaveMessage] = useState(null);
 
     const authContext = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const toggleAvailability = (day, time) => {
         setAvailability(prev => ({
@@ -96,15 +99,20 @@ const StudentTimetable = ({ onLogout }) => {
             {/* Top Header */}
             <header className={styles.header}>
                 <h1 className={styles.title}>Tutorial Time - Student</h1>
-                <button
-                    onClick={onLogout}
-                    className={styles.settingsButton}
-                    title="Logout"
-                >
-
-                    <UserIcon className={styles.navIcon} />
-                    <span className={styles.settingsText}>Sign Out</span>
-                </button>
+                  <nav className={styles.navbarNav}>
+                    <button onClick={() => navigate("/user-settings")} className={styles.settingsButton}>
+                      <UserCogIcon className={styles.navIcon} />
+                      User Settings
+                    </button>
+                    <button
+                      onClick={onLogout}
+                      className={styles.settingsButton}
+                      title="Logout"
+                     >
+                      <UserIcon className={styles.navIcon} />
+                      <span className={styles.settingsText}>Sign Out</span>
+                  </button>
+                </nav>
             </header>
 
             {/* Main Card/Container */}
