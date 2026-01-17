@@ -1,9 +1,8 @@
 /**
- * @author Ethan, Lilian
+ * @author Ethan, Lilian, Cedar
  */
 package org.unixusergroup.tutorial_time.domain.student;
 
-import java.util.List;
 
 /** The student repository as a class that'll interface with the persistence mariadb database.
  *  Has an internal jpa repository within it that acts as the connection point between the class and the db.
@@ -27,7 +26,7 @@ public class StudentPersistenceAdapter implements StudentRepository {
     }
 
     @Override
-    public List<Student> findStudentsByIds(List<Long> studentIds) {
-        return studentJPARepository.findAllById(studentIds);
+    public void deleteStudent(Student student) {
+        studentJPARepository.delete(student);
     }
 }

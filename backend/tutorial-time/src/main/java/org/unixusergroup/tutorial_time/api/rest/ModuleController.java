@@ -19,17 +19,8 @@ import org.springframework.security.oauth2.jwt.Jwt;
 
 import org.unixusergroup.tutorial_time.application.common.exceptions.ModuleNotFoundException;
 import org.unixusergroup.tutorial_time.application.common.exceptions.StudentNotFoundException;
-import org.unixusergroup.tutorial_time.application.module.CreateModuleUseCase;
-import org.unixusergroup.tutorial_time.application.module.EditEnrollmentUseCase;
-import org.unixusergroup.tutorial_time.application.module.GetModuleUseCase;
-import org.unixusergroup.tutorial_time.application.module.GetModulesUseCase;
-import org.unixusergroup.tutorial_time.application.module.dto.CreateModuleRequest;
-import org.unixusergroup.tutorial_time.application.module.dto.EditEnrollmentRequest;
-import org.unixusergroup.tutorial_time.application.module.dto.EditRequestType;
-import org.unixusergroup.tutorial_time.application.module.dto.GetModuleRequest;
-import org.unixusergroup.tutorial_time.application.module.dto.GetModuleResponse;
-import org.unixusergroup.tutorial_time.application.module.dto.GetModulesRequest;
-import org.unixusergroup.tutorial_time.application.module.dto.GetModulesResponse;
+import org.unixusergroup.tutorial_time.application.module.*;
+import org.unixusergroup.tutorial_time.application.module.dto.*;
 import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
 import org.unixusergroup.tutorial_time.domain.module.Module;
 import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
@@ -166,6 +157,44 @@ public class ModuleController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
+
+    /**
+     * Delete Module API mapping (/api/module/deletemodule).
+     *
+     * This API call deletes a module based on a given code from the database, if the module exists.
+     * @param moduleCode The University Module ID of the module to retrieve
+     * @return HTTP status 200 if module has been deleted successfully,
+     *         HTTP status 403 if the user is not authorised,
+     *         HTTP status 404 if module could not be found,
+     *         HTTP status 500 and the error message when any other error occurs
+     */
+    @PostMapping(path="/deletemodule")
+    public ResponseEntity<?> deleteModule(Authentication authentication, @RequestParam String moduleCode, @RequestParam long lecturerId) {
+        try {
+            /* Ensure that only an authorized lecturer can delete their module */
+            Jwt authPrincipal = (Jwt)(authentication.getPrincipal());
+            if(!authPrincipal.hasClaim("uni_id")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User has no ID");
+            }
+            long authenticatedId = Long.parseLong(authPrincipal.getClaimAsString("uni_id"));
+            if(authenticatedId != lecturerId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User ID does not match");
+            }
+
+            /* If allowed, execute actual API call */
+            DeleteModuleRequest request = new DeleteModuleRequest(moduleCode);
+            DeleteModuleUseCase deleteModuleUseCase = new DeleteModuleUseCase(moduleRepository);
+
+            deleteModuleUseCase.execute(request);
+            return ResponseEntity.status(HttpStatus.OK).body("Module was deleted successfully");
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Module deleteModule API: " + e.getMessage());
+        }
+    }
+
 
     /**
      * Add Student API mapping (/api/module/addstudent).

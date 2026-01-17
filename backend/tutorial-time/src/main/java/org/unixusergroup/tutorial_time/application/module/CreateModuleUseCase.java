@@ -3,7 +3,6 @@
  */
 package org.unixusergroup.tutorial_time.application.module;
 
-import org.unixusergroup.tutorial_time.application.exceptions.IllegalStudentAdditionException;
 import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
 import org.unixusergroup.tutorial_time.domain.module.Module;
