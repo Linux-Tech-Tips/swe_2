@@ -1,9 +1,7 @@
 /** 
- * @author Martin, Ethan
+ * @author Martin, Ethan, Cedar
  */
 package org.unixusergroup.tutorial_time.api.rest;
-
-import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,7 +10,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import org.unixusergroup.tutorial_time.api.rest.LecturerController;
 import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 import org.unixusergroup.tutorial_time.domain.timetable.Availability;
@@ -219,6 +216,45 @@ class LecturerControllerTest {
         LecturerController controller = new LecturerController(lecturerRepository);
         ResponseEntity<?> response = controller.getLecturer(createMockJwtToken("1002", "Lecturer"), 1002);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    /** Test for deleteLecturer API function */
+    @Test
+    void deleteLecturerTest() {
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        LecturerController controller = new LecturerController(lecturerRepository);
+        controller.addLecturer(createMockJwtToken("1002", "Lecturer"), "Jonny test", "j.test@nuigalway.ie", 1002);
+
+        ResponseEntity<?> response = controller.deleteLecturer(createMockJwtToken("1002", "Lecturer"), 1002);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        assertNull(lecturerRepository.getLecturerById(1002));
+    }
+
+    /** Test that unauthorized access to deleteLecturer is not allowed */
+    @Test
+    void deleteLecturerAccessTest() {
+        /* Set up repository and controller */
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        LecturerController controller = new LecturerController(lecturerRepository);
+
+        /* Test unauthorized with no ID */
+        ResponseEntity<?> response1 = controller.deleteLecturer(createMockJwtToken("", "Lecturer"), 1002);
+        assertEquals(HttpStatus.FORBIDDEN, response1.getStatusCode());
+
+        /* Test unauthorized with incorrect ID */
+        ResponseEntity<?> response2 = controller.deleteLecturer(createMockJwtToken("1001", "Lecturer"), 1002);
+        assertEquals(HttpStatus.FORBIDDEN, response2.getStatusCode());
+    }
+
+    /** Test for deleteLecturer REST API catching an exception */
+    @Test
+    void failedDeleteLecturerTest() {
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        LecturerController controller = new LecturerController(lecturerRepository);
+
+        ResponseEntity<?> response = controller.deleteLecturer(createMockJwtToken("1002", "Lecturer"), 1002);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 }
 

@@ -1,5 +1,5 @@
 /** 
- * @author Martin, Ethan
+ * @author Martin, Ethan, Cedar
  */
 package org.unixusergroup.tutorial_time.api.rest;
 
@@ -216,6 +216,45 @@ class StudentControllerTest {
         StudentController controller = new StudentController(studentRepository);
         ResponseEntity<?> response = controller.getStudent(createMockJwtToken("1002", "Student"), 1002);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    /** Test for deleteStudent API function */
+    @Test
+    void deleteStudentTest() {
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        StudentController controller = new StudentController(studentRepository);
+        controller.addStudent(createMockJwtToken("1002", "Student"), "Jonny test", "j.test@nuigalway.ie", 1002);
+
+        ResponseEntity<?> response = controller.deleteStudent(createMockJwtToken("1002", "Student"), 1002);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        assertNull(studentRepository.getStudentById(1002));
+    }
+
+    /** Test that unauthorized access to deleteStudent is not allowed */
+    @Test
+    void deleteStudentAccessTest() {
+        /* Set up repository and controller */
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        StudentController controller = new StudentController(studentRepository);
+
+        /* Test unauthorized with no ID */
+        ResponseEntity<?> response1 = controller.deleteStudent(createMockJwtToken("", "Student"), 1002);
+        assertEquals(HttpStatus.FORBIDDEN, response1.getStatusCode());
+
+        /* Test unauthorized with incorrect ID */
+        ResponseEntity<?> response2 = controller.deleteStudent(createMockJwtToken("1001", "Student"), 1002);
+        assertEquals(HttpStatus.FORBIDDEN, response2.getStatusCode());
+    }
+
+    /** Test for deleteStudent REST API catching an exception */
+    @Test
+    void failedDeleteStudentTest() {
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        StudentController controller = new StudentController(studentRepository);
+
+        ResponseEntity<?> response = controller.deleteStudent(createMockJwtToken("1002", "Student"), 1002);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 }
 

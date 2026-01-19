@@ -1,5 +1,5 @@
 /** 
- * @author Martin
+ * @author Martin, Cedar
  */
 package org.unixusergroup.tutorial_time.api.rest;
 
@@ -376,7 +376,7 @@ public class ModuleControllerIntegrationTest {
     }
 
     @Test
-    public void removeTAInvalidIntegrationTesat() {
+    public void removeTAInvalidIntegrationTest() {
         try {
             /* Get the module before test cases run */
             Module moduleBeforeTest = mockModuleRepository.getModuleByCode("TS101");
@@ -424,4 +424,69 @@ public class ModuleControllerIntegrationTest {
         }
     }
 
+    @Test
+    public void deleteModuleValidIntegrationTest(){
+        try {
+            /* create a valid module */
+            mockMvc.perform(post("/api/module/createmodule")
+                            .param("lecturerId", "123456")
+                            .param("moduleCode", "TS102")
+                            .param("studentIds", "111111,222222")
+                            .param("taStudentIds", "333333,444444")
+                            .with(authentication(createMockJwtToken("123456", "Lecturer")))
+                            .with(csrf()))
+                    .andExpect(status().is(200));
+
+            /* now check that deleting it works */
+            mockMvc.perform(post("/api/module/deletemodule")
+                            .param("lecturerId", "123456")
+                            .param("moduleCode", "TS102")
+                            .with(authentication(createMockJwtToken("123456", "Lecturer")))
+                            .with(csrf()))
+                    .andExpect(status().is(200));
+
+            /* verify it's been removed from the repository */
+            assertNull(mockModuleRepository.getModuleByCode("TS102"));
+
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    @Test
+    public void deleteModuleInvalidIntegrationTest() {
+        try {
+            /* check that deleting a non-registered code doesn't work */
+            mockMvc.perform(post("/api/module/deletemodule")
+                            .param("lecturerId", "123456")
+                            .param("moduleCode", "TS102")
+                            .with(authentication(createMockJwtToken("123456", "Lecturer")))
+                            .with(csrf()))
+                    .andExpect(status().is(404));
+
+            /* test that deleting a module with incorrect authentication doesn't work */
+            mockMvc.perform(post("/api/module/deletemodule")
+                            .param("lecturerId", "123456")
+                            .param("moduleCode", "TS102")
+                            .with(authentication(createMockJwtToken("123456", "Student")))
+                            .with(csrf()))
+                    .andExpect(status().is(403));
+
+            mockMvc.perform(post("/api/module/deletemodule")
+                            .param("lecturerId", "123456")
+                            .param("moduleCode", "TS102")
+                            .with(authentication(createMockJwtToken("12", "Lecturer")))
+                            .with(csrf()))
+                    .andExpect(status().is(403));
+
+            mockMvc.perform(post("/api/module/deletemodule")
+                            .param("lecturerId", "123456")
+                            .param("moduleCode", "TS102")
+                            .with(jwt()))
+                    .andExpect(status().is(403));
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
 }
