@@ -55,12 +55,12 @@ public class ModuleControllerIntegrationTest {
 
     @BeforeEach
     private void configure() {
-        Lecturer lecturer = new Lecturer("Test Lecturer", "test.lecturer@universityofgalway.ie", 123456);
+        Lecturer lecturer = new Lecturer("test.lecturer@universityofgalway.ie", 123456);
         mockLecturerRepository.saveLecturer(lecturer);
-        Student student1 = new Student("John Doe", "j.doe1@universityofgalway.ie", 111111);
-        Student student2 = new Student("Jane Doe", "j.doe2@universityofgalway.ie", 222222);
-        Student student3 = new Student("Test A", "t.a1@universityofgalway.ie", 333333);
-        Student student4 = new Student("Test B", "t.b1@universityofgalway.ie", 444444);
+        Student student1 = new Student("j.doe1@universityofgalway.ie", 111111);
+        Student student2 = new Student("j.doe2@universityofgalway.ie", 222222);
+        Student student3 = new Student("t.a1@universityofgalway.ie", 333333);
+        Student student4 = new Student("t.b1@universityofgalway.ie", 444444);
         mockStudentRepository.saveStudent(student1);
         mockStudentRepository.saveStudent(student2);
         mockStudentRepository.saveStudent(student3);
@@ -289,7 +289,7 @@ public class ModuleControllerIntegrationTest {
             /* Set up demo module */
             Module demoModule = new Module("TS104", 123456);
             mockModuleRepository.saveModule(demoModule);
-            Student demoStudent = new Student("John John", "j.john1@universityofgalway.ie", 555555);
+            Student demoStudent = new Student("j.john1@universityofgalway.ie", 555555);
             mockStudentRepository.saveStudent(demoStudent);
             /* Checking that adding a valid TA to a module works */
             mockMvc.perform(post("/api/module/addta")
@@ -354,7 +354,7 @@ public class ModuleControllerIntegrationTest {
         try {
             /* Set up demo module */
             Module demoModule = new Module("TS104", 123456);
-            Student demoStudent = new Student("John John", "j.john1@universityofgalway.ie", 555555);
+            Student demoStudent = new Student("j.john1@universityofgalway.ie", 555555);
             mockStudentRepository.saveStudent(demoStudent);
             demoModule.addTAStudent(555555);
             mockModuleRepository.saveModule(demoModule);

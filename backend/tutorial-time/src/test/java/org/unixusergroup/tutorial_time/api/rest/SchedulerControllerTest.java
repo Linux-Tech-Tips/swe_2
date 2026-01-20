@@ -35,21 +35,21 @@ public class SchedulerControllerTest {
         InMemoryModuleRepository memoryModuleRepository = new InMemoryModuleRepository();
         InMemoryStudentRepository memoryStudentRepository = new InMemoryStudentRepository();
 
-        Lecturer testLecturer = new Lecturer("Professor Test", "test@universityofgalway.ie", 10000);
+        Lecturer testLecturer = new Lecturer("test@universityofgalway.ie", 10000);
         Module testModule = new Module("testModule", testLecturer.getUniversityId());
-        Student student1 = new Student("Student1", "s1@universityofgalway.ie", 1111, new Timetable(2, 2, Availability.UNAVAILABLE));
+        Student student1 = new Student("s1@universityofgalway.ie", 1111, new Timetable(2, 2, Availability.UNAVAILABLE));
         student1.setAvailable(0,0);
         memoryStudentRepository.saveStudent(student1);
         testModule.addStudent(student1.getUniversityId());
-        Student student2 = new Student("Student2", "s2@universityofgalway.ie", 2222, new Timetable(2, 2, Availability.UNAVAILABLE));
+        Student student2 = new Student("s2@universityofgalway.ie", 2222, new Timetable(2, 2, Availability.UNAVAILABLE));
         student2.setAvailable(0,0);
         memoryStudentRepository.saveStudent(student2);
         testModule.addStudent(student2.getUniversityId());
-        Student student3 = new Student("Student3", "s3@universityofgalway.ie", 3333, new Timetable(2, 2, Availability.UNAVAILABLE));
+        Student student3 = new Student("s3@universityofgalway.ie", 3333, new Timetable(2, 2, Availability.UNAVAILABLE));
         student3.setAvailable(1,1);
         memoryStudentRepository.saveStudent(student3);
         testModule.addStudent(student3.getUniversityId());
-        Student student4 = new Student("Student4", "s4@universityofgalway.ie", 4444, new Timetable(2, 2, Availability.UNAVAILABLE));
+        Student student4 = new Student("s4@universityofgalway.ie", 4444, new Timetable(2, 2, Availability.UNAVAILABLE));
         student4.setAvailable(0,1);
         memoryStudentRepository.saveStudent(student4);
         testModule.addStudent(student4.getUniversityId());

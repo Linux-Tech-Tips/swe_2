@@ -56,7 +56,7 @@ class CreateTimetableUseCaseTest {
     /** Test case to create a student timetable for a student initialized with an empty timetable */
     @Test
     public void createStudentTimetableTest() {
-        Student student = new Student("John Doe", "j.doe1@universityofgalway.ie", 123456);
+        Student student = new Student("j.doe1@universityofgalway.ie", 123456);
         int[] availability = new int[] { 0, 0, 0, 0, 1,
                                          1, 1, 0, 0, 1,
                                          1, 1, 0, 1, 0,
@@ -84,7 +84,7 @@ class CreateTimetableUseCaseTest {
                                             0, 1, 0, 1, 0, 
                                             0, 0, 0, 0, 0, 
                                             0, 0, 0, 0, 0 };
-        Student student = new Student("John Doe", "j.doe1@universityofgalway.ie", 123456, getTimetableFromArray(oldAvailability, 5, 8, Availability.UNAVAILABLE));
+        Student student = new Student("j.doe1@universityofgalway.ie", 123456, getTimetableFromArray(oldAvailability, 5, 8, Availability.UNAVAILABLE));
         int[] availability = new int[] { 0, 0, 0, 0, 1,
                                          1, 1, 0, 0, 1,
                                          1, 1, 0, 1, 0,
@@ -107,7 +107,7 @@ class CreateTimetableUseCaseTest {
     /** Test case to create a lecturer timetable for a lecturer initialized with an empty timetable */
     @Test
     public void createLecturerTimetableTest() {
-        Lecturer lecturer = new Lecturer("John Doe", "john.doe@universityofgalway.ie", 654321);
+        Lecturer lecturer = new Lecturer("john.doe@universityofgalway.ie", 654321);
         int[] availability = new int[] { 0, 0, 0, 1, 0,
                                          1, 1, 0, 1, 0,
                                          1, 1, 0, 1, 0,
@@ -135,7 +135,7 @@ class CreateTimetableUseCaseTest {
                                             0, 1, 0, 1, 0, 
                                             0, 0, 0, 0, 0, 
                                             0, 0, 0, 0, 0 };
-        Lecturer lecturer = new Lecturer("John Doe", "john.doe@universityofgalway.ie", 654321);
+        Lecturer lecturer = new Lecturer("john.doe@universityofgalway.ie", 654321);
         int[] availability = new int[] { 0, 0, 0, 0, 1,
                                          1, 1, 0, 0, 1,
                                          1, 1, 0, 1, 0,

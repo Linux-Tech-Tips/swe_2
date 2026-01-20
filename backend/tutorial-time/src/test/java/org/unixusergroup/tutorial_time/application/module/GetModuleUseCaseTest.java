@@ -21,7 +21,7 @@ public class GetModuleUseCaseTest {
     private final InMemoryModuleRepository testModuleRepository = new InMemoryModuleRepository();
     private GetModuleUseCase getModuleUseCaseTest;
     private Module expectedModule;
-    private final Lecturer lecturer = new Lecturer("Johnny Test", "j.test1@nuigalway.ie", 20000, new Timetable(2, 2, Availability.UNAVAILABLE));
+    private final Lecturer lecturer = new Lecturer("j.test1@nuigalway.ie", 20000, new Timetable(2, 2, Availability.UNAVAILABLE));
 
     @BeforeEach
     void setup() {

@@ -56,23 +56,23 @@ public class SchedulerControllerIntegrationTest {
 
     @BeforeEach
     private void configure() {
-        Lecturer lecturer = new Lecturer("Professor Lecturer", "professor.lecturer@universityofgalway.ie", 123456);
+        Lecturer lecturer = new Lecturer("professor.lecturer@universityofgalway.ie", 123456);
         mockLecturerRepository.saveLecturer(lecturer);
         /* Demo students with varying availabilities */
-        Student student1 = new Student("John Doe", "j.doe1@universityofgalway.ie", 111111, 
+        Student student1 = new Student("j.doe1@universityofgalway.ie", 111111, 
                                        new Timetable(Timetable.DEFAULT_COLUMNS, Timetable.DEFAULT_ROWS, Availability.UNAVAILABLE));
         student1.setAvailable(3, 0);
         student1.setAvailable(3, 1);
-        Student student2 = new Student("Jane Doe", "j.doe2@universityofgalway.ie", 222222,
+        Student student2 = new Student("j.doe2@universityofgalway.ie", 222222,
                                        new Timetable(Timetable.DEFAULT_COLUMNS, Timetable.DEFAULT_ROWS, Availability.UNAVAILABLE));
         student2.setAvailable(3, 0);
         student2.setAvailable(3, 1);
         student2.setAvailable(3, 2);
-        Student student3 = new Student("Jon Doe", "j.doe3@universityofgalway.ie", 333333,
+        Student student3 = new Student("j.doe3@universityofgalway.ie", 333333,
                                        new Timetable(Timetable.DEFAULT_COLUMNS, Timetable.DEFAULT_ROWS, Availability.UNAVAILABLE));
         student3.setAvailable(2, 1);
         student3.setAvailable(3, 1);
-        Student student4 = new Student("Jo Doe", "j.doe4@universityofgalway.ie", 444444,
+        Student student4 = new Student("j.doe4@universityofgalway.ie", 444444,
                                        new Timetable(Timetable.DEFAULT_COLUMNS, Timetable.DEFAULT_ROWS, Availability.UNAVAILABLE));
         student4.setAvailable(2, 1);
         student4.setAvailable(3, 1);
@@ -83,11 +83,11 @@ public class SchedulerControllerIntegrationTest {
         mockStudentRepository.saveStudent(student4);
 
         /* Demo TA students */
-        Student taStudent1 = new Student("Test Student", "t.student1@universityofgalway.ie", 888888,
+        Student taStudent1 = new Student("t.student1@universityofgalway.ie", 888888,
                                          new Timetable(Timetable.DEFAULT_COLUMNS, Timetable.DEFAULT_ROWS, Availability.UNAVAILABLE));
         taStudent1.setAvailable(3, 0);
         taStudent1.setAvailable(2, 1);
-        Student taStudent2 = new Student("Theodore Student", "t.student2@universityofgalway.ie", 999999,
+        Student taStudent2 = new Student("t.student2@universityofgalway.ie", 999999,
                                          new Timetable(Timetable.DEFAULT_COLUMNS, Timetable.DEFAULT_ROWS, Availability.UNAVAILABLE));
         taStudent2.setAvailable(3, 0);
         taStudent2.setAvailable(2, 1);

@@ -12,11 +12,11 @@ import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 public class Lecturer extends User {
 
     public Lecturer() {};
-    public Lecturer(String name, String email, long staffId) {
-        super(name, email, staffId);
+    public Lecturer(String email, long staffId) {
+        super(email, staffId);
     }
 
-    public Lecturer(String name, String email, long staffId, Timetable timetable) {
-        super(name, email, staffId, timetable);
+    public Lecturer(String email, long staffId, Timetable timetable) {
+        super(email, staffId, timetable);
     }
 }

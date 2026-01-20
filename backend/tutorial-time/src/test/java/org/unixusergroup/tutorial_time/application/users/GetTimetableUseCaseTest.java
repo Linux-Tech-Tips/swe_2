@@ -49,7 +49,7 @@ class GetTimetableUseCaseTest {
                                          0, 1, 1, 0, 1, 
                                          1, 1, 1, 0, 1, 
                                          1, 1, 1, 1, 1 };
-        Student student = new Student("John Doe", "j.doe1@universityofgalway.ie", 123456, getTimetableFromArray(availability, 5, 8, Availability.UNAVAILABLE));
+        Student student = new Student("j.doe1@universityofgalway.ie", 123456, getTimetableFromArray(availability, 5, 8, Availability.UNAVAILABLE));
 
         /* Create demo repositories */
         StudentRepository studentRepository = new InMemoryStudentRepository();
@@ -76,7 +76,7 @@ class GetTimetableUseCaseTest {
                                          0, 1, 1, 0, 0, 
                                          1, 0, 1, 0, 1, 
                                          1, 0, 0, 1, 1 };
-        Lecturer lecturer = new Lecturer("John Doe", "john.doe@universityofgalway.ie", 654321, getTimetableFromArray(availability, 5, 8, Availability.UNAVAILABLE));
+        Lecturer lecturer = new Lecturer("john.doe@universityofgalway.ie", 654321, getTimetableFromArray(availability, 5, 8, Availability.UNAVAILABLE));
 
         /* Create demo repositories */
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();

@@ -35,7 +35,7 @@ public class CreateModuleUseCaseTest {
 
     @BeforeEach
     void setup() {
-        lecturer = new Lecturer("Johnny Test", "j.test1@nuigalway.ie", 20000, new Timetable(2, 2, Availability.UNAVAILABLE));
+        lecturer = new Lecturer("j.test1@nuigalway.ie", 20000, new Timetable(2, 2, Availability.UNAVAILABLE));
         createModuleRequest = new CreateModuleRequest("CT2021", new ArrayList<>(), new ArrayList<>(), lecturer.getUniversityId());
 
     }
@@ -70,12 +70,12 @@ public class CreateModuleUseCaseTest {
     @Test
     void testValidModuleCreationWithStudentLists() {
         ArrayList<Long> students = new ArrayList<>();
-        Student student = new Student("John", "j@nuigalway.ie", 1L);
+        Student student = new Student("j@nuigalway.ie", 1L);
         students.add(1L);
         testStudentRepository.saveStudent(student);
         ArrayList<Long> tas = new ArrayList<>();
         tas.add(2L);
-        Student ta = new Student("John", "j@nuigalway.ie", 2L);
+        Student ta = new Student("j@nuigalway.ie", 2L);
         testStudentRepository.saveStudent(ta);
         Module module = new Module("CT2021", 20000);
         testLecturerRepository.saveLecturer(lecturer);

@@ -19,8 +19,8 @@ public class AddStudentUseCaseTest {
 
     @Test
     void validStudentAddition() {
-        Student expectedStudent = new Student("Megan Test", "m.test@nuigalway.ie", 1000);
-        AddStudentRequest addStudentRequest = new AddStudentRequest("Megan Test", "m.test@nuigalway.ie", 1000);
+        Student expectedStudent = new Student("m.test@nuigalway.ie", 1000);
+        AddStudentRequest addStudentRequest = new AddStudentRequest("m.test@nuigalway.ie", 1000);
         AddStudentUseCase addStudentUseCase = new AddStudentUseCase(this.studentRepository);
         AddStudentResponse response = addStudentUseCase.execute(addStudentRequest);
 
@@ -29,17 +29,8 @@ public class AddStudentUseCaseTest {
     }
 
     @Test
-    void addingStudentWithNoName() {
-        AddStudentRequest addStudentRequest = new AddStudentRequest("", "m.test@nuigalway.ie", 1000);
-        AddStudentUseCase addStudentUseCase = new AddStudentUseCase(this.studentRepository);
-        AddStudentResponse response = addStudentUseCase.execute(addStudentRequest);
-
-        assertFalse(response.ok());
-    }
-
-    @Test
     void addingStudentWithNoEmail() {
-        AddStudentRequest addStudentRequest = new AddStudentRequest("Megan Test", "", 1000);
+        AddStudentRequest addStudentRequest = new AddStudentRequest("", 1000);
         AddStudentUseCase addStudentUseCase = new AddStudentUseCase(this.studentRepository);
         AddStudentResponse response = addStudentUseCase.execute(addStudentRequest);
 

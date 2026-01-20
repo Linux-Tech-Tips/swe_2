@@ -20,7 +20,7 @@ public class GetLecturerUseCaseTest {
     Lecturer lecturer;
     @BeforeEach
     void setUp() {
-       lecturer = new Lecturer("Johnny Test", "j.test1@nuigalway.ie", 20000);
+       lecturer = new Lecturer("j.test1@nuigalway.ie", 20000);
        lecturerRepository.saveLecturer(lecturer);
     }
 
