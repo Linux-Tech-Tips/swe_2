@@ -18,3 +18,6 @@ jobs:
         token: ${{ secrets.JENKINS_TOKEN }}
         job: "review_patch"
         parameters: BRANCH=${{ github.head_ref }}
+        wait: true
+        poll_interval: 10s
+        timeout: 10m
