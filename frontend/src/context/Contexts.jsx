@@ -26,7 +26,6 @@ const AuthProvider = ({children}) => {
         if(user) {
             return {
                 id: user.profile.uni_id,
-                name: user.profile.name,
                 email: user.profile.email,
                 isLecturer: user.profile.groups.includes("Lecturer"),
                 jwt: user.access_token
@@ -63,7 +62,7 @@ const AuthProvider = ({children}) => {
                 if(getResult[0] != 200) {
                     /* Attempt to create User if GET fails */
                     let addPath = "api/" + (details.isLecturer ? "lecturer/createlecturer" : "student/createstudent");
-                    let createContent = {name: details.name, email: details.email};
+                    let createContent = {email: details.email};
                     
                     if(details.isLecturer)
                         createContent.staffId = details.id;

@@ -20,8 +20,6 @@ public abstract class User {
     /** Enumeration defining which type a concrete user is */
     public enum UserType {STUDENT, LECTURER}
 
-    /** The name of the user */
-    protected String name;
     /** The university email of the user */
     protected String universityEmail;
     private final String universityEmailRegex = ".*@universityofgalway\\.ie";
@@ -36,21 +34,17 @@ public abstract class User {
     /** Empty default constructor for database storage */
     protected User() {};
     /** Creates a user with the given identity and an empty timetable */
-    public User(String name, String universityEmail, long universityId) {
-        this(name, universityEmail, universityId, new Timetable());
+    public User(String universityEmail, long universityId) {
+        this(universityEmail, universityId, new Timetable());
     }
     /** Creates a user with the given identity and the given timetable */
-    public User(String name, String universityEmail, long universityId, Timetable timetable) throws IllegalArgumentException {
-        if(name.isEmpty()) {
-            throw new IllegalArgumentException("A name must be inputted");
-        }
+    public User(String universityEmail, long universityId, Timetable timetable) throws IllegalArgumentException {
         if(!(Pattern.matches(universityEmailRegex, universityEmail.toLowerCase())) && !(Pattern.matches(oldUniversityEmailRegex, universityEmail.toLowerCase()))) {
             throw new IllegalArgumentException("You must input a university of galway email address");
         }
         if(universityId<1) {
             throw new IllegalArgumentException("The ID must be a positive integer");
         }
-        this.name = name;
         this.universityEmail = universityEmail;
         this.universityId = universityId;
         this.timetable = timetable;
@@ -58,7 +52,7 @@ public abstract class User {
 
     @Override
     public String toString() {
-        return String.format("%s[name='%s', email='%s', id='%d']", this.getClass(), this.name, this.universityEmail, this.universityId);
+        return String.format("%s[email='%s', id='%d']", this.getClass(), this.universityEmail, this.universityId);
     }
 
     @Override
@@ -68,10 +62,6 @@ public abstract class User {
         } else {
             return false;
         }
-    }
-
-    public String getName() {
-        return name;
     }
 
     public String getUniversityEmail() {

@@ -19,13 +19,10 @@ public class AddStudentUseCase implements UseCase<AddStudentResponse, AddStudent
     @Override
     public AddStudentResponse execute(AddStudentRequest addStudentRequest) {
         try {
-            if(addStudentRequest.name().isEmpty()) {
-                throw new IllegalArgumentException("The provided name for the student is invalid.");
-            }
             if (addStudentRequest.email().isEmpty()) {
                 throw new IllegalArgumentException("The provided email is empty.");
             }
-            Student student = new Student(addStudentRequest.name(), addStudentRequest.email(), addStudentRequest.studentId());
+            Student student = new Student(addStudentRequest.email(), addStudentRequest.studentId());
             this.studentRepository.saveStudent(student);
             return new AddStudentResponse();
 

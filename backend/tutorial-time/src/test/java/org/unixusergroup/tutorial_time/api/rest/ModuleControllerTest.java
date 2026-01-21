@@ -35,7 +35,7 @@ public class ModuleControllerTest {
         StudentRepository studentRepository = new InMemoryStudentRepository();
 
         /** Creating a lecturer and adding it to the test lecturer repo. */
-        Lecturer lecturer = new Lecturer("Johnny test", "j.test@nuigalway.ie", 10002);
+        Lecturer lecturer = new Lecturer("j.test@nuigalway.ie", 10002);
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
         lecturerRepository.saveLecturer(lecturer);
 
@@ -88,7 +88,7 @@ public class ModuleControllerTest {
         StudentRepository studentRepository = new InMemoryStudentRepository();
 
         /** Creating a lecturer and adding it to the test lecturer repo. */
-        Lecturer lecturer = new Lecturer("Johnny test", "j.test@nuigalway.ie", 10002);
+        Lecturer lecturer = new Lecturer("j.test@nuigalway.ie", 10002);
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
         lecturerRepository.saveLecturer(lecturer);
 
@@ -109,7 +109,7 @@ public class ModuleControllerTest {
     void getModuleAccessTest() {
         /* Set up repository and controller */        
         ModuleRepository moduleRepository = new InMemoryModuleRepository();
-        Lecturer lecturer = new Lecturer("Johnny test", "j.test@nuigalway.ie", 10002);
+        Lecturer lecturer = new Lecturer("j.test@nuigalway.ie", 10002);
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
         StudentRepository studentRepository = new InMemoryStudentRepository();
         ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
@@ -140,7 +140,7 @@ public class ModuleControllerTest {
         ModuleRepository moduleRepository = new InMemoryModuleRepository();
 
         /** Creating a lecturer and adding it to the test lecturer repo. */
-        Lecturer lecturer = new Lecturer("Johnny test", "j.test@nuigalway.ie", 10002);
+        Lecturer lecturer = new Lecturer("j.test@nuigalway.ie", 10002);
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
         lecturerRepository.saveLecturer(lecturer);
 
@@ -172,7 +172,7 @@ public class ModuleControllerTest {
     void getModulesAccessTest() {
         /* Set up repository and controller */        
         ModuleRepository moduleRepository = new InMemoryModuleRepository();
-        Lecturer lecturer = new Lecturer("Johnny test", "j.test@nuigalway.ie", 10002);
+        Lecturer lecturer = new Lecturer("j.test@nuigalway.ie", 10002);
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
         StudentRepository studentRepository = new InMemoryStudentRepository();
         ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);

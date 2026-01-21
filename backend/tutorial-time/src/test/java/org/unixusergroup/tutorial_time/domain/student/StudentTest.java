@@ -14,7 +14,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class StudentTest {
-    String name = "Johnny Test Jr";
     String email = "j.test1@universityofgalway.ie";
     long id = 10000L;
     Timetable timetable = new Timetable();
@@ -25,7 +24,6 @@ public class StudentTest {
     @Test
     public void testEmptyConstructor() {
         Student student = new Student();
-        assertNull(student.getName());
         assertEquals(0, student.getUniversityId());
         assertNull(student.getUniversityEmail());
         assertNull(student.getTimetable());
@@ -36,8 +34,7 @@ public class StudentTest {
      */
     @Test
     public void testConstructorNoTimetable() {
-        Student student = new Student(name, email, id);
-        assertEquals(name, student.getName());
+        Student student = new Student(email, id);
         assertEquals(email, student.getUniversityEmail());
         assertEquals(id, student.getUniversityId());
         assertEquals(timetable, student.getTimetable());
@@ -49,8 +46,7 @@ public class StudentTest {
     @Test
     public void testFullConstructor() {
         timetable.setAvailability(0,0, Availability.AVAILABLE);
-        Student student = new Student(name, "j.test1@nuigalway.ie", id, timetable);
-        assertEquals(name, student.getName());
+        Student student = new Student("j.test1@nuigalway.ie", id, timetable);
         assertEquals("j.test1@nuigalway.ie", student.getUniversityEmail());
         assertEquals(id, student.getUniversityId());
         assertEquals(timetable, student.getTimetable());

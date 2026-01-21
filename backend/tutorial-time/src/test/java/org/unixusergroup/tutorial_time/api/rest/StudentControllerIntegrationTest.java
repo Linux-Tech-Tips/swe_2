@@ -45,7 +45,7 @@ public class StudentControllerIntegrationTest {
 
     @BeforeEach
     private void configure() {
-        Student student = new Student("Test Student", "t.student1@universityofgalway.ie", 123456);
+        Student student = new Student("t.student1@universityofgalway.ie", 123456);
         mockStudentRepository.saveStudent(student);
     }
 
@@ -88,8 +88,7 @@ public class StudentControllerIntegrationTest {
                    .andExpect(status()
                               .isOk())
                    .andExpect(content()
-                              .json("{\"name\": \"Test Student\"," +
-                                    " \"universityEmail\": \"t.student1@universityofgalway.ie\"," +
+                              .json("{\"universityEmail\": \"t.student1@universityofgalway.ie\"," +
                                     " \"universityId\": 123456}"));
         } catch(Exception e) {
             System.out.println(e);
@@ -122,7 +121,6 @@ public class StudentControllerIntegrationTest {
         try {
             /* Testing that creating a valid student works as expected using the API call */
             mockMvc.perform(post("/api/student/createstudent")
-                            .param("name", "John Doe")
                             .param("email", "john.doe@universityofgalway.ie")
                             .param("studentId", "654321")
                             .with(authentication(createMockJwtToken("654321", "Student")))
@@ -130,7 +128,7 @@ public class StudentControllerIntegrationTest {
                    .andExpect(status().is(200));
             /* Verify that the student was added */
             Student savedStudent = mockStudentRepository.getStudentById(654321);
-            assertEquals(savedStudent, new Student("John Doe", "john.doe@universityofgalway.ie", 654321));
+            assertEquals(savedStudent, new Student("john.doe@universityofgalway.ie", 654321));
         } catch(Exception e) {
             System.out.println(e);
         }
@@ -139,17 +137,8 @@ public class StudentControllerIntegrationTest {
     @Test
     public void createStudentInvalidIntegrationTest() {
         try {
-            /* Testing that creating a student with an empty name doesn't work */
-            mockMvc.perform(post("/api/student/createstudent")
-                            .param("name", "")
-                            .param("email", "john.doe@universityofgalway.ie")
-                            .param("studentId", "754321")
-                            .with(authentication(createMockJwtToken("754321", "Student")))
-                            .with(csrf()))
-                   .andExpect(status().is(500));
             /* Testing that creating a student with an empty email doesn't work */
             mockMvc.perform(post("/api/student/createstudent")
-                            .param("name", "Jane Doe")
                             .param("email", "")
                             .param("studentId", "754321")
                             .with(authentication(createMockJwtToken("754321", "Student")))
@@ -157,7 +146,6 @@ public class StudentControllerIntegrationTest {
                    .andExpect(status().is(500));
             /* Testing that creating a student with an invalid email doesn't work */
             mockMvc.perform(post("/api/student/createstudent")
-                            .param("name", "Jane Doe")
                             .param("email", "jane.doe@mail.com") // must be an NUI address
                             .param("studentId", "754321")
                             .with(authentication(createMockJwtToken("754321", "Student")))
@@ -165,7 +153,6 @@ public class StudentControllerIntegrationTest {
                    .andExpect(status().is(500));
             /* Testing that creating a student without proper params doesn't work */
             mockMvc.perform(post("/api/student/createstudent")
-                            .param("name", "Jane Doe")
                             .param("email", "jane.doe@universityofgalway.ie")
                             .with(authentication(createMockJwtToken("", "Student")))
                             .with(csrf()))
@@ -291,7 +278,7 @@ public class StudentControllerIntegrationTest {
                    .andExpect(status().is(400));
             /* Testing that if malformed student created in database, obtaining their timetable fails */
             Timetable invalidTimetable = new Timetable(5, 5, Availability.AVAILABLE);
-            Student invalidStudent = new Student("John Test", "john.test@universityofgalway.ie", 11111, invalidTimetable);
+            Student invalidStudent = new Student("john.test@universityofgalway.ie", 11111, invalidTimetable);
             mockStudentRepository.saveStudent(invalidStudent);
             mockMvc.perform(post("/api/student/gettimetable")
                             .param("studentId", "11111")

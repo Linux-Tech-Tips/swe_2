@@ -21,7 +21,7 @@ public class GetStudentUseCaseTest {
 
     @BeforeEach
     void setUp() {
-        student = new Student("Susan Test", "s.test@nuigalway.ie", 20004);
+        student = new Student("s.test@nuigalway.ie", 20004);
         studentRepository.saveStudent(student);
     }
 
