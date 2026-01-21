@@ -32,10 +32,7 @@ const UserSettings = ({ onLogout }) => {
        <h2 className={styles.cardTitle}> Your Profile </h2>
        <p className={styles.cardDescription}> Edit your data, delete your account, or opt out of emails here. To save any changes, press the save button. <br/></p>
          <div>
-           Username: {authContext.auth.name} <br/>
-         </div>
-         <div>
-           Your ID: {authContext.auth.uni_id} <br/>
+           Your ID: {authContext.auth.id} <br/>
          </div>
          <div>
            Your university email address: {authContext.auth.email} <br/>
