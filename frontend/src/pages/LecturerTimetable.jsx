@@ -299,6 +299,10 @@ const LecturerTimetable = ({ onLogout }) => {
             <PlusIcon className={styles.navIcon} />
             Create New Module
           </button>
+          <button onClick={() => navigate("/user-settings")} className={styles.navButton}>
+            <UserCogIcon className={styles.navIcon} />
+            User Settings
+          </button>
           <button onClick={onLogout} className={styles.navButton}>
             <UserIcon className={styles.navIcon} />
             Sign Out
