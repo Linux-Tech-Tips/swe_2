@@ -25,7 +25,7 @@ class LecturerControllerTest {
     void createLecturerTimetableTest() {
         /* Setting up in-memory repository with demo lecturer */
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
-        lecturerRepository.saveLecturer(new Lecturer("Jane Doe", "jane.doe@universityofgalway.ie", 654321));
+        lecturerRepository.saveLecturer(new Lecturer("jane.doe@universityofgalway.ie", 654321));
 
         /* Creating timetable */
         LecturerController controller = new LecturerController(lecturerRepository);
@@ -99,7 +99,7 @@ class LecturerControllerTest {
                 timetable.setAvailability(col, row, availability[timetable.getFlatIndex(col, row)] == 0 ? Availability.UNAVAILABLE : Availability.AVAILABLE);
             }
         }
-        lecturerRepository.saveLecturer(new Lecturer("Jane Doe", "jane.doe@universityofgalway.ie", 654321, timetable));
+        lecturerRepository.saveLecturer(new Lecturer("jane.doe@universityofgalway.ie", 654321, timetable));
 
         /* Getting timetable */
         LecturerController controller = new LecturerController(lecturerRepository);
@@ -149,8 +149,8 @@ class LecturerControllerTest {
     void addLecturerToRepository() {
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
         LecturerController controller = new LecturerController(lecturerRepository);
-        Lecturer expectedLecturer = new Lecturer("Jonny test", "j.test@nuigalway.ie", 1002);
-        ResponseEntity<?> response = controller.addLecturer(createMockJwtToken("1002", "Lecturer"), "Jonny test", "j.test@nuigalway.ie", 1002);
+        Lecturer expectedLecturer = new Lecturer("j.test@nuigalway.ie", 1002);
+        ResponseEntity<?> response = controller.addLecturer(createMockJwtToken("1002", "Lecturer"), "j.test@nuigalway.ie", 1002);
         assertEquals(HttpStatus.OK, response.getStatusCode());
 
         Lecturer retrievedLecturer = lecturerRepository.getLecturerById(1002);
@@ -165,11 +165,11 @@ class LecturerControllerTest {
         LecturerController controller = new LecturerController(lecturerRepository);
 
         /* Test unauthorized with no ID */
-        ResponseEntity<?> response1 = controller.addLecturer(createMockJwtToken("", "Lecturer"), "Jonny test", "j.test@nuigalway.ie", 1002);
+        ResponseEntity<?> response1 = controller.addLecturer(createMockJwtToken("", "Lecturer"), "j.test@nuigalway.ie", 1002);
         assertEquals(HttpStatus.FORBIDDEN, response1.getStatusCode());
 
         /* Test unauthorized with incorrect ID */
-        ResponseEntity<?> response2 = controller.addLecturer(createMockJwtToken("1001", "Lecturer"), "Jonny test", "j.test@nuigalway.ie", 1002);
+        ResponseEntity<?> response2 = controller.addLecturer(createMockJwtToken("1001", "Lecturer"), "j.test@nuigalway.ie", 1002);
         assertEquals(HttpStatus.FORBIDDEN, response2.getStatusCode());
     }
 
@@ -178,7 +178,7 @@ class LecturerControllerTest {
     void failedAddLecturerToRepository() {
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
         LecturerController controller = new LecturerController(lecturerRepository);
-        ResponseEntity<?> response = controller.addLecturer(createMockJwtToken("0", "Lecturer"), "Johnny Test", "j.test@nuigalway.ie", 0L);
+        ResponseEntity<?> response = controller.addLecturer(createMockJwtToken("0", "Lecturer"), "j.test@nuigalway.ie", 0L);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
@@ -186,7 +186,7 @@ class LecturerControllerTest {
     void retrieveLecturerFromRepository() {
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
         LecturerController controller = new LecturerController(lecturerRepository);
-        Lecturer expectedLecturer = new Lecturer("Jonny test", "johnny.test@nuigalway.ie", 1002);
+        Lecturer expectedLecturer = new Lecturer("johnny.test@nuigalway.ie", 1002);
         lecturerRepository.saveLecturer(expectedLecturer);
 
         ResponseEntity<?> response = controller.getLecturer(createMockJwtToken("1002", "Lecturer"), 1002);

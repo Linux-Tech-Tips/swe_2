@@ -45,7 +45,7 @@ public class LecturerControllerIntegrationTest {
 
     @BeforeEach
     private void configure() {
-        Lecturer lecturer = new Lecturer("Test Lecturer", "test.lecturer@universityofgalway.ie", 123456);
+        Lecturer lecturer = new Lecturer("test.lecturer@universityofgalway.ie", 123456);
         mockLecturerRepository.saveLecturer(lecturer);
     }
 
@@ -87,8 +87,7 @@ public class LecturerControllerIntegrationTest {
                    .andExpect(status()
                               .isOk())
                    .andExpect(content()
-                              .json("{\"name\": \"Test Lecturer\"," +
-                                    " \"universityEmail\": \"test.lecturer@universityofgalway.ie\"," +
+                              .json("{\"universityEmail\": \"test.lecturer@universityofgalway.ie\"," +
                                     " \"universityId\": 123456}"));
         } catch(Exception e) {
             System.out.println(e);
@@ -121,7 +120,6 @@ public class LecturerControllerIntegrationTest {
         try {
             /* Testing that creating a valid lecturer works as expected using the API call */
             mockMvc.perform(post("/api/lecturer/createlecturer")
-                            .param("name", "John Doe")
                             .param("email", "john.doe@universityofgalway.ie")
                             .param("staffId", "654321")
                             .with(authentication(createMockJwtToken("654321", "Lecturer")))
@@ -129,7 +127,7 @@ public class LecturerControllerIntegrationTest {
                    .andExpect(status().is(200));
             /* Verify that the lecturer was added */
             Lecturer savedLecturer = mockLecturerRepository.getLecturerById(654321);
-            assertEquals(savedLecturer, new Lecturer("John Doe", "john.doe@universityofgalway.ie", 654321));
+            assertEquals(savedLecturer, new Lecturer("john.doe@universityofgalway.ie", 654321));
         } catch(Exception e) {
             System.out.println(e);
         }
@@ -138,17 +136,8 @@ public class LecturerControllerIntegrationTest {
     @Test
     public void createLecturerInvalidIntegrationTest() {
         try {
-            /* Testing that creating a lecturer with an empty name doesn't work */
-            mockMvc.perform(post("/api/lecturer/createlecturer")
-                            .param("name", "")
-                            .param("email", "john.doe@universityofgalway.ie")
-                            .param("staffId", "754321")
-                            .with(authentication(createMockJwtToken("754321", "Lecturer")))
-                            .with(csrf()))
-                   .andExpect(status().is(500));
             /* Testing that creating a lecturer with an empty email doesn't work */
             mockMvc.perform(post("/api/lecturer/createlecturer")
-                            .param("name", "Jane Doe")
                             .param("email", "")
                             .param("staffId", "754321")
                             .with(authentication(createMockJwtToken("754321", "Lecturer")))
@@ -156,7 +145,6 @@ public class LecturerControllerIntegrationTest {
                    .andExpect(status().is(500));
             /* Testing that creating a lecturer with an invalid email doesn't work */
             mockMvc.perform(post("/api/lecturer/createlecturer")
-                            .param("name", "Jane Doe")
                             .param("email", "jane.doe@mail.com") // must be an NUI address
                             .param("staffId", "754321")
                             .with(authentication(createMockJwtToken("754321", "Lecturer")))
@@ -164,7 +152,6 @@ public class LecturerControllerIntegrationTest {
                    .andExpect(status().is(500));
             /* Testing that creating a lecturer without proper params doesn't work */
             mockMvc.perform(post("/api/lecturer/createlecturer")
-                            .param("name", "Jane Doe")
                             .param("email", "jane.doe@universityofgalway.ie")
                             .with(authentication(createMockJwtToken("", "Lecturer")))
                             .with(csrf()))
@@ -290,7 +277,7 @@ public class LecturerControllerIntegrationTest {
                    .andExpect(status().is(400));
             /* Testing that if malformed lecturer created in database, obtaining their timetable fails */
             Timetable invalidTimetable = new Timetable(5, 5, Availability.AVAILABLE);
-            Lecturer invalidLecturer = new Lecturer("John Test", "john.test@universityofgalway.ie", 11111, invalidTimetable);
+            Lecturer invalidLecturer = new Lecturer("john.test@universityofgalway.ie", 11111, invalidTimetable);
             mockLecturerRepository.saveLecturer(invalidLecturer);
             mockMvc.perform(post("/api/lecturer/gettimetable")
                             .param("staffId", "11111")

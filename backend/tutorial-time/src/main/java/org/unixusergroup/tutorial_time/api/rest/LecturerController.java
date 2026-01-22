@@ -37,14 +37,13 @@ public class LecturerController {
      * Create Lecturer API mapping (/api/lecturer/createlecturer).
      *
      * This API call creates a new lecturer with the given parameters and saves them into the database.
-     * @param name The name of the new lecturer
      * @param email The email of the new lecturer (must be a universityofgalway.ie or nuigalway.ie address)
      * @param staffId The University Staff ID of the new lecturer
      * @return HTTP status of 200 when created successfully,
      *         HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/createlecturer")
-    public ResponseEntity<?> addLecturer(Authentication authentication, @RequestParam String name, @RequestParam String email, @RequestParam long staffId) {
+    public ResponseEntity<?> addLecturer(Authentication authentication, @RequestParam String email, @RequestParam long staffId) {
         try {
             /* Ensure that a lecturer can only modify their own details */
             Jwt authPrincipal = (Jwt)(authentication.getPrincipal());
@@ -58,7 +57,7 @@ public class LecturerController {
 
             /* If allowed, execute actual API call */
             AddLecturerUseCase addLecturerUseCase = new AddLecturerUseCase(this.lecturerRepository);
-            AddLecturerRequest addLecturerRequest = new AddLecturerRequest(name, email, staffId);
+            AddLecturerRequest addLecturerRequest = new AddLecturerRequest(email, staffId);
             AddLecturerResponse response = addLecturerUseCase.execute(addLecturerRequest);
 
             if(response.ok()) {

@@ -37,14 +37,13 @@ public class StudentController {
      * Create Student API mapping (/api/student/createstudent).
      *
      * This API call creates a new student with the given parameters and saves them into the database.
-     * @param name The name of the new student
      * @param email The email of the new student (must be a universityofgalway.ie or nuigalway.ie address)
      * @param studentId The University Student ID of the new student
      * @return HTTP status of 200 when created successfully,
      *         HTTP status of 500 and the error message when any other error occurs
      */
     @PostMapping(path="/createstudent")
-    public ResponseEntity<?> addStudent(Authentication authentication, @RequestParam String name, @RequestParam String email, @RequestParam long studentId) {
+    public ResponseEntity<?> addStudent(Authentication authentication, @RequestParam String email, @RequestParam long studentId) {
         try {
             /* Ensure that only an authorized student can update their records */
             Jwt authPrincipal = (Jwt)(authentication.getPrincipal());
@@ -57,7 +56,7 @@ public class StudentController {
             }
 
             /* If authorized, execute the actual API call */
-            AddStudentRequest addStudentRequest = new AddStudentRequest(name, email, studentId);
+            AddStudentRequest addStudentRequest = new AddStudentRequest(email, studentId);
             AddStudentUseCase addStudentUseCase = new AddStudentUseCase(this.studentRepository);
             AddStudentResponse response = addStudentUseCase.execute(addStudentRequest);
 

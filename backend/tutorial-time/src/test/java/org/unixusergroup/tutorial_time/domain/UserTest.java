@@ -17,26 +17,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SpringBootTest
 public class UserTest {
-    String name = "Johnny Test Jr";
     String email = "j.test1@universityofgalway.ie";
     long id = 10000L;
     Timetable timetable = new Timetable();
-    Student student = new Student(name, email, id, timetable);
-
-    /**
-     * test inputting an empty name string
-     */
-    @Test
-    public void testInvalidName() {
-        assertThrows(IllegalArgumentException.class, () -> new Student("", email, id, timetable));
-    }
+    Student student = new Student(email, id, timetable);
 
     /**
      * test putting in a non-university email address
      */
     @Test
     public void testInvalidEmail() {
-        assertThrows(IllegalArgumentException.class, () -> new Student(name, "johnTest@gmail.com", id, timetable));
+        assertThrows(IllegalArgumentException.class, () -> new Student("johnTest@gmail.com", id, timetable));
     }
 
     /** 
@@ -44,10 +35,10 @@ public class UserTest {
      */
     @Test
     public void testUppercaseEmail() {
-        assertDoesNotThrow(() -> new Student(name, "j.test1@UniversityOfGalway.ie", id, timetable));
-        assertDoesNotThrow(() -> new Lecturer(name, "j.test1@UniversityOfGalway.ie", id, timetable));
-        assertDoesNotThrow(() -> new Student(name, "j.test1@UNIVERSITYOFGALWAY.IE", id, timetable));
-        assertDoesNotThrow(() -> new Student(name, "j.test1@universityOfGalway.ie", id, timetable));
+        assertDoesNotThrow(() -> new Student("j.test1@UniversityOfGalway.ie", id, timetable));
+        assertDoesNotThrow(() -> new Lecturer("j.test1@UniversityOfGalway.ie", id, timetable));
+        assertDoesNotThrow(() -> new Student("j.test1@UNIVERSITYOFGALWAY.IE", id, timetable));
+        assertDoesNotThrow(() -> new Student("j.test1@universityOfGalway.ie", id, timetable));
     }
 
     /**
@@ -55,7 +46,7 @@ public class UserTest {
      */
     @Test
     public void testInvalidId() {
-        assertThrows(IllegalArgumentException.class, () -> new Student(name, email, -11L, timetable));
+        assertThrows(IllegalArgumentException.class, () -> new Student(email, -11L, timetable));
     }
 
     /**
@@ -63,7 +54,7 @@ public class UserTest {
      */
     @Test
     public void testToString() {
-        assertEquals("class org.unixusergroup.tutorial_time.domain.student.Student[name='Johnny Test Jr', email='j.test1@universityofgalway.ie', id='10000']", student.toString());
+        assertEquals("class org.unixusergroup.tutorial_time.domain.student.Student[email='j.test1@universityofgalway.ie', id='10000']", student.toString());
     }
 
     /**
@@ -71,7 +62,7 @@ public class UserTest {
      */
     @Test
     public void testEquals() {
-        Student student2 = new Student("Bobby Test", "b.test2@nuigalway.ie",  10000L);
+        Student student2 = new Student("b.test2@nuigalway.ie",  10000L);
         assertEquals(student, student2);
     }
 
@@ -80,7 +71,7 @@ public class UserTest {
      */
     @Test
     public void testNotEquals() {
-        Student student2 = new Student(name, email,  20000L);
+        Student student2 = new Student(email,  20000L);
         assertNotEquals(student, student2);
     }
 

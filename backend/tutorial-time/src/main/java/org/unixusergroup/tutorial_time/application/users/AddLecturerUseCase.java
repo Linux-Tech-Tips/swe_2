@@ -16,13 +16,10 @@ public class AddLecturerUseCase implements UseCase<AddLecturerResponse, AddLectu
     @Override
     public AddLecturerResponse execute(AddLecturerRequest addLecturerRequest) {
         try {
-            if (addLecturerRequest.name().isEmpty()) {
-                throw new IllegalArgumentException("The provided name for the lecturer is invalid.");
-            }
             if (addLecturerRequest.email().isEmpty()) {
                 throw new IllegalArgumentException("The provided email is empty.");
             }
-            Lecturer lecturer = new Lecturer(addLecturerRequest.name(), addLecturerRequest.email(), addLecturerRequest.staffId());
+            Lecturer lecturer = new Lecturer(addLecturerRequest.email(), addLecturerRequest.staffId());
             this.lecturerRepository.saveLecturer(lecturer);
             return new AddLecturerResponse();
         } catch (Exception e) {
