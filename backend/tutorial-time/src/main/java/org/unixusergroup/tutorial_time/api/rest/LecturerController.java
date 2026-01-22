@@ -14,6 +14,7 @@ import org.unixusergroup.tutorial_time.domain.User;
 import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
 import org.unixusergroup.tutorial_time.application.common.UseCase;
 import org.unixusergroup.tutorial_time.application.users.dto.*;
+import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
 import org.unixusergroup.tutorial_time.infrastructure.ProjectConfiguration;
 
 /** 
@@ -27,10 +28,12 @@ import org.unixusergroup.tutorial_time.infrastructure.ProjectConfiguration;
 public class LecturerController {
 
     private final LecturerRepository lecturerRepository;
+    private final ModuleRepository moduleRepository;
 
     /** Constructor, requires a LecturerRepository instance to save and load Lecturers */
-    public LecturerController(LecturerRepository lecturerRepository) {
+    public LecturerController(LecturerRepository lecturerRepository, ModuleRepository moduleRepository) {
         this.lecturerRepository = lecturerRepository;
+        this.moduleRepository = moduleRepository;
     }
 
     /** 
@@ -131,7 +134,7 @@ public class LecturerController {
 
             /* If allowed, execute actual API call */
             DeleteLecturerRequest request = new DeleteLecturerRequest(staffId);
-            DeleteLecturerUseCase deleteLecturerUseCase = new DeleteLecturerUseCase(lecturerRepository);
+            DeleteLecturerUseCase deleteLecturerUseCase = new DeleteLecturerUseCase(lecturerRepository, moduleRepository);
 
             deleteLecturerUseCase.execute(request);
             return ResponseEntity.status(HttpStatus.OK).body("Lecturer was deleted successfully");

@@ -22,7 +22,7 @@ public class DeleteStudentUseCaseTest {
     /** test removing a student */
     @Test
     public void validStudentRemovalTest() {
-        AddStudentRequest addStudentRequest = new AddStudentRequest("Jonny Test", "j@nuigalway.ie", 2000);
+        AddStudentRequest addStudentRequest = new AddStudentRequest("j.test@nuigalway.ie", 2000);
         AddStudentUseCase addStudentUseCase = new AddStudentUseCase(this.studentRepository);
         addStudentUseCase.execute(addStudentRequest);
 

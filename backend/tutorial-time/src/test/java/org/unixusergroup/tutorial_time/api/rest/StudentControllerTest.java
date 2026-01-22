@@ -223,7 +223,7 @@ class StudentControllerTest {
     void deleteStudentTest() {
         StudentRepository studentRepository = new InMemoryStudentRepository();
         StudentController controller = new StudentController(studentRepository);
-        controller.addStudent(createMockJwtToken("1002", "Student"), "Jonny test", "j.test@nuigalway.ie", 1002);
+        controller.addStudent(createMockJwtToken("1002", "Student"), "j.test@nuigalway.ie",  1002);
 
         ResponseEntity<?> response = controller.deleteStudent(createMockJwtToken("1002", "Student"), 1002);
         assertEquals(HttpStatus.OK, response.getStatusCode());

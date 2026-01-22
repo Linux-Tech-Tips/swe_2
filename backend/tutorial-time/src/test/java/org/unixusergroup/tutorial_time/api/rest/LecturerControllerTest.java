@@ -11,10 +11,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
+import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
 import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 import org.unixusergroup.tutorial_time.domain.timetable.Availability;
 import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
 import org.unixusergroup.tutorial_time.infrastructure.InMemoryLecturerRepository;
+import org.unixusergroup.tutorial_time.infrastructure.InMemoryModuleRepository;
+
 import static org.unixusergroup.tutorial_time.api.rest.MockAuthUtil.createMockJwtToken;
 
 @SpringBootTest
@@ -25,10 +28,11 @@ class LecturerControllerTest {
     void createLecturerTimetableTest() {
         /* Setting up in-memory repository with demo lecturer */
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
         lecturerRepository.saveLecturer(new Lecturer("jane.doe@universityofgalway.ie", 654321));
 
         /* Creating timetable */
-        LecturerController controller = new LecturerController(lecturerRepository);
+        LecturerController controller = new LecturerController(lecturerRepository, moduleRepository);
         int[] availability = new int[] { 1, 1, 0, 1, 1,
                                          0, 1, 1, 0, 1,
                                          0, 0, 1, 0, 1,
@@ -49,7 +53,8 @@ class LecturerControllerTest {
     void createLecturerTimetableAccessTest() {
         /* Set up repository and controller */        
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
-        LecturerController controller = new LecturerController(lecturerRepository);
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+        LecturerController controller = new LecturerController(lecturerRepository, moduleRepository);
 
         /* Test unauthorized with no ID */
         ResponseEntity<?> response1 = controller.createLecturerTimetable(createMockJwtToken("", "Lecturer"), 654321, new int[] {});
@@ -65,9 +70,10 @@ class LecturerControllerTest {
     void failedCreateLecturerTimetableTest() {
         /* Setting up in-memory repository with demo lecturer */
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
 
         /* Creating timetable */
-        LecturerController controller = new LecturerController(lecturerRepository);
+        LecturerController controller = new LecturerController(lecturerRepository, moduleRepository);
         int[] availability = new int[] { 1, 1, 0, 1, 1,
                 0, 1, 1, 0, 1,
                 0, 0, 1, 0, 1,
@@ -102,7 +108,8 @@ class LecturerControllerTest {
         lecturerRepository.saveLecturer(new Lecturer("jane.doe@universityofgalway.ie", 654321, timetable));
 
         /* Getting timetable */
-        LecturerController controller = new LecturerController(lecturerRepository);
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+        LecturerController controller = new LecturerController(lecturerRepository, moduleRepository);
         ResponseEntity<?> response = controller.getLecturerTimetable(createMockJwtToken("654321", "Lecturer"), 654321);
 
         /* Verifying that status is OK and that the returned array is the same as the saved array */
@@ -120,9 +127,10 @@ class LecturerControllerTest {
     /** Test that unauthorized access to getLecturerTimetable is not allowed */
     @Test
     void getLecturerTimetableAccessTest() {
-        /* Set up repository and controller */        
+        /* Set up repository and controller */
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
-        LecturerController controller = new LecturerController(lecturerRepository);
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+        LecturerController controller = new LecturerController(lecturerRepository, moduleRepository);
 
         /* Test unauthorized with no ID */
         ResponseEntity<?> response1 = controller.getLecturerTimetable(createMockJwtToken("", "Lecturer"), 654321);
@@ -138,8 +146,8 @@ class LecturerControllerTest {
     void failedGetLecturerTimetableTest() {
         /* Setting up in-memory repository */
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
-
-        LecturerController controller = new LecturerController(lecturerRepository);
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+        LecturerController controller = new LecturerController(lecturerRepository, moduleRepository);
         ResponseEntity<?> response = controller.getLecturerTimetable(createMockJwtToken("0", "Lecturer"), 0L);
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
@@ -148,7 +156,8 @@ class LecturerControllerTest {
     @Test
     void addLecturerToRepository() {
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
-        LecturerController controller = new LecturerController(lecturerRepository);
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+        LecturerController controller = new LecturerController(lecturerRepository, moduleRepository);
         Lecturer expectedLecturer = new Lecturer("j.test@nuigalway.ie", 1002);
         ResponseEntity<?> response = controller.addLecturer(createMockJwtToken("1002", "Lecturer"), "j.test@nuigalway.ie", 1002);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -162,7 +171,8 @@ class LecturerControllerTest {
     void addLecturerToRepositoryAccessTest() {
         /* Set up repository and controller */        
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
-        LecturerController controller = new LecturerController(lecturerRepository);
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+        LecturerController controller = new LecturerController(lecturerRepository, moduleRepository);
 
         /* Test unauthorized with no ID */
         ResponseEntity<?> response1 = controller.addLecturer(createMockJwtToken("", "Lecturer"), "j.test@nuigalway.ie", 1002);
@@ -177,7 +187,8 @@ class LecturerControllerTest {
     @Test
     void failedAddLecturerToRepository() {
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
-        LecturerController controller = new LecturerController(lecturerRepository);
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+        LecturerController controller = new LecturerController(lecturerRepository, moduleRepository);
         ResponseEntity<?> response = controller.addLecturer(createMockJwtToken("0", "Lecturer"), "j.test@nuigalway.ie", 0L);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
@@ -185,7 +196,8 @@ class LecturerControllerTest {
     @Test
     void retrieveLecturerFromRepository() {
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
-        LecturerController controller = new LecturerController(lecturerRepository);
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+        LecturerController controller = new LecturerController(lecturerRepository, moduleRepository);
         Lecturer expectedLecturer = new Lecturer("johnny.test@nuigalway.ie", 1002);
         lecturerRepository.saveLecturer(expectedLecturer);
 
@@ -199,7 +211,8 @@ class LecturerControllerTest {
     void retrieveLecturerFromRepositoryAccessTest() {
         /* Set up repository and controller */        
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
-        LecturerController controller = new LecturerController(lecturerRepository);
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+        LecturerController controller = new LecturerController(lecturerRepository, moduleRepository);
 
         /* Test unauthorized with no ID */
         ResponseEntity<?> response1 = controller.getLecturer(createMockJwtToken("", "Lecturer"), 1002);
@@ -213,7 +226,8 @@ class LecturerControllerTest {
     @Test
     void failedRetrieveLecturerFromRepository() {
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
-        LecturerController controller = new LecturerController(lecturerRepository);
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+        LecturerController controller = new LecturerController(lecturerRepository, moduleRepository);
         ResponseEntity<?> response = controller.getLecturer(createMockJwtToken("1002", "Lecturer"), 1002);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
@@ -222,8 +236,9 @@ class LecturerControllerTest {
     @Test
     void deleteLecturerTest() {
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
-        LecturerController controller = new LecturerController(lecturerRepository);
-        controller.addLecturer(createMockJwtToken("1002", "Lecturer"), "Jonny test", "j.test@nuigalway.ie", 1002);
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+        LecturerController controller = new LecturerController(lecturerRepository, moduleRepository);
+        controller.addLecturer(createMockJwtToken("1002", "Lecturer"), "j.test@nuigalway.ie", 1002);
 
         ResponseEntity<?> response = controller.deleteLecturer(createMockJwtToken("1002", "Lecturer"), 1002);
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -236,7 +251,8 @@ class LecturerControllerTest {
     void deleteLecturerAccessTest() {
         /* Set up repository and controller */
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
-        LecturerController controller = new LecturerController(lecturerRepository);
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+        LecturerController controller = new LecturerController(lecturerRepository, moduleRepository);
 
         /* Test unauthorized with no ID */
         ResponseEntity<?> response1 = controller.deleteLecturer(createMockJwtToken("", "Lecturer"), 1002);
@@ -251,7 +267,8 @@ class LecturerControllerTest {
     @Test
     void failedDeleteLecturerTest() {
         LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
-        LecturerController controller = new LecturerController(lecturerRepository);
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+        LecturerController controller = new LecturerController(lecturerRepository, moduleRepository);
 
         ResponseEntity<?> response = controller.deleteLecturer(createMockJwtToken("1002", "Lecturer"), 1002);
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());

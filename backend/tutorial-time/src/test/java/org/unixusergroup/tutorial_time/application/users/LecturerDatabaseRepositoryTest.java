@@ -26,7 +26,7 @@ public class LecturerDatabaseRepositoryTest {
     @BeforeEach
     void setup() {
         lecturerPersistenceAdapter = new LecturerPersistenceAdapter(lecturerJPARepository);
-        Lecturer testLecturer = new Lecturer("j.test@nuigalway.ie", 10002);
+        testLecturer = new Lecturer("j.test@nuigalway.ie", 10002);
         Lecturer testLecturer1 = new Lecturer("L.tests@nuigalway.ie", 12342);
         lecturerPersistenceAdapter.saveLecturer(testLecturer);
         lecturerPersistenceAdapter.saveLecturer(testLecturer1);

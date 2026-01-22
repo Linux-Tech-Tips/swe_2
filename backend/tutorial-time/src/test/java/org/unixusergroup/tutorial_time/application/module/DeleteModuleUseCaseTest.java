@@ -31,12 +31,12 @@ public class DeleteModuleUseCaseTest {
     /** test removing a module */
     @Test
     public void validModuleRemovalTest() {
-        CreateModuleRequest createModuleRequest = new CreateModuleRequest("MA180", new ArrayList<>(), new ArrayList<>(), 2000L);
-        CreateModuleUseCase createModuleUseCase = new CreateModuleUseCase(this.moduleRepository, this.studentRepository, this.lecturerRepository);
-        AddLecturerRequest addLecturerRequest = new AddLecturerRequest("Jonny Test", "j@nuigalway.ie", 2000);
+        AddLecturerRequest addLecturerRequest = new AddLecturerRequest("j.test@nuigalway.ie",  2000L);
         AddLecturerUseCase addLecturerUseCase = new AddLecturerUseCase(this.lecturerRepository);
         addLecturerUseCase.execute(addLecturerRequest);
 
+        CreateModuleRequest createModuleRequest = new CreateModuleRequest("MA180", new ArrayList<>(), new ArrayList<>(), 2000L);
+        CreateModuleUseCase createModuleUseCase = new CreateModuleUseCase(this.moduleRepository, this.studentRepository, this.lecturerRepository);
         createModuleUseCase.execute(createModuleRequest);
 
         DeleteModuleRequest deleteModuleRequest = new DeleteModuleRequest("MA180");
