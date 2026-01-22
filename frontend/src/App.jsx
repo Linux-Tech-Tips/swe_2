@@ -7,6 +7,7 @@ import StudentTimetable from './pages/StudentTimetable.jsx';
 import LecturerTimetable from './pages/LecturerTimetable.jsx';
 import { AuthContext, AuthProvider } from './context/Contexts.jsx';
 import LecturerCreateModule from './pages/LecturerCreateModule.jsx';
+import UserSettings from './pages/UserSettings.jsx'
 
 /* Separated out BrowserRouter into a separate function with a given authContext */
 const AppRouter = () => {
@@ -65,6 +66,16 @@ const AppRouter = () => {
                     : <Navigate to="/" replace />
                     }
                 />
+
+                { /* Route for the User Settings Page */}
+                <Route
+                    path="/user-settings"
+                    element={(authContext.auth)
+                    ? <UserSettings />
+                    : <Navigate to="/" replace />
+                    }
+                />
+
                 {/* Catch-all route for 404 pages */}
                 <Route path="*" element={
                     <div style={{ padding: '20px', textAlign: 'center' }}>
