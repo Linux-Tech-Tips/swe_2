@@ -29,4 +29,4 @@ echo "PLACEHOLDER" > "${SCRIPT_DIR}/frontend/github_key"
 echo "PLACEHOLDER" > "${SCRIPT_DIR}/backend/github_key"
 echo "PLACEHOLDER" > "${SCRIPT_DIR}/docs/github_key"
 
-docker-compose up -d
+docker compose up -d
