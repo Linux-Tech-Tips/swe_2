@@ -1,0 +1,25 @@
+services:
+  db:
+    image: mariadb:latest
+    hostname: db
+    restart: unless-stopped
+    expose:
+      - "3306"
+    env_file:
+      - ./database/.env
+    volumes:
+      - ./database/init.sql/:/docker-entrypoint-initdb.d/1.sql
+      - db-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      db_internal:
+
+networks:
+  db_internal:
+
+volumes:
+  db-data:

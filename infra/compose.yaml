@@ -1,51 +1,8 @@
 name: tt
 
+include:
+  - backend-db-include.yaml
 services:
-  reverse-proxy:
-    image: nginx:latest
-    restart: unless-stopped
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d:ro
-    expose:
-      - "80"
-    depends_on:
-      - backend-wrapper
-      - frontend
-      - jenkins
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "2"
-
-  frontend:
-    image: martin/frontend
-    hostname: frontend
-    restart: unless-stopped
-    expose:
-      - "5173"
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "2"
-
-  backend-wrapper:
-    image: martin/backend-wrapper
-    hostname: backend-wrapper
-    restart: unless-stopped
-    privileged: true
-    mem_limit: "1024m"
-    environment:
-      - DOCKER_TLS_CERTDIR=
-    expose:
-      - "8080"
-    logging:
-      driver: "json-file"
-      options:
-        max-size: "10m"
-        max-file: "2"
-
   jenkins:
     image: jenkins/jenkins:lts
     hostname: jenkins
@@ -62,15 +19,50 @@ services:
         max-file: "2"
 
   docs:
-    image: martin/docs
+    image: martin/docs:latest
+    build: ./docs
+    hostname: docs
     restart: unless-stopped
     expose:
-      - "8081"
+      - "8080"
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "2"
+
+  frontend:
+    image: martin/frontend:latest
+    build: ./frontend
+    hostname: frontend
+    restart: unless-stopped
+    expose:
+      - "8080"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "2"
+
+  backend:
+    image: martin/backend:latest
+    build: ./backend
+    hostname: backend
+    restart: unless-stopped
+    mem_limit: "1024m"
+    networks:
+      default:
+      db_internal:
+    expose:
+      - "8080"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "2"
+    depends_on:
+      db:
+        condition: service_healthy
 
   cloudflared:
     image: cloudflare/cloudflared:latest
@@ -88,4 +80,11 @@ services:
         max-size: "10m"
         max-file: "10"
     depends_on:
-      - reverse-proxy
+      - docs
+      - jenkins
+      - frontend
+      - backend
+
+networks:
+  default:
+  db_internal:

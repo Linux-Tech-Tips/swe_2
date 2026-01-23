@@ -1,21 +1,12 @@
-FROM node:current-alpine
+FROM martin/tt_common:latest AS repo
 
-RUN apk --no-cache add git openssh
-
-RUN mkdir -p /root/.ssh
-ADD github_key /root/.ssh/id_rsa
-RUN chmod 400 /root/.ssh/id_rsa
-
-RUN touch /root/.ssh/known_hosts
-RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
-
-ARG GIT_ACCESS_TOKEN
-ENV GIT_ACCESS_TOKEN=${GIT_ACCESS_TOKEN}
-ADD https://$GIT_ACCESS_TOKEN:x-oauth-basic@api.github.com/repos/Linux-Tech-Tips/swe_2/git/refs/heads/stable version.json
-RUN git clone -b stable git@github.com:Linux-Tech-Tips/swe_2.git /app
+FROM node:current-alpine AS build
+COPY --from=repo /repo/frontend /app/frontend
 WORKDIR /app/frontend
+RUN npm install && npm run build
 
-RUN npm install
+FROM nginx:alpine
+COPY --from=build /app/frontend/dist /web/app
+COPY default.conf /etc/nginx/conf.d/
 
-EXPOSE 5173
-CMD ["npm", "run", "dev", "--", "--host"]
+EXPOSE 8080

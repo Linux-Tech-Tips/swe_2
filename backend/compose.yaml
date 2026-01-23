@@ -1,21 +1,7 @@
-services:
-  db:
-    image: mariadb:latest
-    container_name: db
-    restart: unless-stopped
-    expose:
-      - "3306"
-    env_file:
-      - ./database/.env
-    volumes:
-      - ./database/init.sql/:/docker-entrypoint-initdb.d/1.sql
-      - db-data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
 
+include:
+  - ../infra/backend-db-include.yaml
+services:
   backend:
     build:
       context: .
@@ -27,6 +13,8 @@ services:
         condition: service_healthy
     ports:
       - "8080:8080"
+    networks:
+      backend:
 
-volumes:
-  db-data:
+networks:
+  backend:
