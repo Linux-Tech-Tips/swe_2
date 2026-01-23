@@ -54,7 +54,7 @@ public class UserTest {
      */
     @Test
     public void testToString() {
-        assertEquals("class org.unixusergroup.tutorial_time.domain.student.Student[email='j.test1@universityofgalway.ie', id='10000']", student.toString());
+        assertEquals("class org.unixusergroup.tutorial_time.domain.student.Student[email='j.test1@universityofgalway.ie', id='10000', email permissions: true]", student.toString());
     }
 
     /**

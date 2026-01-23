@@ -1,5 +1,5 @@
 /** 
- * @author Martin
+ * @author Martin, Cedar
  */
 package org.unixusergroup.tutorial_time.api.rest;
 
@@ -57,7 +57,7 @@ public class StudentControllerIntegrationTest {
                             .param("studentId", "123456")
                             .with(authentication(createMockJwtToken("123456", "Student"))))
                    .andExpect(status().isOk());
-            /* Check that a Lecturer-authenticated user can't access the student API */
+            /* Check that a Student-authenticated user can't access the student API */
             mockMvc.perform(get("/api/student/getstudent")
                             .param("studentId", "123456")
                             .with(authentication(createMockJwtToken("123456", "Lecturer"))))
@@ -285,6 +285,46 @@ public class StudentControllerIntegrationTest {
                             .with(authentication(createMockJwtToken("11111", "Student")))
                             .with(csrf()))
                    .andExpect(status().is(500));
+
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    @Test
+    public void flipStudentEmailPermissionsValidIntegrationTest() {
+        try {
+            mockMvc.perform(post("/api/student/flipemailpermissions")
+                            .param("studentId", "123456")
+                            .with(authentication(createMockJwtToken("123456", "Student")))
+                            .with(csrf()))
+                    .andExpect(status().is(200));
+
+            /* assert that the permissions were accurately changed */
+            assertFalse(mockStudentRepository.getStudentById(123456).getEmailPermissions());
+
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    @Test
+    public void flipStudentEmailPermissionsInvalidIntegrationTest() {
+        try {
+            /* test that flipping a student who doesn't exist's email permission doesn't do anything */
+            mockMvc.perform(post("/api/student/flipemailpermissions")
+                            .param("studentId", "654321")
+                            .with(authentication(createMockJwtToken("654321", "Student")))
+                            .with(csrf()))
+                    .andExpect(status().is(404));
+
+            /* test that a request with incorrect authentication doesn't work */
+            mockMvc.perform(post("/api/student/flipemailpermissions")
+                            .param("studentId", "123456")
+                            .with(authentication(createMockJwtToken("6543", "Student")))
+                            .with(csrf()))
+                    .andExpect(status().is(403));
+            assertTrue(mockStudentRepository.getStudentById(123456).getEmailPermissions());
 
         } catch(Exception e) {
             System.out.println(e);

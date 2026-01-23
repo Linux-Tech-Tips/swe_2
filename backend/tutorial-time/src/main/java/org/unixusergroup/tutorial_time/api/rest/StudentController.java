@@ -9,13 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 
-import org.unixusergroup.tutorial_time.application.users.AddStudentUseCase;
-import org.unixusergroup.tutorial_time.application.users.GetStudentUseCase;
+import org.unixusergroup.tutorial_time.application.users.*;
 import org.unixusergroup.tutorial_time.domain.User;
 import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
 import org.unixusergroup.tutorial_time.application.common.UseCase;
-import org.unixusergroup.tutorial_time.application.users.CreateTimetableUseCase;
-import org.unixusergroup.tutorial_time.application.users.GetTimetableUseCase;
 import org.unixusergroup.tutorial_time.application.users.dto.*;
 import org.unixusergroup.tutorial_time.infrastructure.ProjectConfiguration;
 
@@ -106,6 +103,43 @@ public class StudentController {
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Student get student API: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Flip email permissions API (api/student/flipemailpermissions)
+     * this api flips a given user's email permissions (i.e. switches it from false to true or true to false)
+     * @param authentication the user's authentication information
+     * @param studentId the user's id
+     * @return HTTP status 200 if the swap occurred successfully
+     *         HTTP status 404 if the given user couldn't be found
+     *         HTTP status 403 if the user isn't authenticated 
+     *         HTTP status 500 for any other error
+     */
+
+    @PostMapping(path="/flipemailpermissions")
+    public ResponseEntity<?> flipEmailPermissions(Authentication authentication, @RequestParam long studentId) {
+        try {
+            /* Ensure that a student can only get info about themselves */
+            Jwt authPrincipal = (Jwt) (authentication.getPrincipal());
+            if (!authPrincipal.hasClaim("uni_id")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User has no ID");
+            }
+            long authenticatedId = Long.parseLong(authPrincipal.getClaimAsString("uni_id"));
+            if (authenticatedId != studentId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User ID does not match");
+            }
+
+            /* If allowed, execute actual API call */
+            FlipEmailPermissionsRequest flipEmailPermissionsRequest = new FlipEmailPermissionsRequest(studentId);
+            FlipStudentEmailPermissionsUseCase flipStudentEmailPermissionsUseCase = new FlipStudentEmailPermissionsUseCase(this.studentRepository);
+            flipStudentEmailPermissionsUseCase.execute(flipEmailPermissionsRequest);
+
+            return ResponseEntity.status(HttpStatus.OK).body("Email permission switched successfully");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 

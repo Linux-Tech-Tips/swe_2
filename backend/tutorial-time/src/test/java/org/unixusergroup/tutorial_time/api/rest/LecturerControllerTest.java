@@ -1,9 +1,9 @@
 /** 
- * @author Martin, Ethan
+ * @author Martin, Ethan, Cedar
  */
+
 package org.unixusergroup.tutorial_time.api.rest;
 
-import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,12 +12,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import org.unixusergroup.tutorial_time.api.rest.LecturerController;
 import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 import org.unixusergroup.tutorial_time.domain.timetable.Availability;
 import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
 import org.unixusergroup.tutorial_time.infrastructure.InMemoryLecturerRepository;
+
 import static org.unixusergroup.tutorial_time.api.rest.MockAuthUtil.createMockJwtToken;
 
 @SpringBootTest
@@ -219,6 +219,29 @@ class LecturerControllerTest {
         LecturerController controller = new LecturerController(lecturerRepository);
         ResponseEntity<?> response = controller.getLecturer(createMockJwtToken("1002", "Lecturer"), 1002);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    @Test
+    void flipLecturerEmailPermissionsTest() {
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        LecturerController controller = new LecturerController(lecturerRepository);
+        controller.addLecturer(createMockJwtToken("1002", "Lecturer"), "L.test@nuigalway.ie", 1002);
+        ResponseEntity<?> response = controller.flipEmailPermissions(createMockJwtToken("1002", "Lecturer"), 1002);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void failedFlipLecturerEmailPermissionsTest() {
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        LecturerController controller = new LecturerController(lecturerRepository);
+
+        /* test that a user with the wrong ID can't edit the permissions */
+        ResponseEntity<?> response = controller.flipEmailPermissions(createMockJwtToken("100", "Lecturer"), 1002);
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+
+        /* test that permissions of a user that doesn't exist can't be edited */
+        response = controller.flipEmailPermissions(createMockJwtToken("1002", "Lecturer"), 1002);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 }
 
