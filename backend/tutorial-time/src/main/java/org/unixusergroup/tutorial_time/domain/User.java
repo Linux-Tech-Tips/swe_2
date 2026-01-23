@@ -20,6 +20,9 @@ public abstract class User {
     /** Enumeration defining which type a concrete user is */
     public enum UserType {STUDENT, LECTURER}
 
+    /** Boolean whether the user has email permissions on or not */
+    protected Boolean emailPermissions = true;
+
     /** The university email of the user */
     protected String universityEmail;
     private final String universityEmailRegex = ".*@universityofgalway\\.ie";
@@ -52,7 +55,7 @@ public abstract class User {
 
     @Override
     public String toString() {
-        return String.format("%s[email='%s', id='%d']", this.getClass(), this.universityEmail, this.universityId);
+        return String.format("%s[email='%s', id='%d', email permissions: %b]", this.getClass(), this.universityEmail, this.universityId, this.emailPermissions);
     }
 
     @Override
@@ -70,6 +73,14 @@ public abstract class User {
 
     public long getUniversityId() {
         return universityId;
+    }
+
+    public void switchEmailPermissions() {
+        emailPermissions = !emailPermissions;
+    }
+
+    public Boolean getEmailPermissions() {
+        return emailPermissions;
     }
 
     public Timetable getTimetable() {

@@ -1,5 +1,5 @@
 /** 
- * @author Martin
+ * @author Martin, Cedar
  */
 package org.unixusergroup.tutorial_time.api.rest;
 
@@ -284,6 +284,46 @@ public class LecturerControllerIntegrationTest {
                             .with(authentication(createMockJwtToken("11111", "Lecturer")))
                             .with(csrf()))
                    .andExpect(status().is(500));
+
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    @Test
+    public void flipLecturerEmailPermissionsValidIntegrationTest() {
+        try {
+            mockMvc.perform(post("/api/lecturer/flipemailpermissions")
+                            .param("staffId", "123456")
+                            .with(authentication(createMockJwtToken("123456", "Lecturer")))
+                            .with(csrf()))
+                    .andExpect(status().is(200));
+
+            /* assert that the permissions were accurately changed */
+            assertFalse(mockLecturerRepository.getLecturerById(123456).getEmailPermissions());
+
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    @Test
+    public void flipLecturerEmailPermissionsInvalidIntegrationTest() {
+        try {
+            /* test that flipping a lecturer who doesn't exist's email permission doesn't do anything */
+            mockMvc.perform(post("/api/lecturer/flipemailpermissions")
+                            .param("staffId", "654321")
+                            .with(authentication(createMockJwtToken("654321", "Lecturer")))
+                            .with(csrf()))
+                    .andExpect(status().is(404));
+
+            /* test that a request with incorrect authentication doesn't work */
+            mockMvc.perform(post("/api/lecturer/flipemailpermissions")
+                            .param("staffId", "123456")
+                            .with(authentication(createMockJwtToken("6543", "Lecturer")))
+                            .with(csrf()))
+                    .andExpect(status().is(403));
+            assertTrue(mockLecturerRepository.getLecturerById(123456).getEmailPermissions());
 
         } catch(Exception e) {
             System.out.println(e);

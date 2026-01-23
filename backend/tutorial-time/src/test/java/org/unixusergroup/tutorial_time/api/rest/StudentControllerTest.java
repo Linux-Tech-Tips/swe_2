@@ -1,6 +1,7 @@
 /** 
- * @author Martin, Ethan
+ * @author Martin, Ethan, Cedar
  */
+
 package org.unixusergroup.tutorial_time.api.rest;
 
 import java.util.Arrays;
@@ -216,6 +217,29 @@ class StudentControllerTest {
         StudentController controller = new StudentController(studentRepository);
         ResponseEntity<?> response = controller.getStudent(createMockJwtToken("1002", "Student"), 1002);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    @Test
+    void flipStudentEmailPermissionsTest() {
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        StudentController controller = new StudentController(studentRepository);
+        controller.addStudent(createMockJwtToken("1002", "Student"), "L.test@nuigalway.ie", 1002);
+        ResponseEntity<?> response = controller.flipEmailPermissions(createMockJwtToken("1002", "Student"), 1002);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    void failedFlipStudentEmailPermissionsTest() {
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        StudentController controller = new StudentController(studentRepository);
+
+        /* test that a user with the wrong ID can't edit the permissions */
+        ResponseEntity<?> response = controller.flipEmailPermissions(createMockJwtToken("100", "Student"), 1002);
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+
+        /* test that permissions of a user that doesn't exist can't be edited */
+        response = controller.flipEmailPermissions(createMockJwtToken("1002", "Student"), 1002);
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 }
 
