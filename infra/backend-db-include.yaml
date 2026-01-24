@@ -3,6 +3,7 @@ services:
     image: mariadb:latest
     hostname: db
     restart: unless-stopped
+    mem_limit: "512m"
     expose:
       - "3306"
     env_file:
