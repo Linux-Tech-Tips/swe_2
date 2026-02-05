@@ -28,6 +28,7 @@ public class ScheduleTutorialsUseCaseTest {
     ScheduleRequest request;
     ScheduleTutorialsUseCase testUseCase = new ScheduleTutorialsUseCase(moduleRepository, studentRepository);
     int[] blockedTimes = {};
+    Module testModule;
 
     /**
      * method for initialising variables
@@ -35,7 +36,7 @@ public class ScheduleTutorialsUseCaseTest {
     @BeforeEach
     public void setVariables() {
         Lecturer testLecturer = new Lecturer("test@universityofgalway.ie", 10000);
-        Module testModule = new Module("testModule", testLecturer.getUniversityId());
+        testModule = new Module("testModule", testLecturer.getUniversityId());
         Student student1 = new Student("s1@universityofgalway.ie", 1111, new Timetable(2, 2, Availability.UNAVAILABLE));
         student1.setAvailable(0,0);
         studentRepository.saveStudent(student1);
@@ -62,6 +63,20 @@ public class ScheduleTutorialsUseCaseTest {
     @Test
     public void scheduleTest() {
         String correctTimes = "1 students are available at Wednesday, 9:00\n1 students are available at Thursday, 9:00\n2 students are available at Monday, 9:00\n";
+        assertEquals(correctTimes, testUseCase.execute(request).getTimes());
+    }
+
+    /**
+     * test that it runs properly with a student who is always busy
+     * it should still schedule times and append the error
+     */
+    @Test
+    public void testBusyStudent() {
+        Student badStudent = new Student("s5@universityofgalway.ie", 5555, new Timetable(2, 2, Availability.UNAVAILABLE));
+        testModule.addStudent(5555);
+        studentRepository.saveStudent(badStudent);
+        request = new ScheduleRequest("testModule", 0, 0, blockedTimes);
+        String correctTimes = "WARNING: There are students who registered themselves as busy at all times. These students have been removed from consideration.\n1 students are available at Wednesday, 9:00\n1 students are available at Thursday, 9:00\n2 students are available at Monday, 9:00\n";
         assertEquals(correctTimes, testUseCase.execute(request).getTimes());
     }
 

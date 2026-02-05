@@ -11,6 +11,10 @@ import org.hibernate.type.SqlTypes;
 import org.hibernate.type.descriptor.jdbc.SqlTypedJdbcType;
 import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
 import org.unixusergroup.tutorial_time.domain.timetable.Availability;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 /** A class representing the basis for a student and lecturer */
@@ -95,4 +99,10 @@ public abstract class User {
         }
         timetable.setAvailability(day, time, Availability.UNAVAILABLE);
     }
+
+    public boolean busyAlways() {
+        return Arrays.stream(timetable.getArray())
+                .allMatch(element -> Objects.equals(0, element));
+    }
+
 }

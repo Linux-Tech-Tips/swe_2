@@ -5,7 +5,6 @@
 package org.unixusergroup.tutorial_time.application.scheduler;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.unixusergroup.tutorial_time.application.common.UseCase;
@@ -36,13 +35,15 @@ public class ScheduleTutorialsUseCase implements UseCase <ScheduleResponse, Sche
      * then all scheduling methods
      * @return ScheduleResponse object
      */
-    public ScheduleResponse execute(ScheduleRequest request) throws RuntimeException{
+    public ScheduleResponse execute(ScheduleRequest request) {
         Constraints constraints =  new Constraints(request.studentLimit(), request.minTAs(), request.blockedTimes());
 
         /* Loading student timetables */
         ArrayList<int[]> timetables = new ArrayList<>();
         int missingStudents = 0;
         int missingTAs = 0;
+        boolean busyStudents = false;
+        boolean busyTAs = false;
 
         Module module = moduleRepository.getModuleByCode(request.moduleCode());
         if(module==null) {
@@ -54,7 +55,11 @@ public class ScheduleTutorialsUseCase implements UseCase <ScheduleResponse, Sche
             Student loadedStudent = studentRepository.getStudentById(student);
             if(loadedStudent == null) {
                 ++missingStudents;
-            } else {
+            }
+            else if(loadedStudent.busyAlways()) {
+                busyStudents=true;
+            }
+            else {
                 timetables.add(loadedStudent.getTimetable().getArray());
             }
         }
@@ -68,7 +73,11 @@ public class ScheduleTutorialsUseCase implements UseCase <ScheduleResponse, Sche
                 Student loadedTA = studentRepository.getStudentById(student);
                 if(loadedTA == null) {
                     ++missingTAs;
-                } else {
+                }
+                else if(loadedTA.busyAlways()) {
+                    busyTAs=true;
+                }
+                else {
                     taTimetables.add(loadedTA.getTimetable().getArray());
                 }
             }
@@ -86,6 +95,12 @@ public class ScheduleTutorialsUseCase implements UseCase <ScheduleResponse, Sche
             warning += "WARNING: There are (" +
                        missingTAs +
                        ") TA students not registered in the app (scheduling may be affected).\n";
+        }
+        if(busyStudents) {
+            warning += "WARNING: There are students who registered themselves as busy at all times. These students have been removed from consideration.\n";
+        }
+        if(busyTAs) {
+            warning += "WARNING: There are TAs who registered themselves as busy at all times. These TAs have been removed from consideration.\n";
         }
 
         //if there is a minimum number of TAs to be at each tutorial --> remove times as needed

@@ -5,10 +5,7 @@
 
 package org.unixusergroup.tutorial_time.domain.scheduler;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.*;
 import jakarta.persistence.ElementCollection;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -31,12 +28,12 @@ public class Scheduler {
      * Constructor
      * @param studentTimetables the timetables of each student
      */
-    public Scheduler(ArrayList<int[]> studentTimetables) {
+    public Scheduler(ArrayList<int[]> studentTimetables){
         if(studentTimetables.isEmpty()) {
             throw new IllegalStudentTimetablesException( "At least one student timetable must be entered");
         }
-        this.moduleSize = studentTimetables.size();
         this.studentTimetables = studentTimetables;
+        this.moduleSize = studentTimetables.size();
         U = new HashSet<>(moduleSize);
         for(int i=0; i<moduleSize; i++) {
             U.add(i);
@@ -55,15 +52,13 @@ public class Scheduler {
      * @param studentTimetables student timetables
      * @param taTimetables TA timetables
      */
-    public Scheduler(ArrayList<int[]> studentTimetables, ArrayList<int[]> taTimetables) throws IllegalStudentTimetablesException{
+    public Scheduler(ArrayList<int[]> studentTimetables, ArrayList<int[]> taTimetables) throws IllegalStudentTimetablesException {
         this(studentTimetables);
         if(taTimetables.isEmpty()) {
             throw new IllegalStudentTimetablesException("At least one TA must be registered for the module");
         }
         this.taTimetables = taTimetables;
     }
-
-    //TODO check if there's students who are never available??
 
     public int getModuleSize() {
         return moduleSize;
@@ -128,7 +123,7 @@ public class Scheduler {
             if (timeSlots.get(i).getId() == id) {
                 //check if there's any students that are only available at this time
                 if(!unionOfTimes(timeSlots.get(i)).containsAll(timeSlots.get(i).getStudents())) {
-                    //TODO: make this exception better (i.e. say which time/students it is
+                    //TODO: make this exception better (i.e. say which time/students it is)
                     throw new IllegalTimeDeletionException("There are students who are only available at " + convertToDate(id));
                 }
                 timeSlots.remove(i);
