@@ -42,8 +42,8 @@ public class ScheduleTutorialsUseCase implements UseCase <ScheduleResponse, Sche
         ArrayList<int[]> timetables = new ArrayList<>();
         int missingStudents = 0;
         int missingTAs = 0;
-        boolean busyStudents = false;
-        boolean busyTAs = false;
+        int busyStudents = 0;
+        int busyTAs = 0;
 
         Module module = moduleRepository.getModuleByCode(request.moduleCode());
         if(module==null) {
@@ -57,7 +57,7 @@ public class ScheduleTutorialsUseCase implements UseCase <ScheduleResponse, Sche
                 ++missingStudents;
             }
             else if(loadedStudent.busyAlways()) {
-                busyStudents=true;
+                ++busyStudents;
             }
             else {
                 timetables.add(loadedStudent.getTimetable().getArray());
@@ -75,7 +75,7 @@ public class ScheduleTutorialsUseCase implements UseCase <ScheduleResponse, Sche
                     ++missingTAs;
                 }
                 else if(loadedTA.busyAlways()) {
-                    busyTAs=true;
+                    ++busyTAs;
                 }
                 else {
                     taTimetables.add(loadedTA.getTimetable().getArray());
@@ -96,11 +96,11 @@ public class ScheduleTutorialsUseCase implements UseCase <ScheduleResponse, Sche
                        missingTAs +
                        ") TA students not registered in the app (scheduling may be affected).\n";
         }
-        if(busyStudents) {
-            warning += "WARNING: There are students who registered themselves as busy at all times. These students have been removed from consideration.\n";
+        if(busyStudents > 0) {
+            warning += "WARNING: There are (" + busyStudents + ") students who registered themselves as busy at all times. These students have been removed from consideration.\n";
         }
-        if(busyTAs) {
-            warning += "WARNING: There are TAs who registered themselves as busy at all times. These TAs have been removed from consideration.\n";
+        if(busyTAs > 0) {
+            warning += "WARNING: There are (" + busyTAs + ") TA students who registered themselves as busy at all times. These TAs have been removed from consideration.\n";
         }
 
         //if there is a minimum number of TAs to be at each tutorial --> remove times as needed

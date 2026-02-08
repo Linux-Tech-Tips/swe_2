@@ -288,6 +288,34 @@ public class SchedulerControllerIntegrationTest {
     }
 
     @Test
+    public void scheduleBusyStudentIntegrationTest() {
+        Student badStudent = new Student("s5@universityofgalway.ie", 5555, new Timetable(2, 2, Availability.UNAVAILABLE));
+        mockStudentRepository.saveStudent(badStudent);
+        Module module = new Module("TS222", Arrays.asList(new Long[] {111111L, 222222L, 333333L, 444444L, 5555L}),
+                Arrays.asList(new Long[] {888888L, 999999L}), 123456);
+        mockModuleRepository.saveModule(module);
+
+        try {
+            /* Check that scheduling a tutorial with no constraints runs correctly */
+            mockMvc.perform(post("/api/scheduler/schedule")
+                            .param("moduleCode", "TS222")
+                            .param("studentLimit", "0")
+                            .param("minTAs", "0")
+                            .param("blockedTimes", "")
+                            .with(authentication(createMockJwtToken("123456", "Lecturer")))
+                            .with(csrf()))
+                    .andExpect(status()
+                            .isOk())
+                    .andExpect(content()
+                            .json("{\"times\":" +
+                                    "\"WARNING: There are (1) students who registered themselves as busy at all times. These students have been removed from consideration.\nAll students are available at each of the following times:\n4 students are available at Thursday, 10:00\n\"}"));
+
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    @Test
     public void scheduleInvalidIntegrationTest() {
         try {
             /* Check that scheduling tutorials for an invalid module code fails */

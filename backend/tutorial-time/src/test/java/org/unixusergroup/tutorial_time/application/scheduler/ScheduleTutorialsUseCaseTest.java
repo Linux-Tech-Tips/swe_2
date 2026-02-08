@@ -76,7 +76,7 @@ public class ScheduleTutorialsUseCaseTest {
         testModule.addStudent(5555);
         studentRepository.saveStudent(badStudent);
         request = new ScheduleRequest("testModule", 0, 0, blockedTimes);
-        String correctTimes = "WARNING: There are students who registered themselves as busy at all times. These students have been removed from consideration.\n1 students are available at Wednesday, 9:00\n1 students are available at Thursday, 9:00\n2 students are available at Monday, 9:00\n";
+        String correctTimes = "WARNING: There are (1) students who registered themselves as busy at all times. These students have been removed from consideration.\n1 students are available at Wednesday, 9:00\n1 students are available at Thursday, 9:00\n2 students are available at Monday, 9:00\n";
         assertEquals(correctTimes, testUseCase.execute(request).getTimes());
     }
 
