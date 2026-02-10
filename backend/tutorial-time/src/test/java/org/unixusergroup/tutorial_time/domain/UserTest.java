@@ -110,4 +110,27 @@ public class UserTest {
     public void testInvalidSetUnavailable() {
         assertThrows(IllegalArgumentException.class, () -> student.setAvailable(1, 10));
     }
+
+    /**
+     * test busyAlways for a timetable of all available and a mixture
+     */
+    @Test
+    public void testFalseBusyAlways() {
+        assertFalse(student.busyAlways());
+        student.setUnavailable(0,0);
+        assertFalse(student.busyAlways());
+    }
+
+    /**
+     * test busyAlways for a timetable of all unavailable
+     */
+    @Test
+    public void testTrueBusyAlways() {
+        for(int i=0; i<5; i++) {
+            for(int j=0; j<8; j++) {
+                student.setUnavailable(i,j);
+            }
+        }
+        assertTrue(student.busyAlways());
+    }
 }

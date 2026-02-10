@@ -8,9 +8,11 @@ package org.unixusergroup.tutorial_time.api.rest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatusCode;
+import org.unixusergroup.tutorial_time.application.scheduler.dto.ScheduleRequest;
 import org.unixusergroup.tutorial_time.application.scheduler.dto.ScheduleResponse;
 import org.unixusergroup.tutorial_time.domain.lecturer.Lecturer;
 import org.unixusergroup.tutorial_time.domain.module.Module;
+import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
 import org.unixusergroup.tutorial_time.domain.student.Student;
 import org.unixusergroup.tutorial_time.domain.timetable.Availability;
 import org.unixusergroup.tutorial_time.domain.timetable.Timetable;
@@ -26,6 +28,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class SchedulerControllerTest {
     int[] blockedTimes = {};
     SchedulerController schedulerController;
+    Module testModule;
+    InMemoryStudentRepository memoryStudentRepository;
 
     /**
      * method for setting up the variables (scheduleController, moduleRepository, module)
@@ -33,10 +37,10 @@ public class SchedulerControllerTest {
     @BeforeEach
     public void setVariables() {
         InMemoryModuleRepository memoryModuleRepository = new InMemoryModuleRepository();
-        InMemoryStudentRepository memoryStudentRepository = new InMemoryStudentRepository();
+        memoryStudentRepository = new InMemoryStudentRepository();
 
         Lecturer testLecturer = new Lecturer("test@universityofgalway.ie", 10000);
-        Module testModule = new Module("testModule", testLecturer.getUniversityId());
+        testModule = new Module("testModule", testLecturer.getUniversityId());
         Student student1 = new Student("s1@universityofgalway.ie", 1111, new Timetable(2, 2, Availability.UNAVAILABLE));
         student1.setAvailable(0,0);
         memoryStudentRepository.saveStudent(student1);
@@ -64,6 +68,19 @@ public class SchedulerControllerTest {
     @Test
     public void testSchedulerController() {
         String correctTimes = "1 students are available at Wednesday, 9:00\n1 students are available at Thursday, 9:00\n2 students are available at Monday, 9:00\n";
+        ScheduleResponse correctResponse = new ScheduleResponse(correctTimes);
+        assertEquals(correctResponse, schedulerController.schedule(createMockJwtToken("10000", "Lecturer"), "testModule", 0,0,blockedTimes).getBody());
+    }
+
+    /**
+     * test that it properly handles a student who is busy at all times
+     */
+    @Test
+    public void testSchedulerControllerBusyStudent() {
+        Student badStudent = new Student("s5@universityofgalway.ie", 5555, new Timetable(2, 2, Availability.UNAVAILABLE));
+        testModule.addStudent(5555);
+        memoryStudentRepository.saveStudent(badStudent);
+        String correctTimes = "WARNING: There are (1) students who registered themselves as busy at all times. These students have been removed from consideration.\n1 students are available at Wednesday, 9:00\n1 students are available at Thursday, 9:00\n2 students are available at Monday, 9:00\n";
         ScheduleResponse correctResponse = new ScheduleResponse(correctTimes);
         assertEquals(correctResponse, schedulerController.schedule(createMockJwtToken("10000", "Lecturer"), "testModule", 0,0,blockedTimes).getBody());
     }
