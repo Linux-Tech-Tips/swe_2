@@ -1,20 +1,12 @@
-FROM docker:dind
+FROM martin/tt_common:latest AS repo
 
-RUN apk --no-cache add git docker-cli docker-cli-compose openjdk21-jdk gradle
+FROM gradle:jdk21-alpine AS build
+COPY --from=repo /repo/backend/tutorial-time /app/backend/tutorial-time
+WORKDIR /app/backend/tutorial-time
+RUN gradle assemble
 
-RUN mkdir -p /root/.ssh
-ADD github_key /root/.ssh/id_rsa
-RUN chmod 400 /root/.ssh/id_rsa
+FROM alpine/java:21-jdk
+COPY --from=build /app/backend/tutorial-time/build/libs /app/build
+WORKDIR /app/build
 
-RUN touch /root/.ssh/known_hosts
-RUN ssh-keyscan github.com >> /root/.ssh/known_hosts
-
-ARG GIT_ACCESS_TOKEN
-ENV GIT_ACCESS_TOKEN=${GIT_ACCESS_TOKEN}
-ADD https://$GIT_ACCESS_TOKEN:x-oauth-basic@api.github.com/repos/Linux-Tech-Tips/swe_2/git/refs/heads/stable version.json
-RUN git clone -b stable git@github.com:Linux-Tech-Tips/swe_2.git /app
-
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
-EXPOSE 8080
-ENTRYPOINT ["/entrypoint.sh"]
+CMD ["java", "-jar", "tutorial-time-0.0.1-SNAPSHOT.jar"]

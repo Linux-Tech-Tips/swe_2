@@ -1,61 +1,76 @@
+name: tt
+
+include:
+  - backend-db-include.yaml
 services:
-  reverse-proxy:
-    image: nginx:latest
-    container_name: reverse-proxy
-    restart: unless-stopped
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d:ro
-    expose:
-      - "80"
-    ports:
-      - "80:80"
-    depends_on:
-      - backend-wrapper
-      - frontend
-      - jenkins
-
-  frontend:
-    image: martin/frontend
-    container_name: frontend
-    restart: unless-stopped
-    expose:
-      - "5173"
-
-  backend-wrapper:
-    image: martin/backend-wrapper
-    container_name: backend-wrapper
-    restart: unless-stopped
-    privileged: true
-    environment:
-      - DOCKER_TLS_CERTDIR=
-    expose:
-      - "8080"
-    ports:
-      - "8080:8080"
-
   jenkins:
     image: jenkins/jenkins:lts
-    container_name: jenkins
+    hostname: jenkins
     restart: unless-stopped
+    mem_limit: "1024m"
     expose:
       - "8080"
     volumes:
       - ./jenkins_data:/var/jenkins_home
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "2"
 
   docs:
-    image: martin/docs
-    container_name: docs
+    image: martin/docs:latest
+    build: ./docs
+    hostname: docs
     restart: unless-stopped
+    mem_limit: "128m"
     expose:
-      - "8081"
-    ports:
-      - "8081:8081"
+      - "8080"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "2"
+
+  frontend:
+    image: martin/frontend:latest
+    build: ./frontend
+    hostname: frontend
+    restart: unless-stopped
+    mem_limit: "128m"
+    expose:
+      - "8080"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "2"
+
+  backend:
+    image: martin/backend:latest
+    build: ./backend
+    hostname: backend
+    restart: unless-stopped
+    mem_limit: "512m"
+    networks:
+      default:
+      db_internal:
+    expose:
+      - "8080"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "2"
+    depends_on:
+      db:
+        condition: service_healthy
 
   cloudflared:
     image: cloudflare/cloudflared:latest
-    container_name: cloudflared
     restart: unless-stopped
     command: tunnel run
+    mem_limit: "128m"
     env_file:
       - ".env"
     environment:
@@ -65,7 +80,14 @@ services:
     logging:
       driver: "json-file"
       options:
-        max-size: "100m"
+        max-size: "10m"
         max-file: "10"
     depends_on:
-      - reverse-proxy
+      - docs
+      - jenkins
+      - frontend
+      - backend
+
+networks:
+  default:
+  db_internal:
