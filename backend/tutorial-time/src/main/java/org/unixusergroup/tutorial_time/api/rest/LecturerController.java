@@ -1,5 +1,5 @@
 /**
- * @author Ethan, Martin
+ * @author Ethan, Martin, Cedar
  */
 package org.unixusergroup.tutorial_time.api.rest;
 
@@ -9,14 +9,12 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 
-import org.unixusergroup.tutorial_time.application.users.AddLecturerUseCase;
-import org.unixusergroup.tutorial_time.application.users.GetLecturerUseCase;
+import org.unixusergroup.tutorial_time.application.users.*;
 import org.unixusergroup.tutorial_time.domain.User;
 import org.unixusergroup.tutorial_time.domain.lecturer.LecturerRepository;
 import org.unixusergroup.tutorial_time.application.common.UseCase;
-import org.unixusergroup.tutorial_time.application.users.CreateTimetableUseCase;
-import org.unixusergroup.tutorial_time.application.users.GetTimetableUseCase;
 import org.unixusergroup.tutorial_time.application.users.dto.*;
+import org.unixusergroup.tutorial_time.domain.module.ModuleRepository;
 import org.unixusergroup.tutorial_time.infrastructure.ProjectConfiguration;
 
 /** 
@@ -30,10 +28,12 @@ import org.unixusergroup.tutorial_time.infrastructure.ProjectConfiguration;
 public class LecturerController {
 
     private final LecturerRepository lecturerRepository;
+    private final ModuleRepository moduleRepository;
 
     /** Constructor, requires a LecturerRepository instance to save and load Lecturers */
-    public LecturerController(LecturerRepository lecturerRepository) {
+    public LecturerController(LecturerRepository lecturerRepository, ModuleRepository moduleRepository) {
         this.lecturerRepository = lecturerRepository;
+        this.moduleRepository = moduleRepository;
     }
 
     /** 
@@ -106,6 +106,43 @@ public class LecturerController {
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lecturer getLecturer API: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Delete Lecturer API mapping (/api/lecturer/deletelecturer).
+     *
+     * This API call deletes a lecturer based on a given ID from the database, if the lecturer exists.
+     * @param staffId The University Staff ID of the lecturer to retrieve
+     * @return HTTP status 200 if lecturer has been deleted successfully,
+     *         HTTP status 403 if the user is not authorised,
+     *         HTTP status 404 if lecturer could not be found,
+     *         HTTP status 500 and the error message when any other error occurs
+     */
+    @PostMapping(path="/deletelecturer")
+    public ResponseEntity<?> deleteLecturer(Authentication authentication, @RequestParam long staffId) {
+        try {
+            /* Ensure that a lecturer can only delete themselves */
+            Jwt authPrincipal = (Jwt)(authentication.getPrincipal());
+            if(!authPrincipal.hasClaim("uni_id")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User has no ID");
+            }
+            long authenticatedId = Long.parseLong(authPrincipal.getClaimAsString("uni_id"));
+            if(authenticatedId != staffId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User ID does not match");
+            }
+
+            /* If allowed, execute actual API call */
+            DeleteLecturerRequest request = new DeleteLecturerRequest(staffId);
+            DeleteLecturerUseCase deleteLecturerUseCase = new DeleteLecturerUseCase(lecturerRepository, moduleRepository);
+
+            deleteLecturerUseCase.execute(request);
+            return ResponseEntity.status(HttpStatus.OK).body("Lecturer was deleted successfully");
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lecturer deleteLecturer API: " + e.getMessage());
         }
     }
 
@@ -191,5 +228,4 @@ public class LecturerController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Lecturer gettimetable API: " + e.getMessage());
         }
     }
-
 }

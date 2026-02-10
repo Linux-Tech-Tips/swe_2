@@ -1,16 +1,13 @@
 /**
- * @author Ethan, Lilian
+ * @author Ethan, Lilian, Cedar, Martin
  */
 package org.unixusergroup.tutorial_time.api.rest;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Collection;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
@@ -23,6 +20,8 @@ import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
 import org.unixusergroup.tutorial_time.infrastructure.InMemoryLecturerRepository;
 import org.unixusergroup.tutorial_time.infrastructure.InMemoryModuleRepository;
 import org.unixusergroup.tutorial_time.infrastructure.InMemoryStudentRepository;
+
+import static org.junit.jupiter.api.Assertions.*;
 import static org.unixusergroup.tutorial_time.api.rest.MockAuthUtil.createMockJwtToken;
 
 @SpringBootTest
@@ -376,5 +375,66 @@ public class ModuleControllerTest {
         /* Test unauthorized with incorrect ID */
         ResponseEntity<?> response2 = moduleController.removeStudent(createMockJwtToken("2000", "Lecturer"), module.getModuleCode(), 2L);
         assertEquals(HttpStatus.FORBIDDEN, response2.getStatusCode());
+    }
+
+    /** Test for deleteModule API function */
+    @Test
+    void deleteModuleTest() {
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+
+        /** Creating a lecturer and adding it to the test lecturer repo. */
+        Lecturer lecturer = new Lecturer("j.test@nuigalway.ie", 10002);
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        lecturerRepository.saveLecturer(lecturer);
+
+        /** Creating a module and save it to the module repo. */
+        Module expectedModule = new Module("CT202", lecturer.getUniversityId());
+        moduleRepository.saveModule(expectedModule);
+
+        /** Calling the rest api function after creating the controller */
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+        moduleController.getModule(createMockJwtToken("10002", "Lecturer"), "CT202", lecturer.getUniversityId());
+
+        /** Delete the module, assert that it's gone */
+        ResponseEntity<?> response = moduleController.deleteModule(createMockJwtToken("10002", "Lecturer"),"CT202", lecturer.getUniversityId());
+        assertNull(moduleRepository.getModuleByCode("CT202"));
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+    }
+
+    /** Test that unauthorized access to deleteModule is not allowed */
+    @Test
+    void deleteModuleAccessTest() {
+        /* Set up repository and controller */
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+        Lecturer lecturer = new Lecturer("j.test@nuigalway.ie", 10002);
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+
+        /* Test unauthorized with no ID */
+        ResponseEntity<?> response1 = moduleController.deleteModule(createMockJwtToken("", "Lecturer"), "CT202", lecturer.getUniversityId());
+        assertEquals(HttpStatus.FORBIDDEN, response1.getStatusCode());
+
+        /* Test unauthorized with incorrect ID */
+        ResponseEntity<?> response2 = moduleController.deleteModule(createMockJwtToken("10001", "Lecturer"), "CT202", lecturer.getUniversityId());
+        assertEquals(HttpStatus.FORBIDDEN, response2.getStatusCode());
+    }
+
+    /** Test for deleteModule REST API catching an exception */
+    @Test
+    void failedDeleteModuleTest() {
+        ModuleRepository moduleRepository = new InMemoryModuleRepository();
+        StudentRepository studentRepository = new InMemoryStudentRepository();
+
+        /** Creating a lecturer and adding it to the test lecturer repo. */
+        Lecturer lecturer = new Lecturer("j.test@nuigalway.ie", 10002);
+        LecturerRepository lecturerRepository = new InMemoryLecturerRepository();
+        lecturerRepository.saveLecturer(lecturer);
+
+        /** Delete the module, assert that it's gone */
+        ModuleController moduleController = new ModuleController(moduleRepository, lecturerRepository, studentRepository);
+        ResponseEntity<?> response = moduleController.deleteModule(createMockJwtToken("10002", "Lecturer"),"CT202", lecturer.getUniversityId());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 }

@@ -1,5 +1,5 @@
 /** 
- * @author Martin
+ * @author Martin, Cedar
  */
 package org.unixusergroup.tutorial_time.infrastructure;
 
@@ -33,5 +33,9 @@ public class InMemoryModuleRepository extends InMemoryRepository<String, Module>
             }
         }
         return moduleIds;
+    }
+
+    public void deleteModule(Module module) {
+        this.remove(module.getModuleCode());
     }
 }

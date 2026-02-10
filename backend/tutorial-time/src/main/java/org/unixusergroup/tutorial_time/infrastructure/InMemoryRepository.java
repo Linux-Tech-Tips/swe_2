@@ -24,6 +24,10 @@ public abstract class InMemoryRepository<K, V> {
         return data.get(key);
     }
 
+    public void remove(K key) {
+        data.remove(key);
+    }
+
     public Collection<V> retrieveAll() {
         return data.values();
     }

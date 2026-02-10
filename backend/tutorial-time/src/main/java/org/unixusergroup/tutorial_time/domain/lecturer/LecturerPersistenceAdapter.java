@@ -1,5 +1,5 @@
 /**
- * @author Ethan
+ * @author Ethan, Cedar
  */
 package org.unixusergroup.tutorial_time.domain.lecturer;
 
@@ -21,5 +21,10 @@ public class LecturerPersistenceAdapter implements LecturerRepository {
     @Override
     public Lecturer getLecturerById(long staffId) {
         return lecturerJPARepository.findById(staffId).orElse(null);
+    }
+
+    @Override
+    public void deleteLecturer(Lecturer lecturer) {
+        lecturerJPARepository.delete(lecturer);
     }
 }

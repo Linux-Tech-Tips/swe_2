@@ -10,6 +10,8 @@ import PlusIcon from '../components/PlusIcon.jsx';
 import UserIcon from '../components/UserIcon.jsx';
 import UsersIcon from '../components/UsersIcon.jsx';
 import UserCogIcon from '../components/UserCogIcon.jsx';
+import TrashIcon from '../components/TrashIcon.jsx';
+
 import GridCell from "../components/GridCell.jsx";
 import EditStudentsModal from '../components/EditStudentsModal.jsx';
 import Footer from '../components/Footer.jsx';
@@ -260,6 +262,22 @@ const LecturerTimetable = ({ onLogout }) => {
     return (<div className={styles.errorMessage}> {moduleError} </div>)
   }
 
+  //function to delete a module
+  async function DeleteModule(moduleId) {
+    const path = 'api/module/deletemodule';
+    const params = {moduleCode: moduleId, lecturerId: authContext.auth.id};
+    const [statusCode, result] = await PostRequest(path, params, authContext);
+    if(statusCode===200) {
+      ChangeModule("NO MODULE SELECTED");
+      const resetModulesResult = await GetRequest("api/module/getmodules", {lecturerId: authContext.auth.id}, authContext);
+      setModulesList(JSON.parse(resetModulesResult[1]));
+      setModulesListLoaded(true);  
+    }
+    else {
+      setModuleError("HTTP status: " + statusCode + "\nError Message: " + ErrorMessage(result));
+    }
+  }
+
   //function to display the scheduled times
   function DisplayTimes() { 
     if(scheduled===0) {
@@ -299,6 +317,10 @@ const LecturerTimetable = ({ onLogout }) => {
             <PlusIcon className={styles.navIcon} />
             Create New Module
           </button>
+          <button onClick={() => navigate("/user-settings")} className={styles.navButton}>
+            <UserCogIcon className={styles.navIcon} />
+            User Settings
+          </button>
           <button onClick={onLogout} className={styles.navButton}>
             <UserIcon className={styles.navIcon} />
             Sign Out
@@ -334,6 +356,11 @@ const LecturerTimetable = ({ onLogout }) => {
         </div>
         {/* The Buttons */}
         <div className={styles.actionButtons}>
+          <button className={styles.actionButton}
+          onClick={() => DeleteModule(selectedModuleId)}>
+            <TrashIcon className={styles.actionIcon} />
+            Delete Module
+          </button>
           <button className={styles.actionButton}
           onClick={() => setShowEditStudentsModal(true)}>
             <UsersIcon className={styles.actionIcon} />

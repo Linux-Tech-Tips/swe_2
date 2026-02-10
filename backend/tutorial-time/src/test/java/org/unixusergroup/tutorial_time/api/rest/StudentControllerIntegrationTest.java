@@ -77,7 +77,6 @@ public class StudentControllerIntegrationTest {
         }
     }
 
-
     @Test
     public void getStudentValidIntegrationTest() {
         try {
@@ -286,6 +285,53 @@ public class StudentControllerIntegrationTest {
                             .with(csrf()))
                    .andExpect(status().is(500));
 
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    @Test
+    public void deleteStudentValidIntegrationTest() {
+        try {
+            /* create a student */
+            mockMvc.perform(post("/api/student/createstudent")
+                            .param("name", "John Doe")
+                            .param("email", "john.doe@universityofgalway.ie")
+                            .param("studentId", "654321")
+                            .with(authentication(createMockJwtToken("654321", "Student")))
+                            .with(csrf()))
+                    .andExpect(status().is(200));
+
+            /* delete that student */
+            mockMvc.perform(post("/api/student/deletestudent")
+                            .param("studentId", "654321")
+                            .with(authentication(createMockJwtToken("654321", "Student")))
+                            .with(csrf()))
+                    .andExpect(status().is(200));
+
+            /* Verify that the student was deleted */
+            assertNull(mockStudentRepository.getStudentById(654321));
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    @Test
+    public void deleteStudentInvalidIntegrationTest() {
+        try {
+            /* test that deleting a non-existent student throws an error */
+            mockMvc.perform(post("/api/student/deletestudent")
+                            .param("studentId", "654321")
+                            .with(authentication(createMockJwtToken("654321", "Student")))
+                            .with(csrf()))
+                    .andExpect(status().is(404));
+
+            /* Testing that deleting a student without proper params doesn't work */
+            mockMvc.perform(post("/api/student/deletestudent")
+                            .param("studentId", "654321")
+                            .with(authentication(createMockJwtToken("", "Student")))
+                            .with(csrf()))
+                    .andExpect(status().is(403));
         } catch(Exception e) {
             System.out.println(e);
         }

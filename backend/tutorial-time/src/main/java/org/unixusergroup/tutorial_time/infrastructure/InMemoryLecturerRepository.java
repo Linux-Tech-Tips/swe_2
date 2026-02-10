@@ -1,5 +1,5 @@
 /** 
- * @author Martin
+ * @author Martin, Cedar
  */
 package org.unixusergroup.tutorial_time.infrastructure;
 
@@ -18,5 +18,9 @@ public class InMemoryLecturerRepository extends InMemoryRepository<Long, Lecture
 
     public Lecturer getLecturerById(long staffId) {
         return this.retrieve(Long.valueOf(staffId));
+    }
+
+    public void deleteLecturer(Lecturer lecturer) {
+        this.remove(lecturer.getUniversityId());
     }
 }

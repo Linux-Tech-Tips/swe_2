@@ -1,5 +1,5 @@
 /**
- * @author Ethan, Martin
+ * @author Ethan, Martin, Cedar
  */
 package org.unixusergroup.tutorial_time.domain.module;
 
@@ -37,5 +37,10 @@ public class ModulePersistenceAdapter implements ModuleRepository {
             }
         }
         return moduleCodes;
+    }
+
+    @Override
+    public void deleteModule(Module module) {
+        moduleJPARepository.delete(module);
     }
 }

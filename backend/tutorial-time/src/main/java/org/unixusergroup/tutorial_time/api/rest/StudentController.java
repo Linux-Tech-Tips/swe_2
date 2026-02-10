@@ -1,5 +1,5 @@
 /** 
- * @author Ethan, Martin
+ * @author Ethan, Martin, Cedar
  */
 package org.unixusergroup.tutorial_time.api.rest;
 
@@ -9,13 +9,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.jwt.Jwt;
 
-import org.unixusergroup.tutorial_time.application.users.AddStudentUseCase;
-import org.unixusergroup.tutorial_time.application.users.GetStudentUseCase;
+import org.unixusergroup.tutorial_time.application.users.*;
 import org.unixusergroup.tutorial_time.domain.User;
 import org.unixusergroup.tutorial_time.domain.student.StudentRepository;
 import org.unixusergroup.tutorial_time.application.common.UseCase;
-import org.unixusergroup.tutorial_time.application.users.CreateTimetableUseCase;
-import org.unixusergroup.tutorial_time.application.users.GetTimetableUseCase;
 import org.unixusergroup.tutorial_time.application.users.dto.*;
 import org.unixusergroup.tutorial_time.infrastructure.ProjectConfiguration;
 
@@ -106,6 +103,43 @@ public class StudentController {
             }
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Student get student API: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Delete Student API mapping (/api/student/deletestudent).
+     *
+     * This API call deletes a student based on a given ID from the database, if the student exists.
+     * @param studentId The University Student ID of the student to retrieve
+     * @return HTTP status 200 if student has been deleted successfully,
+     *         HTTP status 403 if the user is not authorised,
+     *         HTTP status 404 if student could not be found,
+     *         HTTP status 500 and the error message when any other error occurs
+     */
+    @PostMapping(path="/deletestudent")
+    public ResponseEntity<?> deleteStudent(Authentication authentication, @RequestParam long studentId) {
+        try {
+            /* Ensure that a student can only delete themselves */
+            Jwt authPrincipal = (Jwt)(authentication.getPrincipal());
+            if(!authPrincipal.hasClaim("uni_id")) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User has no ID");
+            }
+            long authenticatedId = Long.parseLong(authPrincipal.getClaimAsString("uni_id"));
+            if(authenticatedId != studentId) {
+                return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized: User ID does not match");
+            }
+
+            /* If allowed, execute actual API call */
+            DeleteStudentRequest request = new DeleteStudentRequest(studentId);
+            DeleteStudentUseCase deleteStudentUseCase = new DeleteStudentUseCase(studentRepository);
+
+            deleteStudentUseCase.execute(request);
+            return ResponseEntity.status(HttpStatus.OK).body("Student was deleted successfully");
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Student deleteStudent API: " + e.getMessage());
         }
     }
 

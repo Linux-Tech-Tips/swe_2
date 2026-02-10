@@ -1,5 +1,5 @@
 /** 
- * @author Martin
+ * @author Martin, Cedar
  */
 package org.unixusergroup.tutorial_time.api.rest;
 
@@ -285,6 +285,54 @@ public class LecturerControllerIntegrationTest {
                             .with(csrf()))
                    .andExpect(status().is(500));
 
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+
+
+    @Test
+    public void deleteLecturerValidIntegrationTest() {
+        try {
+            /* create a lecturer */
+            mockMvc.perform(post("/api/lecturer/createlecturer")
+                            .param("name", "John Doe")
+                            .param("email", "john.doe@universityofgalway.ie")
+                            .param("staffId", "654321")
+                            .with(authentication(createMockJwtToken("654321", "Lecturer")))
+                            .with(csrf()))
+                    .andExpect(status().is(200));
+
+            /* delete that lecturer */
+            mockMvc.perform(post("/api/lecturer/deletelecturer")
+                            .param("staffId", "654321")
+                            .with(authentication(createMockJwtToken("654321", "Lecturer")))
+                            .with(csrf()))
+                    .andExpect(status().is(200));
+
+            /* Verify that the lecturer was deleted */
+            assertNull(mockLecturerRepository.getLecturerById(654321));
+        } catch(Exception e) {
+            System.out.println(e);
+        }
+    }
+
+    @Test
+    public void deleteLecturerInvalidIntegrationTest() {
+        try {
+            /* test that deleting a non-existent lecturer throws an error */
+            mockMvc.perform(post("/api/lecturer/deletelecturer")
+                            .param("staffId", "65432")
+                            .with(authentication(createMockJwtToken("65432", "Lecturer")))
+                            .with(csrf()))
+                    .andExpect(status().is(404));
+
+            /* Testing that deleting a lecturer without proper params doesn't work */
+            mockMvc.perform(post("/api/lecturer/deletelecturer")
+                            .param("staffId", "654321")
+                            .with(authentication(createMockJwtToken("", "Lecturer")))
+                            .with(csrf()))
+                    .andExpect(status().is(403));
         } catch(Exception e) {
             System.out.println(e);
         }
